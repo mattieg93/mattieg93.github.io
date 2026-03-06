@@ -1,0 +1,113 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.local.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+# Allow Next.js/TypeScript source lib (the Python 'lib/' rule above would otherwise catch it)
+!src/lib/
+!src/lib/**
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+.venv-*
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Streamlit
+.streamlit/
+
+# Archive/Legacy files
+archive/
+
+shutdown-skies
+tasks/  
+quick_tools/coursera_agent/credentials.json
+quick_tools/docs
+quick_tools/study_system/study_data
+quick_tools/ollama_manager/node_modules
+quick_tools/ollama_manager/PORTFOLIO.md
+CLAUDE.md
+DEPLOYMENT.md
+PROJECT_OVERVIEW.md
+.claude/
+.continue/
+.github/
+quick_tools/tic_tac_toe.py

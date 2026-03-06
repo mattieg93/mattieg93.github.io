@@ -1,0 +1,304 @@
+@import "tailwindcss";
+
+:root {
+  /* Dark theme (default) */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #8b5cf6;
+  --secondary: #0f9c70;
+  --muted: #374151;
+  --border: #374151;
+}
+
+[data-theme="light"] {
+  /* Light theme */
+  --background: #ffffff;
+  --foreground: #1e293b;
+  --primary: #6366f1;
+  --secondary: #0d9488;
+  --muted: #64748b;
+  --border: #e2e8f0;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Smooth transitions for theme-aware elements only */
+html, body, nav, main, section, article, aside,
+button, a, input, textarea, select {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Force light mode styles when data-theme="light", overriding system dark mode preference */
+[data-theme="light"] .bg-white {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .dark\:bg-gray-800,
+[data-theme="light"] .dark\:bg-gray-800\/50 {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .dark\:bg-gray-700,
+[data-theme="light"] .dark\:bg-gray-700\/30 {
+  background-color: #f8fafc !important;
+}
+
+[data-theme="light"] .dark\:border-gray-600,
+[data-theme="light"] .dark\:border-gray-700 {
+  border-color: #d1d5db !important;
+}
+
+[data-theme="light"] .dark\:text-white {
+  color: #1f2937 !important;
+}
+
+[data-theme="light"] .dark\:text-gray-200 {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .dark\:text-gray-300 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .dark\:text-gray-400 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .dark\:text-teal-400 {
+  color: #0d9488 !important;
+}
+
+/* Override Tailwind gray utilities for better readability in light mode */
+[data-theme="light"] .text-gray-300 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .text-gray-400 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .text-gray-500 {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .text-gray-600 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .text-gray-700 {
+  color: #334155 !important;
+}
+
+/* Fix emerald/green colors for better readability in light mode */
+[data-theme="light"] .text-emerald-400,
+[data-theme="light"] .text-emerald-500 {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .bg-emerald-500\/10 {
+  background-color: rgba(5, 150, 105, 0.15) !important;
+}
+
+[data-theme="light"] .border-emerald-500\/30 {
+  border-color: rgba(5, 150, 105, 0.4) !important;
+}
+
+/* Fix purple colors for better contrast */
+[data-theme="light"] .text-purple-400,
+[data-theme="light"] .text-purple-500 {
+  color: #7c3aed !important;
+}
+
+[data-theme="light"] .text-purple-300 {
+  color: #6d28d9 !important;
+}
+
+[data-theme="light"] .bg-purple-500\/20 {
+  background-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+[data-theme="light"] .border-purple-500\/50 {
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+/* Fix orange colors */
+[data-theme="light"] .text-orange-500 {
+  color: #ea580c !important;
+}
+
+[data-theme="light"] .text-orange-300 {
+  color: #c2410c !important;
+}
+
+[data-theme="light"] .bg-orange-500\/20 {
+  background-color: rgba(234, 88, 12, 0.15) !important;
+}
+
+[data-theme="light"] .border-orange-500\/50 {
+  border-color: rgba(234, 88, 12, 0.3) !important;
+}
+
+/* Fix indigo colors */
+[data-theme="light"] .text-indigo-300,
+[data-theme="light"] .text-indigo-400 {
+  color: #4f46e5 !important;
+}
+
+[data-theme="light"] .bg-indigo-500\/20 {
+  background-color: rgba(79, 70, 229, 0.15) !important;
+}
+
+[data-theme="light"] .border-indigo-500\/50 {
+  border-color: rgba(79, 70, 229, 0.3) !important;
+}
+
+/* Better emerald contrast */
+[data-theme="light"] .text-emerald-300 {
+  color: #047857 !important;
+}
+
+[data-theme="light"] .bg-emerald-600\/20 {
+  background-color: rgba(4, 120, 87, 0.15) !important;
+}
+
+[data-theme="light"] .border-emerald-600\/50 {
+  border-color: rgba(4, 120, 87, 0.3) !important;
+}
+
+/* Ensure small text is always readable */
+[data-theme="light"] .text-xs {
+  font-weight: 500;
+}
+
+/* Ensure readable text on cards and sections */
+[data-theme="light"] p,
+[data-theme="light"] span:not([class*="text-"]):not([class*="bg-"]),
+[data-theme="light"] div:not([class*="text-"]):not([class*="bg-"]) {
+  color: var(--foreground);
+}
+
+/* Override white text in light mode */
+[data-theme="light"] .text-white {
+  color: var(--foreground) !important;
+}
+
+/* Ensure all headings are always visible */
+[data-theme="light"] h1:not([class*="text-transparent"]),
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: var(--foreground) !important;
+}
+
+/* Fix low contrast description text */
+[data-theme="light"] .text-gray-300,
+[data-theme="light"] .text-gray-400,
+[data-theme="light"] .opacity-80,
+[data-theme="light"] .opacity-70 {
+  opacity: 1;
+}
+
+/* Removed problematic background overrides that conflict with Tailwind dark: modifiers */
+
+/* Ensure borders are visible in light mode */
+[data-theme="light"] .border-gray-600,
+[data-theme="light"] .border-gray-700,
+[data-theme="light"] .border-gray-800 {
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .border-purple-500\/50 {
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+[data-theme="light"] .border-t {
+  border-top-color: var(--border);
+}
+
+/* Fix muted/secondary text to be darker in light mode */
+[data-theme="light"] .text-gray-500 {
+  color: #64748b !important;
+}
+
+/* Navigation link hover effect */
+.nav-link:hover {
+  color: var(--primary) !important;
+}
+
+/* Resume link hover effects */
+.resume-link-primary:hover {
+  opacity: 0.8;
+}
+
+.resume-link-secondary:hover {
+  opacity: 0.8;
+}
+
+.resume-link-accent:hover {
+  opacity: 0.8;
+}
+
+/* Hero button hover effects */
+.hero-button-primary:hover {
+  border-color: var(--primary);
+  background-color: rgba(139, 92, 246, 0.1); /* Fallback */
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+.hero-button-secondary:hover {
+  border-color: var(--secondary);
+  background-color: rgba(15, 156, 112, 0.1); /* Fallback */
+  background-color: color-mix(in srgb, var(--secondary) 10%, transparent);
+}
+
+/* Social Link Colors */
+.social-link-primary:hover {
+  color: var(--primary) !important;
+}
+
+.social-link-secondary:hover {
+  color: var(--secondary) !important;
+}
+
+.social-link-accent:hover {
+  color: var(--accent) !important;
+}
+
+/* Project card hover effects */
+.group:hover .group-hover\:text-primary {
+  color: var(--primary) !important;
+}
+
+/* Contact form focus styles */
+.contact-input:focus {
+  --tw-ring-color: var(--primary);
+  border-color: var(--primary);
+}

@@ -1,0 +1,88 @@
+import Link from "next/link";
+import { projects, featuredConfig } from '@/data/cms-config';
+import ProjectImage from './project-image';
+
+// Get featured projects from CMS data
+const featuredProjects = projects
+  .filter(project => project.featured && !project.hidden)
+  .slice(0, featuredConfig.maxFeaturedProjects)
+  .map(project => ({
+    title: project.title,
+    description: project.description,
+    image: project.image,
+    link: `/projects/${project.id}`, // Always link to project page first
+    tags: project.tags
+  }));
+
+export function FeaturedProjects() {
+  return (
+    <section className="py-20 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">Featured Projects</h2>
+          <p className="text-xl text-gray-700 dark:text-gray-400 mb-8">Professional and personal work showcasing data-driven solutions</p>
+          <div className="w-24 h-1 mx-auto" style={{ backgroundColor: 'var(--primary)' }}></div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {featuredProjects.map((project, index) => (
+            <Link 
+              key={index}
+              href={project.link}
+              className="group bg-white dark:bg-gray-800/50 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700 hover:border-[color-mix(in_srgb,var(--primary)_50%,transparent)] transition-all duration-500 ease-out hover:shadow-xl hover:transform hover:scale-[1.02] block cursor-pointer"
+            >
+              <div className="relative overflow-hidden">
+                <ProjectImage
+                  src={project.image}
+                  alt={project.title}
+                  width={600}
+                  height={300}
+                  className="w-full h-64 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out"></div>
+              </div>
+              
+              <div className="p-6">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {project.tags.map((tag, tagIndex) => (
+                    <span 
+                      key={tagIndex}
+                      className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-full border border-gray-300 dark:border-gray-600"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-[color-mix(in_srgb,var(--primary)_80%,white)] mb-3 transition-colors duration-300 ease-out">
+                  {project.title}
+                </h3>
+                
+                <p className="text-gray-700 dark:text-gray-400 mb-4 leading-relaxed">
+                  {project.description}
+                </p>
+                
+                <div className="inline-flex items-center gap-2 font-semibold transition-all duration-300 ease-out text-gray-900 dark:text-teal-400">
+                  Read More
+                  <svg className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link
+            href="/projects"
+            className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-white hover:opacity-90"
+            style={{ backgroundColor: 'var(--primary)' }}
+          >
+            View All Projects
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
