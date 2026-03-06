@@ -109,6 +109,6 @@ DEPLOYMENT.md
 PROJECT_OVERVIEW.md
 .claude/
 .continue/
-.github/
+# .github/
 quick_tools/tic_tac_toe.py
 coursera-study-assistant
