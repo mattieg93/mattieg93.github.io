@@ -486,7 +486,7 @@ export default function CMSAdmin() {
                   value={project.githubUrl}
                   onChange={(e) => updateField('githubUrl', e.target.value)}
                   className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
-                  placeholder="https://github.com/mattgraham93/..."
+                  placeholder="https://github.com/mattieg93/..."
                 />
               </div>
 

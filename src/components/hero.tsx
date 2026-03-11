@@ -24,8 +24,11 @@ export function Hero() {
                 priority
               />
             </div>
-            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 px-4 py-2 rounded-lg border border-gray-700">
-              <span className="text-sm text-gray-300">Mattie #1843</span>
+            <div
+              className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg border"
+              style={{ backgroundColor: 'var(--pill-bg)', borderColor: 'var(--pill-border)' }}
+            >
+              <span className="text-sm" style={{ color: 'var(--pill-fg)' }}>Mattie #1843</span>
             </div>
           </div>
         </div>
@@ -81,9 +84,9 @@ export function Hero() {
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
               I build
-              <span className="font-semibold" style={{ color: 'var(--primary)' }}> AI-powered data systems</span> -
-              from RAG pipelines and computer vision to full-stack analytics platforms.
-              I turn messy data and manual processes into
+              <span className="font-semibold" style={{ color: 'var(--primary)' }}> AI-powered data platforms</span> -
+              from experimentation frameworks and forecasting models to self-serve analytics systems.
+              I turn ambiguous business questions into
               <span className="font-semibold" style={{ color: 'var(--secondary)' }}> automated, production-ready tools</span> that
               deliver measurable outcomes.
             </p>
@@ -91,7 +94,7 @@ export function Hero() {
 
           {/* Outcome pills */}
           <div className="flex flex-wrap gap-2 mb-8 justify-center lg:justify-start">
-            {['$9B+ impact quantified', '4 AI production models', '12+ ML production models', '60% study time saved', '1-month production MVPs', '110K+ MTG cards analyzed'].map((stat) => (
+            {['$9B+ business impact', '37% SLA improvement', '160+ hours/mo automated', '400+ MAU platform', '95% issue reduction', '12+ production models'].map((stat) => (
               <span
                 key={stat}
                 className="text-xs px-3 py-1 rounded-full border text-gray-300"
@@ -105,10 +108,8 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Link
               href="/projects"
-              className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-white"
-              style={{
-                backgroundColor: 'var(--primary)'
-              }}
+              className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              style={{ backgroundColor: 'var(--primary)', color: 'white' }}
             >
               See My Work
             </Link>

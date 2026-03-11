@@ -4,14 +4,14 @@
  *
  * Required env vars (add to .env.local and as GitHub Actions secrets):
  *   NEXT_PUBLIC_GITHUB_TOKEN  – Personal Access Token with repo:contents write scope
- *   NEXT_PUBLIC_GITHUB_OWNER  – GitHub username (default: mattgraham93)
- *   NEXT_PUBLIC_GITHUB_REPO   – Repo name (default: mattgraham93.github.io)
+ *   NEXT_PUBLIC_GITHUB_OWNER  – GitHub username (default: mattieg93)
+ *   NEXT_PUBLIC_GITHUB_REPO   – Repo name (default: mattieg93.github.io)
  */
 
 import type { Project } from '@/data/cms-config';
 
-const OWNER  = process.env.NEXT_PUBLIC_GITHUB_OWNER ?? 'mattgraham93';
-const REPO   = process.env.NEXT_PUBLIC_GITHUB_REPO  ?? 'mattgraham93.github.io';
+const OWNER  = process.env.NEXT_PUBLIC_GITHUB_OWNER ?? 'mattieg93';
+const REPO   = process.env.NEXT_PUBLIC_GITHUB_REPO  ?? 'mattieg93.github.io';
 const PATH   = 'src/data/projects-overrides.json';
 const API    = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
 

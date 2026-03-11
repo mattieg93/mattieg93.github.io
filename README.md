@@ -61,7 +61,7 @@ A browser automation agent that watches Coursera lecture videos and drafts struc
 ## Project Structure
 
 ```
-mattgraham93.github.io/
+mattieg93.github.io/
 ├── src/
 │   ├── app/
 │   │   ├── about/          # My story, background, and technical expertise
@@ -106,7 +106,7 @@ Each project entry carries:
   category: 'professional' | 'academic' | 'personal',
   technologies: ['Python', 'LangChain', 'FastAPI'],
   image: '/images/projects/my-project.png',
-  githubUrl: 'https://github.com/mattgraham93/repo',
+  githubUrl: 'https://github.com/mattieg93/repo',
   liveUrl: 'https://example.com',
   featured: true,
   date: '2025-01-15',
@@ -140,4 +140,4 @@ I chose each of these deliberately:
 
 ---
 
-**Mattie Graham** - AI & Analytics Engineer | [mattgraham93.github.io](https://mattieg93.github.io)
+**Mattie Graham** - AI & Analytics Engineer | [mattieg93.github.io](https://mattieg93.github.io)

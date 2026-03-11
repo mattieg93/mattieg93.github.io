@@ -32,10 +32,11 @@ export function ResumeHeader() {
 
       <div className="max-w-3xl mx-auto mb-8">
         <p className="text-lg text-gray-400 leading-relaxed">
-          AI &amp; Analytics Engineer with 9+ years supporting major tech orgs (Meta, Microsoft) - designing
-          and shipping self-serve, AI-powered data products that give every team direct access to
-          clear, confident decisions. Automated 160+ analyst hours per month, drove $9B+ in total business
-          impact ($2B saved, $7B assets managed), and maintained governance across 200+ reports.
+          AI &amp; Analytics Engineer with 9+ years building ML/analytics infrastructure, experimentation
+          frameworks, and self-serve data products for major tech orgs (Meta, Microsoft) through CBRE. Automated
+          160+ analyst hours per month, drove $9B+ in total business impact ($2B saved, $7B assets managed),
+          and delivered a self-serve analytics platform serving 400+ monthly active users ranked as a top-10
+          internal data product.
         </p>
       </div>
 
@@ -63,7 +64,7 @@ export function ResumeHeader() {
           LinkedIn
         </a>
         <a 
-          href="https://github.com/mattgraham93" 
+          href="https://github.com/mattieg93" 
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 transition-colors resume-link-primary"

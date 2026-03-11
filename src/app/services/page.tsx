@@ -125,7 +125,7 @@ const process = [
 const stats = [
   { value: "$9B+", label: "Total business impact" },
   { value: "160+", label: "Analyst hours/mo automated" },
-  { value: "12+", label: "ML models in production" },
+  { value: "400+", label: "Platform MAU at Meta" },
   { value: "9+", label: "Years in the field" },
 ];
 

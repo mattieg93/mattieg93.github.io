@@ -153,7 +153,7 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold text-white mb-6">Professional Interests & Innovation</h2>
               <div className="grid md:grid-cols-2 gap-6 mb-8">
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
-                  <div className="text-2xl mb-3">🤖</div>
+                  {/* <div className="text-2xl mb-3">🤖</div> */}
                   <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--primary)' }}>AI as a Product</h3>
                   <p className="text-gray-300 text-sm leading-relaxed">
                     Running RAG and agentic prototypes is one thing - shipping them responsibly is another. I design
@@ -163,7 +163,7 @@ export default function AboutPage() {
                 </div>
 
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
-                  <div className="text-2xl mb-3">🔊</div>
+                  {/* <div className="text-2xl mb-3">🔊</div> */}
                   <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--secondary)' }}>Data + Creativity</h3>
                   <p className="text-gray-300 text-sm leading-relaxed">
                     Creator of Musical Weather - a system that combines Spotify data with regional weather patterns
@@ -173,7 +173,7 @@ export default function AboutPage() {
                 </div>
 
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
-                  <div className="text-2xl mb-3">🌱</div>
+                  {/* <div className="text-2xl mb-3">🌱</div> */}
                   <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--secondary)' }}>Mentorship & Growth</h3>
                   <p className="text-gray-300 text-sm leading-relaxed">
                     Committed to nurturing the next generation of data professionals. I want people to understand
@@ -183,7 +183,7 @@ export default function AboutPage() {
                 </div>
 
                 <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all duration-300">
-                  <div className="text-2xl mb-3">🇪🇸</div>
+                  {/* <div className="text-2xl mb-3">🇪🇸</div> */}
                   <h3 className="text-lg font-semibold mb-3" style={{ color: 'var(--primary)' }}>Language Learning</h3>
                   <p className="text-gray-300 text-sm leading-relaxed">
                     Currently learning Spanish on Duolingo - Level 14 and genuinely enjoying it.
@@ -279,7 +279,7 @@ export default function AboutPage() {
                     LinkedIn
                   </a>
                   <a 
-                    href="https://github.com/mattgraham93" 
+                    href="https://github.com/mattieg93" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-white font-medium"

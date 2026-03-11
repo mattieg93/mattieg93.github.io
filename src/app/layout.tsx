@@ -6,7 +6,7 @@ import { ThemeWrapper } from "@/components/theme-wrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const siteUrl = "https://mattgraham93.github.io";
+const siteUrl = "https://mattieg93.github.io";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

@@ -1,59 +1,54 @@
 const experiences = [
   {
     title: "Senior Data Analyst",
-    company: "CBRE",
+    company: "CBRE · Client: Meta",
     location: "Seattle, Washington, United States",
-    period: "Sep 2022 - Present",
+    period: "Sep 2022 - Dec 2025",
     achievements: [
-      "Architected and implemented a scalable data warehouse for a multi-billion dollar global real estate portfolio, developing data models that fed and enhanced reporting visualizations for executive decision-makers.",
-      "Built and maintained analytics data pipelines to ingest, clean, and enrich data from various sources, utilizing Python and Airflow to automate global forecasting models and reduce monthly analyst workload by over 160 hours.",
-      "Designed and refactored the Facilities Usage Report (FUR) dashboard, a critical tool for operational compliance, by implementing a refactor to a single source of truth and adding new features that improved data accuracy and user understanding.",
-      "Pioneered a global location scoring methodology that leverages 32 features across 6 categories to identify optimal locations for Meta facilities, and designed the visualizations to clearly communicate this complex analysis.",
-      "Spearheaded data classification and permission management initiatives on Tableau Server as part of a company-wide privacy wave, ensuring data continuity and compliance for over 200 dashboards and reports.",
-      "Authored comprehensive dashboard documentation and curated a Tableau Guide for internal teams, enhancing staff engagement and establishing best practices for analytical reporting.",
-      "Collaborated with cross-functional stakeholders to drive rapid operational staffing decisions, transforming complex data into compelling narratives that guided real-time business strategy."
+      "Owned the experimentation framework for service tooling changes with imperfect randomization and delayed outcomes, delivering a 37% improvement in SLAs while monitoring UX and backlog guardrails.",
+      "Built geospatial and time-series forecasting models that automated ~160 analyst hours per month and guided $1.7B/year in portfolio decisions.",
+      "Architected a Hive data warehouse + self-serve analytics layer integrating 12+ production models from disparate systems, serving 50+ stakeholders and ~400 monthly active users; consistently ranked as a top-10 internal data product.",
+      "Implemented automated alerting for model health and account-level metrics, reducing user-reported issues by 95% and improving platform reliability for high-volume analytics workloads.",
+      "Authored ML/statistics best-practice documentation and mentored 15+ teammates on experimentation, causal inference, metric hygiene, and SQL, raising the organization's baseline for statistical rigor."
     ]
   },
   {
     title: "Senior Business Analyst",
-    company: "CBRE",
+    company: "CBRE · Client: Microsoft",
     location: "Redmond, Washington, United States",
     period: "Dec 2020 - Sep 2022",
     achievements: [
-      "Developed and implemented BI solutions to store, normalize, and report on Diverse Supplier data, improving reporting and data accessibility by 75%.",
-      "Led the development of an automated reporting system to track human behavior and provide visual insights to executive leadership, serving as a primary source for strategic decision-making.",
-      "Established project delivery governance from scope definition through maintenance, managed in Azure DevOps, driving alignment over $7B+ in program value.",
-      "Onboarded, trained, and mentored team members to become leaders."
+      "Built end-to-end analytics solutions for Diverse Supplier and human-behavior data, improving reporting quality by 75% and enabling trustworthy decision-making across $7B+ programs.",
+      "Designed governed Azure SQL warehouses unifying data from 5+ sources (PR, PO, invoicing, payments, accruals, forecasting), supporting executive dashboards and recurring analyses.",
+      "Defined measurement frameworks, success metrics, and guardrails in Azure DevOps, standardizing health dashboards and enabling cross-functional teams to reason about performance consistently.",
+      "Led technical mentorship for junior analysts on SQL optimization, statistical methodology, and dashboard design for production usage."
     ]
   },
   {
     title: "Program Manager - Global Digital Transformation",
-    company: "CBRE",
+    company: "CBRE · Client: Microsoft",
     location: "Redmond, Washington, United States", 
     period: "Apr 2020 - Dec 2020",
     achievements: [
-      "Led a global digital transformation program, generating $15M in new business.",
+      "Led analytics-driven transformation initiatives that generated $15M in new business.",
       "Reduced costs by $500K annually by insourcing cloud consulting resources.",
-      "Increased project velocity by 150% by implementing global communication and collaboration practices.",
-      "Standardized global data collection and implemented cloud-computed reporting, improving efficiency and accuracy.",
-      "Developed and documented deep technologies and project governance processes and tools, aligning international stakeholders and streamlining operations.",
-      "Created and maintained global web-based environments for data and information mining, supporting continuous learning and improvement."
+      "Standardized global data collection and reporting processes, increasing project velocity by 150% and improving cross-team communication.",
+      "Developed and documented deep technologies and project governance processes, aligning international stakeholders and streamlining operations."
     ]
   },
   {
     title: "Business Systems Analyst - Campus Modernization",
-    company: "CBRE",
+    company: "CBRE · Client: Microsoft",
     location: "Redmond, Washington, United States",
     period: "Mar 2019 - Apr 2020",
     achievements: [
-      "Designed and built scalable, governed enterprise data models and data warehouses hosted on Microsoft Azure SQL, supporting over 500 users and $5B in annual budgets.",
-      "Developed automated bug reporting and training materials, reducing user issues by 95% and improving team productivity by 4x.",
+      "Designed Azure SQL warehouses supporting 500+ users and $5B in annual budgets, reducing user-reported issues by 95% and quadrupling analyst productivity through observability and documentation.",
       "Led the design and development of front-to-back-end web applications, streamlining business processes and improving user satisfaction."
     ]
   },
   {
     title: "Associate Project Manager - Campus Modernization",
-    company: "CBRE",
+    company: "CBRE · Client: Microsoft",
     location: "Redmond, WA, United States",
     period: "May 2018 - Mar 2019",
     achievements: [

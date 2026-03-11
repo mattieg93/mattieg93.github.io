@@ -89,7 +89,7 @@ const baseProjects: Project[] = [
     category: 'personal',
     technologies: ['React', 'FastAPI', 'Python', 'Tailwind CSS', 'Vite', 'Ollama'],
     image: '/assets/images/ollama_manager.png',
-    githubUrl: 'https://github.com/mattgraham93/mattgraham93.github.io/tree/main/quick_tools/ollama_manager',
+    githubUrl: 'https://github.com/mattieg93/mattieg93.github.io/tree/main/quick_tools/ollama_manager',
     impact: {
       metric: 'Developer Experience',
       value: 'Zero-terminal AI model management'
@@ -100,16 +100,16 @@ const baseProjects: Project[] = [
   },
   {
     id: 'ai-study-assistant',
-    title: 'AI Study Assistant: Built with AI, Powered by AI',
-    description: 'A two-part intelligent study system combining computer vision, RAG, and LLM automation - built using AI-assisted development from planning through implementation. Cuts study time by 60% and demonstrates both how to develop AI systems and how to use AI as a development force multiplier.',
+    title: 'Coursera Study Assistant: A Free AI Tutor for Online Learners',
+    description: 'A unified Streamlit application that merges two independent systems — a quiz-answering study tool and a Coursera automation agent — into one holistic learning platform. Screenshot a quiz for instant AI answers, paste a lecture URL for auto-generated notes, and expand your knowledge base on the fly. Runs entirely locally with zero API costs.',
     longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">Building AI with AI: A Study Assistant That Pays for Itself</h2>
+      <h2 class="text-2xl font-bold text-white mb-4">Making Technical Learning Accessible — For Free</h2>
 
-      <div class="bg-gradient-to-r from-purple-500/20 to-orange-500/20 rounded-lg p-6 border border-purple-500/30 mb-8 text-center">
-        <p class="text-lg text-purple-200 font-medium mb-4">Personal Tool → Production-Ready System</p>
-        <div class="grid md:grid-cols-3 gap-4">
+      <div class="bg-gradient-to-r from-purple-500/20 to-teal-500/20 rounded-lg p-6 border border-purple-500/30 mb-8 text-center">
+        <p class="text-lg text-purple-200 font-medium mb-4">Two Disconnected Tools → One Holistic Study Platform</p>
+        <div class="grid md:grid-cols-4 gap-4">
           <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-orange-500 mb-2">60%</div>
+            <div class="text-2xl font-bold text-teal-400 mb-2">60%</div>
             <div class="text-sm text-gray-300">Study time saved per session</div>
           </div>
           <div class="bg-gray-800/50 rounded-lg p-4">
@@ -117,36 +117,65 @@ const baseProjects: Project[] = [
             <div class="text-sm text-gray-300">OCR accuracy via Apple Vision</div>
           </div>
           <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-emerald-400 mb-2">4 Weeks</div>
-            <div class="text-sm text-gray-300">Concept to production with AI-assisted dev</div>
+            <div class="text-2xl font-bold text-emerald-400 mb-2">$0</div>
+            <div class="text-sm text-gray-300">Infrastructure cost — fully local</div>
+          </div>
+          <div class="bg-gray-800/50 rounded-lg p-4">
+            <div class="text-2xl font-bold text-purple-400 mb-2">3 Tabs</div>
+            <div class="text-sm text-gray-300">Unified Streamlit interface</div>
           </div>
         </div>
       </div>
 
-      <h3 class="text-xl font-bold text-white mb-4">Two Projects in One</h3>
+      <h3 class="text-xl font-bold text-white mb-4">The Mission</h3>
 
-      <p class="mb-6">This project is a demonstration of a working philosophy: AI should be embedded in everything—both in the products I ship and in how I build them. The study assistant automates the most tedious parts of online learning. The development story shows how AI-assisted workflows compress timelines and reduce cost without sacrificing quality.</p>
+      <p class="mb-6">Online courses move fast. Technical jargon piles up. There's no pause button for confusion and no tutor on call at midnight. This project exists to change that — a <strong class="text-white">free, private, AI-powered tutor</strong> that runs entirely on your machine. No API costs, no subscriptions, no data leaving your laptop. Just a tool that watches lectures for you, takes structured notes, answers your questions from your own course materials, and gets smarter every time you correct it.</p>
 
-      <div class="grid md:grid-cols-2 gap-6 my-8">
-        <div class="bg-gradient-to-br from-purple-500/20 to-orange-500/20 rounded-lg p-6 border border-purple-500/30">
-          <h3 class="text-xl font-semibold text-purple-300 mb-3">The Product: What It Does</h3>
+      <h3 class="text-xl font-bold text-white mb-4">From Two Systems to One</h3>
+
+      <p class="mb-4 text-gray-300">This didn't start as one application. It began as two completely independent tools:</p>
+
+      <div class="grid md:grid-cols-2 gap-6 my-6">
+        <div class="bg-gradient-to-br from-purple-500/20 to-teal-500/20 rounded-lg p-6 border border-purple-500/30">
+          <h4 class="text-lg font-semibold text-purple-300 mb-3">System 1: Study Tool (CLI)</h4>
           <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Screenshot a quiz → instant AI-powered answers in 3-5 seconds</li>
-            <li>• Correct any wrong answers in plain English → system learns</li>
-            <li>• Paste a Coursera URL → structured notes appear in Google Docs</li>
-            <li>• RAG architecture answers from your own course materials</li>
-            <li>• Local LLM inference — no API costs, full privacy</li>
+            <li>• Screenshot a quiz → OCR → AI answers via RAG</li>
+            <li>• Correct wrong answers in natural language</li>
+            <li>• Vector database of course notes</li>
+            <li>• <strong class="text-gray-200">Problem:</strong> required manual note import</li>
           </ul>
         </div>
         <div class="bg-gradient-to-br from-emerald-600/20 to-purple-500/20 rounded-lg p-6 border border-emerald-600/30">
-          <h3 class="text-xl font-semibold text-emerald-300 mb-3">The Process: How I Built It</h3>
+          <h4 class="text-lg font-semibold text-emerald-300 mb-3">System 2: Coursera Agent (Terminal)</h4>
           <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• AI-assisted planning: architecture decisions, sprint scoping, tradeoff analysis</li>
-            <li>• Agentic implementation: AI wrote first-pass components, I reviewed and directed</li>
-            <li>• Iterative refinement: 5 focused sprints, each solving a specific user pain point</li>
-            <li>• Cost-conscious: local LLM + free-tier APIs kept infrastructure at $0</li>
-            <li>• ~2,700 lines of production Python in 4 weeks</li>
+            <li>• Playwright automates Coursera lecture navigation</li>
+            <li>• Extracts transcripts, summarises via Ollama</li>
+            <li>• Writes formatted notes to Google Docs</li>
+            <li>• <strong class="text-gray-200">Problem:</strong> notes stopped at Google Docs</li>
           </ul>
+        </div>
+      </div>
+
+      <p class="mb-6 text-gray-300">A note-taker that couldn't study. A study tool that couldn't take notes. The unification merged both into a <strong class="text-white">single Streamlit application</strong> with a shared backend bridge, closing the loop: agent writes notes → one-click sync pulls them into the vector database → study assistant answers from them.</p>
+
+      <h3 class="text-xl font-bold text-white mb-4">What It Does Now — 3-Tab Interface</h3>
+
+      <div class="space-y-4 mb-6">
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+          <h4 class="font-semibold text-purple-400 mb-2">Tab 1: Study Assistant</h4>
+          <p class="text-gray-300 text-sm">RAG-powered chat interface. Upload or paste a quiz screenshot → Apple Vision OCR extracts questions → AI answers from your own notes in 3–5 seconds. Tell it "Question 2 was wrong, answer is C" in plain English — it saves the correction to the knowledge base and gets smarter. Collapsible explanations show the reasoning behind each answer.</p>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+          <h4 class="font-semibold text-teal-400 mb-2">Tab 2: Coursera Agent</h4>
+          <p class="text-gray-300 text-sm">URL queue with "All videos" and "Readings" toggles. Add one or more Coursera lecture URLs, hit Process, and watch per-lecture progress bars advance through transcript capture → Ollama summarisation → Google Doc write. A "View Notes" link opens your doc in a new tab. After processing, a one-click "Sync notes to study database" prompt bridges agent output directly into the Study Assistant's knowledge base.</p>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+          <h4 class="font-semibold text-emerald-400 mb-2">Tab 3: Expand Knowledge Base</h4>
+          <p class="text-gray-300 text-sm">Dropdown selector: "Paste content" or "Upload document" with a single shared Title field. Add supplementary material — textbook excerpts, external articles, personal notes — and it's immediately searchable by the Study Assistant. Everything goes into the same vector database.</p>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+          <h4 class="font-semibold text-purple-400 mb-2">Sidebar</h4>
+          <p class="text-gray-300 text-sm">View Notes link (opens Google Doc), Sync from Google Doc button, Clear Chat History, and all agent settings (Doc ID, Ollama model, credentials status, setup prerequisites) — everything in one place without cluttering the main workspace.</p>
         </div>
       </div>
 
@@ -155,44 +184,55 @@ const baseProjects: Project[] = [
       <div class="space-y-4 mb-6">
         <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
           <h4 class="font-semibold text-purple-400 mb-2">Computer Vision Pipeline</h4>
-          <p class="text-gray-300 text-sm">Apple Vision Framework (VNRecognizeTextRequest) achieves 100% extraction accuracy on quiz screenshots—university-grade OCR without any training data. Custom preprocessing applies CLAHE contrast enhancement, unsharp mask sharpening, bilateral denoising, and Otsu binarization before the text request, handling glare, shadows, and low-res captures. EasyOCR provides cross-platform fallback for non-macOS environments.</p>
+          <p class="text-gray-300 text-sm">Apple Vision Framework (VNRecognizeTextRequest) achieves 100% extraction accuracy on quiz screenshots — university-grade OCR without any training data. Custom preprocessing applies contrast enhancement, sharpening, denoising, and auto-inversion for dark backgrounds. EasyOCR provides cross-platform fallback. Multi-format parser handles A/B/C/D letters, bullet points (•, -, *, ·), and numbered lists.</p>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
           <h4 class="font-semibold text-purple-400 mb-2">RAG-Powered Q&A</h4>
-          <p class="text-gray-300 text-sm">ChromaDB vector store with sentence-transformer embeddings enables semantic search across imported lecture notes, quiz corrections, and course materials. Hybrid retrieval combines cosine similarity with recency bias and source diversity to prevent single-source hallucination. Query augmentation adds context hints before retrieval, meaningfully improving answer relevance.</p>
+          <p class="text-gray-300 text-sm">Pickle-based vector store with sentence-transformer (all-MiniLM-L6-v2) embeddings. Cosine similarity search with source diversity prevents single-source hallucination. Deduplication by title hash on add. Query augmentation adds context hints before retrieval. Local Ollama inference generates answers — no API calls, full privacy.</p>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-orange-500 mb-2">Conversational Correction Loop</h4>
-          <p class="text-gray-300 text-sm">A finite state machine parses quiz options across A/B/C/D, bullet (•, -, *, ·, ∙), and numbered list formats. NLP intent recognition detects correction phrases ("Q2 was wrong, answer is C") with 90%+ accuracy using regex patterns tested against 20+ natural language variations. Each correction is stored with full question context and reingested into the vector store, creating compounding accuracy gains over time.</p>
+          <h4 class="font-semibold text-teal-400 mb-2">Conversational Correction Loop</h4>
+          <p class="text-gray-300 text-sm">NLP intent recognition detects correction phrases ("Q2 was wrong, answer is C") with 90%+ accuracy across 20+ natural language variations. Each correction is stored with full question context and reingested into the vector store — compounding accuracy gains over time.</p>
         </div>
         <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
           <h4 class="font-semibold text-emerald-400 mb-2">Coursera Automation Agent</h4>
-          <p class="text-gray-300 text-sm">Playwright headless browser extracts video transcripts via DOM scraping with exponential-backoff retry logic. Ollama (granite3.2:8b) generates structured lecture notes with a prompt engineered to guarantee consistent title formatting. Google Docs API writes formatted output with headings, bullets, and emphasis—saving 10-15 minutes per lecture with zero manual intervention.</p>
+          <p class="text-gray-300 text-sm">Playwright + CDP on localhost:9222 extracts video transcripts with exponential-backoff retry logic. Ollama (granite3.2:8b) generates structured notes with engineered "FIRST LINE" prompt guaranteeing consistent title formatting. Google Docs API writes headings, bullets, and emphasis. Real-time subprocess streaming (python -u + PYTHONUNBUFFERED=1 + bufsize=1) delivers line-by-line progress to the Streamlit UI.</p>
+        </div>
+        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+          <h4 class="font-semibold text-purple-400 mb-2">Backend Bridge (Unification Layer)</h4>
+          <p class="text-gray-300 text-sm">backend.py bridges two previously independent systems: adds study_system and coursera_agent to sys.path, re-exports the study system API, launches the agent as a subprocess with streamed output, and loads python-dotenv configuration. CSA_UI_MODE env var auto-confirms all interactive prompts so the subprocess never hangs. One import, one entry point, full integration.</p>
         </div>
       </div>
 
       <div class="bg-gradient-to-r from-purple-500/20 to-emerald-600/20 rounded-lg p-6 border border-purple-500/30 my-8">
-        <h3 class="text-lg font-semibold text-purple-300 mb-4">The AI-Assisted Development Story</h3>
-        <p class="text-gray-300 text-sm mb-4">Building this system was itself an exercise in using AI efficiently. Rather than writing boilerplate from scratch, I used AI as a planning partner and implementation accelerator throughout:</p>
+        <h3 class="text-lg font-semibold text-purple-300 mb-4">Challenges Solved Along the Way</h3>
         <div class="grid md:grid-cols-2 gap-4">
           <ul class="space-y-2 text-gray-300 text-sm">
             <li class="flex items-start gap-3">
               <span class="w-2 h-2 bg-purple-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Architecture planning:</strong> Evaluated RAG vs fine-tuning, chose ChromaDB over alternatives based on AI-assisted cost/performance analysis</span>
+              <span><strong class="text-white">Subprocess EOFError:</strong> Agent input() calls hung in non-interactive mode. Added CSA_UI_MODE to auto-confirm all prompts.</span>
             </li>
             <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-orange-500 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Sprint scoping:</strong> Each sprint identified by AI review of what was causing the most user friction</span>
+              <span class="w-2 h-2 bg-teal-400 rounded-full mt-1.5 shrink-0"></span>
+              <span><strong class="text-white">Credentials false positive:</strong> Frontend checked wrong path for credentials.json. Aligned to same Path(__file__).parent resolution as agent.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-2 h-2 bg-emerald-400 rounded-full mt-1.5 shrink-0"></span>
+              <span><strong class="text-white">Google Doc iframe blocked:</strong> Sign-in wall killed embedded view. Replaced with link button that opens in authenticated browser tab.</span>
             </li>
           </ul>
           <ul class="space-y-2 text-gray-300 text-sm">
             <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-emerald-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Agentic implementation:</strong> AI generated first-pass components; I directed, reviewed, and integrated—cutting implementation time by 50%+</span>
+              <span class="w-2 h-2 bg-purple-400 rounded-full mt-1.5 shrink-0"></span>
+              <span><strong class="text-white">Buffered stdout:</strong> Agent output arrived in chunks. Triple fix: python -u + PYTHONUNBUFFERED=1 + bufsize=1 for real-time streaming.</span>
             </li>
             <li class="flex items-start gap-3">
               <span class="w-2 h-2 bg-purple-500 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Cost discipline:</strong> Local Ollama inference + free-tier APIs = $0 infrastructure cost throughout development and production</span>
+              <span><strong class="text-white">EasyOCR at 85%:</strong> Replaced with Apple Vision Framework — 100% accuracy, zero training data required.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-2 h-2 bg-teal-400 rounded-full mt-1.5 shrink-0"></span>
+              <span><strong class="text-white">Inconsistent LLM titles:</strong> Engineered "FIRST LINE" prompt + URL-slug fallback for 100% consistent note formatting.</span>
             </li>
           </ul>
         </div>
@@ -206,7 +246,7 @@ const baseProjects: Project[] = [
           <p class="text-gray-300 text-sm"><strong class="text-white">Answer Display:</strong> Rebuilt UI to show clean question headings, highlighted answers, and explanations — eliminating debug noise from initial prototype.</p>
         </div>
         <div class="flex gap-4 items-start">
-          <span class="text-orange-500 font-bold text-sm shrink-0 mt-0.5">Sprint 2</span>
+          <span class="text-teal-400 font-bold text-sm shrink-0 mt-0.5">Sprint 2</span>
           <p class="text-gray-300 text-sm"><strong class="text-white">Apple Vision Integration:</strong> EasyOCR was at 85% accuracy. Integrated Apple's native Vision framework — jumped to 100%, eliminating parsing failures entirely.</p>
         </div>
         <div class="flex gap-4 items-start">
@@ -218,37 +258,38 @@ const baseProjects: Project[] = [
           <p class="text-gray-300 text-sm"><strong class="text-white">Coursera Note Consistency:</strong> LLM titles were inconsistent. Engineered "FIRST LINE" prompt instruction + validation fallback — 100% consistent formatting across all generated notes.</p>
         </div>
         <div class="flex gap-4 items-start">
-          <span class="text-orange-500 font-bold text-sm shrink-0 mt-0.5">Sprint 5</span>
+          <span class="text-purple-400 font-bold text-sm shrink-0 mt-0.5">Sprint 5</span>
           <p class="text-gray-300 text-sm"><strong class="text-white">Correction Feedback Loop:</strong> No way to improve wrong answers. Implemented NLP correction parser — users now improve the system through natural conversation.</p>
+        </div>
+        <div class="flex gap-4 items-start">
+          <span class="text-teal-400 font-bold text-sm shrink-0 mt-0.5">Sprint 6</span>
+          <p class="text-gray-300 text-sm"><strong class="text-white">Unified Streamlit UI:</strong> Merged two independent systems into one 3-tab application. Built backend bridge, .env config system, sidebar settings panel, per-lecture progress bars, Expand Knowledge Base tab, post-run sync prompt, and Plus Jakarta Sans typography. Two disconnected CLI tools became one holistic study platform.</p>
         </div>
       </div>
 
-      <p class="mb-6">This project reflects how I approach technical work: identify the real problem, pick tools that solve it efficiently, use every resource available (including AI) to compress timelines, and iterate until the system actually does what it's supposed to do. The study assistant is live and in daily use — it's made a measurable difference to my own coursework while producing a portfolio piece that demonstrates stack breadth and development philosophy simultaneously.</p>
+      <p class="mb-6">This project reflects a working philosophy: identify the real problem, pick tools that solve it efficiently, use every resource available (including AI) to compress timelines, and iterate until the system actually does what it's supposed to do. The assistant is live and in daily use — a free tutor that makes a measurable difference for anyone struggling with the pace of technical online courses.</p>
 
       <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-        <p class="text-gray-300 text-sm text-center mb-3">Both components are open source and available in the project repository:</p>
+        <p class="text-gray-300 text-sm text-center mb-3">The unified project is open source:</p>
         <div class="flex flex-wrap justify-center gap-4">
-          <a href="https://github.com/mattgraham93/mattgraham93.github.io/tree/main/quick_tools/study_system" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium text-white transition-colors">
+          <a href="https://github.com/mattieg93/coursera-study-assistant" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors" style="color: white;">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            Study System (frontend)
-          </a>
-          <a href="https://github.com/mattgraham93/mattgraham93.github.io/tree/main/quick_tools/coursera_agent" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium text-white transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            Coursera Agent (backend)
+            Coursera Study Assistant
           </a>
         </div>
       </div>
     </div>`,
     category: 'personal',
-    technologies: ['Python', 'Apple Vision Framework', 'EasyOCR', 'OpenCV', 'Ollama', 'ChromaDB', 'RAG', 'Sentence Transformers', 'Streamlit', 'Playwright', 'Google Docs API', 'OAuth 2.0', 'Asyncio'],
+    technologies: ['Python', 'Streamlit', 'Apple Vision Framework', 'EasyOCR', 'OpenCV', 'Ollama', 'Sentence Transformers', 'RAG', 'Playwright', 'Google Docs API', 'OAuth 2.0', 'python-dotenv', 'NumPy', 'Pillow', 'Asyncio'],
     image: '/assets/images/study-system.png',
+    githubUrl: 'https://github.com/mattieg93/coursera-study-assistant',
     impact: {
       metric: 'Study Time Saved',
       value: '60%'
     },
-    tags: ['AI', 'Python', 'Computer Vision', 'RAG', 'NLP', 'Automation', 'Education Technology', 'AI-Assisted Development', 'Local LLM', 'Streamlit', 'Ollama'],
+    tags: ['AI', 'Python', 'Computer Vision', 'RAG', 'NLP', 'Automation', 'Education Technology', 'AI-Assisted Development', 'Local LLM', 'Streamlit', 'Ollama', 'Free Tutor'],
     featured: true,
-    date: '2026-02-22'
+    date: '2026-03-10'
   },
   {
     id: 'queer-data-network',
@@ -408,7 +449,7 @@ const baseProjects: Project[] = [
     category: 'personal',
     technologies: ['React', 'Azure Functions', 'Python', 'MongoDB', 'Azure Cosmos DB', 'JWT Authentication', 'REST API', 'Azure Static Web Apps', 'GitHub Actions', 'Quill.js', 'DOMPurify', 'bcrypt'],
     image: '/assets/images/qdn_home.png',
-    githubUrl: 'https://github.com/mattgraham93/qdn_core',
+    githubUrl: 'https://github.com/mattieg93/qdn_core',
     demoUrl: 'https://queerdatanetwork.com',
     impact: {
       metric: 'Timeline',
@@ -526,7 +567,7 @@ const baseProjects: Project[] = [
     category: 'personal',
     technologies: ['Python', 'Causal Inference', 'Time Series Analysis', 'Machine Learning', 'Prophet', 'XGBoost', 'Statistical Modeling', 'Economic Analysis', 'Interactive Dashboards', 'Policy Analysis'],
     image: '/assets/images/shutdown-skies.png',
-    githubUrl: 'https://github.com/mattgraham93/shutdown-skies',
+    githubUrl: 'https://github.com/mattieg93/shutdown-skies',
     demoUrl: 'https://shutdownskies.streamlit.app/',
     impact: {
       metric: 'Economic Impact Quantified',
@@ -681,7 +722,7 @@ const baseProjects: Project[] = [
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
             </svg>
           </a>
-          <a href="https://github.com/mattgraham93/mtgecorec" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105">
+          <a href="https://github.com/mattieg93/mtgecorec" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105" style="color: white;">
             📚 View Source Code
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -694,7 +735,7 @@ const baseProjects: Project[] = [
     technologies: ['Python Flask', 'Azure Cosmos DB', 'Perplexity AI', 'Bootstrap 5', 'Chart.js', 'Scryfall API', 'Azure App Service', 'Authentication Systems', 'Progressive Web Apps', 'Infrastructure as Code'],
     image: '/assets/images/mtg-ecorec-visualizations.png',
     demoUrl: 'https://mtgecorec-b9fkfngtawggfpbw.westus3-01.azurewebsites.net/',
-    githubUrl: 'https://github.com/mattgraham93/mtgecorec',
+    githubUrl: 'https://github.com/mattieg93/mtgecorec',
     impact: {
       metric: 'Cards Analyzed',
       value: '110,000+'
@@ -713,13 +754,13 @@ const baseProjects: Project[] = [
       <div class="bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-lg p-6 border border-blue-500/30 mb-8 text-center">
         <p class="text-lg text-blue-200 font-medium mb-4">🎵 Experience Music Through Weather Patterns</p>
         <div class="grid md:grid-cols-2 gap-4">
-          <a href="https://github.com/mattgraham93/Musical-Weather" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 text-sm">
+          <a href="https://github.com/mattieg93/Musical-Weather" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 text-sm">
             🚀 Explore Application
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
             </svg>
           </a>
-          <a href="https://github.com/mattgraham93/Musical-Weather-Notebooks" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 text-sm">
+          <a href="https://github.com/mattieg93/Musical-Weather-Notebooks" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 text-sm">
             📊 Analysis & Models
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -788,12 +829,12 @@ const baseProjects: Project[] = [
           <div>
             <h4 class="font-semibold text-blue-200 mb-2">🚀 Production Application</h4>
             <p class="text-gray-300 text-sm mb-3">Full-stack Flask web application with cloud deployment, real-time API integration, and production-ready infrastructure.</p>
-            <a href="https://github.com/mattgraham93/Musical-Weather" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">View Application Repository →</a>
+            <a href="https://github.com/mattieg93/Musical-Weather" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">View Application Repository →</a>
           </div>
           <div>
             <h4 class="font-semibold text-emerald-200 mb-2">📊 Research & Analysis</h4>
             <p class="text-gray-300 text-sm mb-3">Jupyter notebooks proving model effectiveness, statistical analysis, and comprehensive data science methodology validation.</p>
-            <a href="https://github.com/mattgraham93/Musical-Weather-Notebooks" target="_blank" class="text-emerald-400 hover:text-emerald-300 text-sm">View Analysis Repository →</a>
+            <a href="https://github.com/mattieg93/Musical-Weather-Notebooks" target="_blank" class="text-emerald-400 hover:text-emerald-300 text-sm">View Analysis Repository →</a>
           </div>
         </div>
       </div>
@@ -803,7 +844,7 @@ const baseProjects: Project[] = [
     category: 'personal',
     technologies: ['Python', 'Flask', 'API Integration', 'Machine Learning', 'Statistical Analysis', 'Sentiment Analysis', 'Data Visualization', 'Cloud Deployment', 'Web Scraping'],
     image: '/assets/images/api_start.png',
-    githubUrl: 'https://github.com/mattgraham93/Musical-Weather',
+    githubUrl: 'https://github.com/mattieg93/Musical-Weather',
     impact: {
       metric: 'Data Sources Integrated',
       value: '6+ APIs'
@@ -820,7 +861,7 @@ const baseProjects: Project[] = [
     category: 'academic',
     technologies: ['R', 'Statistical Analysis', 'Data Visualization', 'ggplot2'],
     image: '/assets/images/gdp_analysis_act_v_pred_r_v_d.png',
-    githubUrl: 'https://github.com/mattgraham93/gdp-representation-analysis',
+    githubUrl: 'https://github.com/mattieg93/gdp-representation-analysis',
     demoUrl: 'https://grahammr93.medium.com/can-us-state-gdp-determine-congressional-representation-e3cda57285f3?sk=35e77d96c3a28c7f1a084875e48a2f19',
     impact: {
       metric: 'Medium Views',
@@ -838,7 +879,7 @@ const baseProjects: Project[] = [
     category: 'academic',
     technologies: ['Python', 'Pandas', 'Matplotlib', 'Seaborn', 'Customer Analytics'],
     image: '/assets/images/rfm-graph.png',
-    githubUrl: 'https://github.com/mattgraham93/rfm-analysis',
+    githubUrl: 'https://github.com/mattieg93/rfm-analysis',
     impact: {
       metric: 'Marketing ROI',
       value: '+45%'
@@ -855,7 +896,7 @@ const baseProjects: Project[] = [
     category: 'academic',
     technologies: ['Python', 'NLTK', 'TextBlob', 'Twitter API', 'Flask'],
     image: '/assets/images/sentiment.png',
-    githubUrl: 'https://github.com/mattgraham93/sentiment-analysis',
+    githubUrl: 'https://github.com/mattieg93/sentiment-analysis',
     impact: {
       metric: 'Accuracy',
       value: '87%'
@@ -890,7 +931,7 @@ const baseProjects: Project[] = [
     technologies: ['Python', 'API Development', 'Statistics', 'Documentation'],
     image: '/assets/images/api_start.png',
     demoUrl: 'https://grahammr93.medium.com/making-traditional-data-analytics-more-accessible-in-python-aa765ec85eb?sk=517e9c61e57729516d4a3a939d4cc8e8',
-    githubUrl: 'https://github.com/mattgraham93/ott-statistics',
+    githubUrl: 'https://github.com/mattieg93/ott-statistics',
     impact: {
       metric: 'GitHub Stars',
       value: '45+'
@@ -1092,7 +1133,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: 'GitHub',
-    url: 'https://github.com/mattgraham93',
+    url: 'https://github.com/mattieg93',
     platform: 'github'
   },
   {

@@ -76,8 +76,8 @@ export function FeaturedProjects() {
         <div className="text-center mt-12">
           <Link
             href="/projects"
-            className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-white hover:opacity-90"
-            style={{ backgroundColor: 'var(--primary)' }}
+            className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl hover:opacity-90"
+            style={{ backgroundColor: 'var(--primary)', color: 'white' }}
           >
             View All Projects
           </Link>

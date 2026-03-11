@@ -85,14 +85,16 @@ export function ProjectFilter({
           <button
             key={category.id}
             onClick={() => onCategoryChange(category.id)}
-            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-              selectedCategory === category.id
-                ? "text-white shadow-lg"
-                : "bg-gray-100 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50 border border-gray-300 dark:border-gray-700"
-            }`}
+            className="px-6 py-3 rounded-lg font-medium transition-all duration-300 border shadow-sm"
             style={selectedCategory === category.id ? {
-              backgroundColor: 'var(--secondary)'
-            } : {}}
+              backgroundColor: 'var(--secondary)',
+              color: 'white',
+              borderColor: 'var(--secondary)'
+            } : {
+              backgroundColor: 'var(--pill-bg)',
+              color: 'var(--pill-fg)',
+              borderColor: 'var(--pill-border)'
+            }}
           >
             {category.label}
             <span className="ml-2 text-sm opacity-75">({category.count})</span>
@@ -110,16 +112,16 @@ export function ProjectFilter({
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`px-3 py-1 text-sm rounded-full transition-all duration-300 border ${
-                selectedTags.includes(tag)
-                  ? ""
-                  : "bg-gray-100 dark:bg-gray-800/50 text-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700/50 border-gray-300 dark:border-gray-700"
-              }`}
+              className="px-3 py-1 text-sm rounded-full transition-all duration-300 border"
               style={selectedTags.includes(tag) ? {
                 backgroundColor: 'color-mix(in srgb, var(--secondary) 20%, transparent)',
                 color: 'var(--secondary)',
                 borderColor: 'color-mix(in srgb, var(--secondary) 50%, transparent)'
-              } : {}}
+              } : {
+                backgroundColor: 'var(--pill-bg)',
+                color: 'var(--pill-fg)',
+                borderColor: 'var(--pill-border)'
+              }}
             >
               {tag}
               <span className="ml-1 opacity-50 text-xs">{count}</span>
@@ -129,7 +131,8 @@ export function ProjectFilter({
           {hiddenCount > 0 && !showAllTags && (
             <button
               onClick={() => setShowAllTags(true)}
-              className="px-3 py-1 text-sm rounded-full border border-dashed border-gray-400 dark:border-gray-600 text-gray-600 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 transition-all duration-300"
+              className="px-3 py-1 text-sm rounded-full border border-dashed transition-all duration-300"
+              style={{ color: 'var(--pill-fg)', borderColor: 'var(--pill-border)' }}
             >
               +{hiddenCount} more
             </button>
@@ -137,7 +140,8 @@ export function ProjectFilter({
           {showAllTags && sortedTags.length > VISIBLE_COUNT && (
             <button
               onClick={() => setShowAllTags(false)}
-              className="px-3 py-1 text-sm rounded-full border border-dashed border-gray-400 dark:border-gray-600 text-gray-600 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 transition-all duration-300"
+              className="px-3 py-1 text-sm rounded-full border border-dashed transition-all duration-300"
+              style={{ color: 'var(--pill-fg)', borderColor: 'var(--pill-border)' }}
             >
               Show less
             </button>

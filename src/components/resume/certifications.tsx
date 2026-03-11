@@ -111,10 +111,10 @@ export function Certifications() {
               borderColor: 'color-mix(in srgb, var(--secondary) 40%, transparent)'
             }}
           >
-            In Progress
+            Completing March 2026
           </span>
         </div>
-        <p className="text-center text-gray-400 text-sm mb-6">Working toward the IBM AI Engineering Professional Certificate</p>
+        <p className="text-center text-gray-400 text-sm mb-6">Completing the IBM AI Engineering Professional Certificate - deep learning, ML pipelines, LLMs/RAG, and AI agents</p>
         <div className="grid md:grid-cols-3 gap-6">
           {certifications.filter(cert => cert.issuer === "IBM").map((cert, index) => {
             const colors = getColorClasses(cert.color);
@@ -269,9 +269,10 @@ export function Certifications() {
           <div>
             <h4 className="text-lg font-semibold mb-3" style={{ color: 'var(--secondary)' }}>Current Focus</h4>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Actively pursuing the IBM AI Engineering Professional Certificate - covering deep learning, PyTorch,
-              Keras, TensorFlow, RAG, and LangChain. Strong existing foundation in Google data analytics methodology,
-              advanced SQL, and data visualization. Each certification maps directly to production work already shipped.
+              Completing the IBM AI Engineering Professional Certificate - covering deep learning (Keras, PyTorch,
+              TensorFlow), ML pipelines (scikit-learn/Spark), LLMs/RAG (Hugging Face, LangChain), and AI agents.
+              Combined with Google data analytics methodology, advanced SQL, and expert-level Tableau -
+              each certification maps directly to production work already shipped.
             </p>
           </div>
         </div>

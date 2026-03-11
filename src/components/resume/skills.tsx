@@ -1,10 +1,23 @@
 const skillCategories = [
   {
+    title: "AI & Machine Learning",
+    color: "emerald",
+    skills: [
+      { name: "A/B Testing & Experimentation", years: "5+", level: "Expert" },
+      { name: "scikit-learn", years: "4+", level: "Advanced" },
+      { name: "Time-Series Forecasting", years: "4+", level: "Advanced" },
+      { name: "LangChain / RAG", years: "2+", level: "Advanced" },
+      { name: "PyTorch", years: "1+", level: "Proficient" },
+      { name: "TensorFlow / Keras", years: "1+", level: "Proficient" },
+      { name: "Ollama / Local LLMs", years: "2+", level: "Advanced" }
+    ]
+  },
+  {
     title: "Data Visualization & Web Development",
     color: "purple",
     skills: [
       { name: "Tableau", years: "5+", level: "Expert" },
-      { name: "JavaScript", years: "4+", level: "Advanced" },
+      { name: "TypeScript/JavaScript", years: "4+", level: "Advanced" },
       { name: "HTML/CSS", years: "6+", level: "Expert" },
       { name: "Data Visualization", years: "9+", level: "Expert" },
       { name: "D3.js", years: "3+", level: "Advanced" },
@@ -18,11 +31,10 @@ const skillCategories = [
     skills: [
       { name: "SQL", years: "9+", level: "Expert" },
       { name: "Python", years: "6+", level: "Expert" },
+      { name: "Hive", years: "3+", level: "Expert" },
       { name: "R", years: "4+", level: "Advanced" },
       { name: "Apache Airflow", years: "3+", level: "Advanced" },
       { name: "ETL/ELT", years: "5+", level: "Expert" },
-      { name: "BigQuery", years: "3+", level: "Advanced" },
-      { name: "Snowflake", years: "2+", level: "Proficient" },
       { name: "dbt", years: "2+", level: "Advanced" }
     ]
   },
@@ -33,10 +45,10 @@ const skillCategories = [
       { name: "Microsoft Azure", years: "4+", level: "Advanced" },
       { name: "Azure SQL", years: "4+", level: "Advanced" },
       { name: "Apache Spark", years: "2+", level: "Proficient" },
+      { name: "FastAPI", years: "2+", level: "Advanced" },
       { name: "Docker", years: "2+", level: "Proficient" },
       { name: "CI/CD Pipelines", years: "3+", level: "Advanced" },
-      { name: "Git", years: "6+", level: "Expert" },
-      { name: "PowerShell", years: "3+", level: "Advanced" }
+      { name: "Git", years: "6+", level: "Expert" }
     ]
   },
   {
@@ -111,15 +123,15 @@ export function Skills() {
         <div className="grid md:grid-cols-3 gap-6">
           <div className="text-center">
             <div className="font-bold text-lg mb-2" style={{ color: 'var(--secondary)' }}>Primary Languages</div>
-            <div className="text-gray-400 text-sm">SQL (9+ years), Python (6+ years), R (4+ years)</div>
+            <div className="text-gray-400 text-sm">SQL (9+ years), Python (6+ years), R (4+ years), TypeScript</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>Cloud Platforms</div>
-            <div className="text-gray-400 text-sm">Microsoft Azure, Google Cloud, AWS (Databricks)</div>
+            <div className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>AI & ML Stack</div>
+            <div className="text-gray-400 text-sm">scikit-learn, PyTorch, TensorFlow, LangChain, Ollama</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>Visualization Tools</div>
-            <div className="text-gray-400 text-sm">Tableau (Expert), D3.js, Power BI, Custom Dashboards</div>
+            <div className="font-bold text-lg mb-2" style={{ color: 'var(--primary)' }}>Data Platforms</div>
+            <div className="text-gray-400 text-sm">Hive (Expert), Azure SQL, Tableau, Airflow, Spark</div>
           </div>
         </div>
         

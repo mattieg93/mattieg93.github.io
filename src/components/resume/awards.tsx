@@ -4,7 +4,7 @@ const awards = [
     organization: "CBRE Technology Excellence",
     date: "2023",
     description: "Recognized for developing automated data pipelines that reduced manual work by 160+ hours monthly",
-    icon: "🏆",
+    // icon: "🏆",
     color: "emerald"
   },
   {
@@ -12,7 +12,7 @@ const awards = [
     organization: "CBRE Analytics Team",
     date: "2024",
     description: "Outstanding achievement in transforming complex real estate data into executive-ready visualizations",
-    icon: "📊",
+    // icon: "📊",
     color: "purple"
   },
   {
@@ -20,7 +20,7 @@ const awards = [
     organization: "CBRE Digital Transformation",
     date: "2020",
     description: "Led $15M digital transformation program with 150% increase in project velocity",
-    icon: "🌍",
+    // icon: "🌍",
     color: "blue"
   },
   {
@@ -28,7 +28,7 @@ const awards = [
     organization: "Bellevue College",
     date: "2022-2024",
     description: "Multiple quarters recognition for academic excellence (3.82 GPA) while working full-time",
-    icon: "🎓",
+    // icon: "🎓",
     color: "indigo"
   }
 ];
@@ -104,7 +104,7 @@ export function Awards() {
               className={`bg-gray-800/50 rounded-xl p-6 border transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 ${colors.border}`}
             >
               <div className="flex items-start gap-4">
-                <div className="text-3xl">{award.icon}</div>
+                {/* <div className="text-3xl">{award.icon}</div> */}
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="text-xl font-bold text-white leading-tight">

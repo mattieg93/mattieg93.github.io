@@ -28,7 +28,7 @@ export default function ProjectsPage() {
     <div className="min-h-screen pt-20 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4 pb-2" style={{ color: 'var(--secondary)' }}>
+          <h1 className="text-5xl font-bold mb-4 pb-4 leading-normal" style={{ color: 'var(--secondary)' }}>
             My Projects
           </h1>
           <p className="text-xl text-gray-700 dark:text-gray-400">

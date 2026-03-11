@@ -45,7 +45,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     return (
       <div className="min-h-screen pt-20 px-4 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Project not found</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Project not found</h1>
           <Link href="/projects" className="text-purple-400 hover:text-purple-300">
             Back to Projects
           </Link>
@@ -78,23 +78,28 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {project.tags.map((tag) => (
               <span 
                 key={tag}
-                className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm"
+                className="px-3 py-1 rounded-full text-sm border"
+                style={{
+                  backgroundColor: 'var(--pill-bg)',
+                  color: 'var(--pill-fg)',
+                  borderColor: 'var(--pill-border)'
+                }}
               >
                 {tag}
               </span>
             ))}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-500 to-orange-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: 'var(--primary)' }}>
             {project.title}
           </h1>
           
-          <p className="text-xl text-gray-300 leading-relaxed mb-8">
+          <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
             {project.description}
           </p>
 
           {/* Hero Image */}
-          <div className="relative rounded-2xl overflow-hidden border border-gray-700 mb-8">
+          <div className="relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 mb-8">
             <Image
               src={project.image}
               alt={project.title}
@@ -107,11 +112,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           {/* Project Meta */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-              <h3 className="text-purple-400 font-semibold mb-2">Technologies</h3>
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--primary)' }}>Technologies</h3>
               <div className="flex flex-wrap gap-2">
                 {project.technologies.map((tech) => (
-                  <span key={tech} className="text-gray-300 text-sm">
+                  <span key={tech} className="text-gray-600 dark:text-gray-300 text-sm">
                     {tech}
                   </span>
                 ))}
@@ -119,22 +124,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
             
             {project.impact && (
-              <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-                <h3 className="text-emerald-400 font-semibold mb-2">Impact</h3>
-                <p className="text-2xl font-bold text-white">{project.impact.value}</p>
-                <p className="text-gray-400 text-sm">{project.impact.metric}</p>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                <h3 className="font-semibold mb-2" style={{ color: 'var(--secondary)' }}>Impact</h3>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{project.impact.value}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">{project.impact.metric}</p>
               </div>
             )}
             
-            <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-              <h3 className="text-purple-500 font-semibold mb-2">Links</h3>
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold mb-2" style={{ color: 'var(--primary)' }}>Links</h3>
               <div className="space-y-2">
                 {project.githubUrl && (
                   <a 
                     href={project.githubUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="block text-gray-300 hover:text-white transition-colors"
+                    className="block text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                   >
                     GitHub Repository →
                   </a>
@@ -144,7 +149,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     href={project.demoUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="block text-gray-300 hover:text-white transition-colors"
+                    className="block text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                   >
                     Live Demo →
                   </a>
@@ -155,8 +160,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
 
         {/* Project Content */}
-        <div className="prose prose-invert prose-lg max-w-none">
-          <div className="text-gray-300 leading-relaxed space-y-6">
+        <div className="max-w-none">
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed space-y-6">
             {project.longDescription && renderProjectContent(project.id, project.longDescription)}
           </div>
         </div>
@@ -164,10 +169,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {/* Image Gallery for Supply-Demand Project */}
         {project.id === 'supply-demand' && (
           <div className="mt-16">
-            <h2 className="text-3xl font-bold text-white mb-8">Image Gallery</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Image Gallery</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <div className="relative rounded-lg overflow-hidden border border-gray-700">
+                <div className="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                   <Image
                     src="/assets/images/supply-demand-regional.png"
                     alt="Regional Supply and Demand Analysis"
@@ -176,11 +181,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     className="w-full h-auto"
                   />
                 </div>
-                <p className="text-gray-400 text-center">Regional analysis showing supply and demand patterns across different geographic areas</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center">Regional analysis showing supply and demand patterns across different geographic areas</p>
               </div>
               
               <div className="space-y-4">
-                <div className="relative rounded-lg overflow-hidden border border-gray-700">
+                <div className="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                   <Image
                     src="/assets/images/supply-demand-site.png"
                     alt="Site-Level Supply and Demand Analysis"
@@ -189,7 +194,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     className="w-full h-auto"
                   />
                 </div>
-                <p className="text-gray-400 text-center">Site-level breakdown providing granular insights into individual location performance</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center">Site-level breakdown providing granular insights into individual location performance</p>
               </div>
             </div>
           </div>

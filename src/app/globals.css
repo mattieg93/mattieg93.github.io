@@ -8,6 +8,10 @@
   --secondary: #0f9c70;
   --muted: #374151;
   --border: #374151;
+  /* Pill/tag variables */
+  --pill-bg: #1f2937;
+  --pill-fg: #d1d5db;
+  --pill-border: #374151;
 }
 
 [data-theme="light"] {
@@ -18,6 +22,10 @@
   --secondary: #0d9488;
   --muted: #64748b;
   --border: #e2e8f0;
+  /* Pill/tag variables */
+  --pill-bg: #f1f5f9;
+  --pill-fg: #334155;
+  --pill-border: #cbd5e1;
 }
 
 * {
@@ -208,6 +216,12 @@ button, a, input, textarea, select {
   color: var(--foreground) !important;
 }
 
+/* Preserve white text on dark gray buttons/links (GitHub buttons etc.) in light mode */
+[data-theme="light"] a.bg-gray-700,
+[data-theme="light"] button.bg-gray-700 {
+  color: white !important;
+}
+
 /* Ensure all headings are always visible */
 [data-theme="light"] h1:not([class*="text-transparent"]),
 [data-theme="light"] h2,
@@ -226,7 +240,14 @@ button, a, input, textarea, select {
   opacity: 1;
 }
 
-/* Removed problematic background overrides that conflict with Tailwind dark: modifiers */
+/* Fix hardcoded (non-dark:) dark backgrounds in light mode — used in dangerouslySetInnerHTML project content */
+[data-theme="light"] .bg-gray-800\/50 {
+  background-color: #f8fafc !important;
+}
+
+[data-theme="light"] .bg-gray-800\/50 .border-gray-700 {
+  border-color: #e2e8f0 !important;
+}
 
 /* Ensure borders are visible in light mode */
 [data-theme="light"] .border-gray-600,

@@ -23,7 +23,7 @@ const socialLinks: SocialLink[] = [
   },
   {
     name: 'GitHub',
-    url: 'https://github.com/mattgraham93',
+    url: 'https://github.com/mattieg93',
     icon: <FaGithub className="text-2xl" />,
     color: 'hover:text-gray-300',
     description: 'Code repositories and open source projects'
@@ -38,7 +38,7 @@ const socialLinks: SocialLink[] = [
   // Add more social links as needed
   // {
   //   name: 'Twitter',
-  //   url: 'https://twitter.com/mattgraham93',
+  //   url: 'https://twitter.com/mattieg93',
   //   icon: <FaTwitter className="text-2xl" />,
   //   color: 'hover:text-blue-400',
   //   description: 'Thoughts on data science and tech'

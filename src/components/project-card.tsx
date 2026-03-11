@@ -78,7 +78,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
         
         {/* Year Badge */}
-        <div className="absolute top-4 right-4 px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white rounded-full border border-gray-300 dark:border-gray-700">
+        <div
+          className="absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full"
+          style={{ backgroundColor: 'rgba(0,0,0,0.65)', color: 'white' }}
+        >
           {year}
         </div>
       </div>

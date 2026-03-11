@@ -28,7 +28,7 @@ export const archivedProjects = [
     category: 'professional',
     technologies: ['Data Integration', 'Enterprise Architecture', 'Cross-functional Collaboration', 'Real Estate Analytics', 'SQL', 'ETL'],
     image: '/assets/images/supply-demand-model.png',
-    githubUrl: 'https://github.com/mattgraham93/portfolio-optimization',
+    githubUrl: 'https://github.com/mattieg93/portfolio-optimization',
     impact: {
       metric: 'Systems Unified',
       value: '6 Teams'
@@ -62,7 +62,7 @@ export const archivedProjects = [
     <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700 my-8">
       <h3 class="text-lg font-semibold text-purple-400 mb-4">Technical Implementation</h3>
       <p class="text-gray-300 mb-4">Below is what the full aggregate model looked like. The SQL implementation demonstrates the complexity of integrating multiple data sources:</p>
-      <a href="https://github.com/mattgraham93/mattgraham93.github.io/blob/main/archive/examples/hive/supply_forecast_data_model.sql" target="_blank" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+      <a href="https://github.com/mattieg93/mattieg93.github.io/blob/main/archive/examples/hive/supply_forecast_data_model.sql" target="_blank" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
         View SQL Model on GitHub
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -74,7 +74,7 @@ export const archivedProjects = [
     category: 'professional',
     technologies: ['SQL', 'Hive', 'Python', 'ETL', 'Data Modeling', 'Apache Airflow', 'Power BI'],
     image: '/assets/images/supply-demand-regional.png',
-    githubUrl: 'https://github.com/mattgraham93/mattgraham93.github.io/blob/main/archive/examples/hive/supply_forecast_data_model.sql',
+    githubUrl: 'https://github.com/mattieg93/mattieg93.github.io/blob/main/archive/examples/hive/supply_forecast_data_model.sql',
     demoUrl: '/assets/supply_demand/FCS supply and demand.drawio.html',
     impact: {
       metric: 'Systems Integrated',
@@ -112,7 +112,7 @@ export const archivedProjects = [
     category: 'professional',
     technologies: ['Machine Learning', 'Python', 'Data Analysis', 'Real Estate Analytics', 'Feature Engineering', 'Scoring Models'],
     image: '/assets/images/location-scoring-intro.png',
-    githubUrl: 'https://github.com/mattgraham93/location-scoring',
+    githubUrl: 'https://github.com/mattieg93/location-scoring',
     impact: {
       metric: 'Decision Accuracy',
       value: '+65%'
