@@ -53,38 +53,30 @@ const baseProjects: Project[] = [
     id: 'shep-ollama-manager',
     title: 'Shep: Ollama Model Manager',
     description: 'A modern macOS GUI for managing local Ollama AI models - discover, install, monitor, and configure models without touching the terminal. Built with React, FastAPI, and Tailwind CSS.',
-    longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">Shep: Making Local AI Accessible</h2>
+longDescription: `<div class="space-y-8">
 
-      <div class="bg-gradient-to-r from-purple-500/20 to-emerald-500/20 rounded-lg p-6 border border-purple-500/30 mb-8 text-center">
-        <p class="text-lg text-purple-200 font-medium mb-2">Filling a Critical Gap in the AI Developer Ecosystem</p>
-        <p class="text-gray-400">No GUI existed for Ollama model management - only terminal-based workflows. Shep changes that.</p>
-      </div>
+      <h2>The Problem</h2>
+      <p>Local AI model management with Ollama has no GUI. Managing models requires knowing daemon commands, VRAM constraints, environment variable syntax, and model identifiers &mdash; terminal-only workflows that create real friction for developers and make Ollama inaccessible to anyone who has not already memorised the CLI flags. Shep is the management layer that should have shipped with Ollama.</p>
 
-      <h3 class="text-xl font-semibold text-white">The Problem</h3>
-      <p class="text-gray-300">Local AI model management with Ollama requires understanding daemon management, model installation commands, VRAM constraints, and environment variable configuration. This creates high friction for developers experimenting with local LLMs and makes Ollama inaccessible to non-technical users entirely.</p>
-
-      <h3 class="text-xl font-semibold text-white">Key Features</h3>
-      <ul class="list-disc list-inside text-gray-300 space-y-2">
-        <li><strong>Model Dashboard</strong> - Real-time list of installed models with size, VRAM requirements, and status</li>
-        <li><strong>Model Discovery</strong> - Curated library of 12+ popular models with search, real-time streaming download progress, and cancellation</li>
-        <li><strong>Daemon Control</strong> - Start/stop Ollama daemon directly from the GUI with status indicators</li>
-        <li><strong>Settings Panel</strong> - Custom model storage paths, keep-alive timeout configuration, reset to defaults</li>
-        <li><strong>Professional UX</strong> - Custom Shep branding with light/dark mode, color-coded status indicators, loading states, and actionable error messages</li>
+      <h2>What Shep Does</h2>
+      <ul>
+        <li><strong>Model Dashboard</strong> &mdash; real-time list of installed models with size, VRAM requirements, and run status.</li>
+        <li><strong>Model Discovery</strong> &mdash; curated library of 12+ popular models with live streaming download progress and user-initiated cancellation.</li>
+        <li><strong>Daemon Control</strong> &mdash; start and stop the Ollama daemon directly from the GUI with health-status indicators.</li>
+        <li><strong>Settings</strong> &mdash; configure custom model storage paths, keep-alive timeouts, and reset to defaults. Persists changes to <code>~/.zshrc</code> via regex substitution.</li>
+        <li><strong>Single-command launch</strong> &mdash; <code>./launch.sh</code> detects virtual environments, installs frontend and backend dependencies, polls for API readiness, and opens the app. Zero manual steps after clone.</li>
       </ul>
 
-      <h3 class="text-xl font-semibold text-white">Technical Architecture</h3>
-      <p class="text-gray-300">React 18 frontend communicates with a FastAPI backend that wraps the Ollama daemon API. HTTP streaming delivers real-time download progress without polling or WebSocket overhead. Daemon management uses macOS launchctl with subprocess fallback. Settings persist via direct ~/.zshrc editing with regex.</p>
+      <h2>Architecture</h2>
+      <p>React 18 frontend communicates with a FastAPI backend that wraps the Ollama daemon API. HTTP streaming delivers real-time download progress without polling or WebSocket overhead. Daemon management uses macOS <code>launchctl</code> with a subprocess fallback for environments where launchctl is unavailable.</p>
 
-      <h3 class="text-xl font-semibold text-white">Challenges Solved</h3>
-      <ul class="list-disc list-inside text-gray-300 space-y-2">
-        <li>Fixed false "download cancelled" messages by tracking an explicit isCancelled flag to distinguish user cancellation from natural stream completion</li>
-        <li>Resolved settings reset bug caused by JavaScript falsy coercion converting empty strings to undefined</li>
-        <li>Built robust backend readiness polling to prevent frontend startup before the API is ready</li>
+      <h2>Engineering Notes</h2>
+      <ul>
+        <li>Fixed false &ldquo;download cancelled&rdquo; messages by tracking an explicit <code>isCancelled</code> flag that distinguishes user cancellation from natural stream completion &mdash; the streaming API sends the same event for both.</li>
+        <li>Resolved a settings-reset bug caused by JavaScript falsy coercion silently converting empty strings to <code>undefined</code> during a spread operation.</li>
+        <li>Backend readiness polling in the launch script prevents the frontend from starting before the API is responsive &mdash; no race conditions on first boot.</li>
       </ul>
 
-      <h3 class="text-xl font-semibold text-white">One-Command Setup</h3>
-      <p class="text-gray-300">Automated launch script detects virtual environments across multiple common locations, installs dependencies for both frontend and backend, polls for backend readiness, and starts the full stack with a single <code>./launch.sh</code> command.</p>
     </div>`,
     category: 'personal',
     technologies: ['React', 'FastAPI', 'Python', 'Tailwind CSS', 'Vite', 'Ollama'],
@@ -100,351 +92,140 @@ const baseProjects: Project[] = [
   },
   {
     id: 'ai-study-assistant',
-    title: 'Coursera Study Assistant: A Free AI Tutor for Online Learners',
-    description: 'A unified Streamlit application that merges two independent systems — a quiz-answering study tool and a Coursera automation agent — into one holistic learning platform. Screenshot a quiz for instant AI answers, paste a lecture URL for auto-generated notes, and expand your knowledge base on the fly. Runs entirely locally with zero API costs.',
-    longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">Making Technical Learning Accessible — For Free</h2>
+    title: 'Coursera Study Assistant: Private On-Device AI Study Partner',
+    description: 'A fully local, zero-cost AI study partner for Coursera learners. A React + FastAPI application that automatically captures lecture notes, answers multi-select quiz questions with per-option reasoning via Apple Silicon MLX inference, and feeds a RAG knowledge base — all without sending a byte to a third-party server.',
+    longDescription: `<div class="space-y-8">
 
-      <div class="bg-gradient-to-r from-purple-500/20 to-teal-500/20 rounded-lg p-6 border border-purple-500/30 mb-8 text-center">
-        <p class="text-lg text-purple-200 font-medium mb-4">Two Disconnected Tools → One Holistic Study Platform</p>
-        <div class="grid md:grid-cols-4 gap-4">
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-teal-400 mb-2">60%</div>
-            <div class="text-sm text-gray-300">Study time saved per session</div>
-          </div>
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-purple-400 mb-2">100%</div>
-            <div class="text-sm text-gray-300">OCR accuracy via Apple Vision</div>
-          </div>
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-emerald-400 mb-2">$0</div>
-            <div class="text-sm text-gray-300">Infrastructure cost — fully local</div>
-          </div>
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-purple-400 mb-2">3 Tabs</div>
-            <div class="text-sm text-gray-300">Unified Streamlit interface</div>
-          </div>
-        </div>
-      </div>
+      <h2>The Problem With Passive Online Learning</h2>
+      <p>Coursera gives you access to world-class university courses, but it cannot make you understand them. Videos play, transcripts scroll, and by exam time the material has evaporated. Students juggle multiple courses simultaneously, each with its own vocabulary and notation, and there is no professor on call at 2 a.m. when a concept stops making sense. Multi-select quiz questions are particularly unforgiving — the correct answer isn't just the right option, it's the right set of options, and confusing "select all that apply" with "pick one" costs full credit.</p>
+      <p>The Coursera Study Assistant closes that gap. It is a <strong>fully local, zero-cost AI study partner</strong> that automates the mechanical work of learning — capturing notes, retrieving context, explaining options — so the student's cognitive budget goes toward understanding rather than logistics.</p>
 
-      <h3 class="text-xl font-bold text-white mb-4">The Mission</h3>
+      <h2>What It Does — The Four-Step Study Loop</h2>
+      <ul>
+        <li><strong>Capture</strong> — the Coursera Agent navigates a module on your behalf, pulls every transcript and reading, summarises it with a local LLM, and writes structured notes into a Google Doc you own. You walk away with a searchable reference document after every study session without typing a word.</li>
+        <li><strong>Understand</strong> — the Study Assistant uses Retrieval-Augmented Generation against those exact notes. When you ask "why does backpropagation use the chain rule?" the system retrieves the most relevant lecture segments and grounds its answer in course-specific language, not generic internet text.</li>
+        <li><strong>Drill</strong> — paste or screenshot any quiz question. A vision LLM extracts the structured question data directly from the image. The RAG engine answers each option individually with a <code>CORRECT / INCORRECT</code> verdict and reasoning. When the AI is wrong, correct it in plain English; that feedback is stored and improves future answers.</li>
+        <li><strong>Repeat</strong> — everything runs on Apple Silicon via MLX. No API keys, no per-token cost, no data sent to a third-party server. A student on a plane can still study.</li>
+      </ul>
 
-      <p class="mb-6">Online courses move fast. Technical jargon piles up. There's no pause button for confusion and no tutor on call at midnight. This project exists to change that — a <strong class="text-white">free, private, AI-powered tutor</strong> that runs entirely on your machine. No API costs, no subscriptions, no data leaving your laptop. Just a tool that watches lectures for you, takes structured notes, answers your questions from your own course materials, and gets smarter every time you correct it.</p>
+      <h2>V2.0: Full Architectural Rewrite</h2>
+      <p>The original system was a Streamlit app backed by Ollama. It worked, but both choices imposed ceilings: Streamlit's component model made real-time streaming awkward, and Ollama required a separate always-running daemon. V2.0 replaces both.</p>
+      <ul>
+        <li><strong>Frontend:</strong> React 19 + TypeScript SPA built with Vite. Tailwind CSS for styling, wouter for lightweight routing, Zustand for persistent global state (model selection, dark mode, active doc), TanStack Query for server state and background refetch. Three pages — Study, Agent, Knowledge Base — with a sidebar that stays coherent across navigation.</li>
+        <li><strong>Backend:</strong> FastAPI + Uvicorn replaces Streamlit. Async from the ground up. HTTP endpoints for chat, extraction, and knowledge-base management; WebSocket endpoints for real-time agent streaming; SSE for per-question quiz-answer streaming.</li>
+        <li><strong>Inference:</strong> Ollama replaced by <strong>MLX</strong> (<code>mlx-lm</code> for text, <code>mlx-vlm</code> for vision). Models are lazy-loaded on first call and cached in-process — no external daemon, no startup overhead after warm-up. Default model: IBM Granite 3.3 8B, 4-bit quantised.</li>
+        <li><strong>Per-course isolation:</strong> Each Google Doc gets its own <code>study_db_{doc_id}.pkl</code> vector index. Switching courses in the sidebar reloads the correct index in-memory — there is no bleed between a machine-learning course and a data-structures course.</li>
+      </ul>
 
-      <h3 class="text-xl font-bold text-white mb-4">From Two Systems to One</h3>
+      <h2>Quiz Extraction Pipeline — Vision-First, Not OCR</h2>
+      <p>The original system used Apple Vision Framework for OCR, then parsed the resulting text with regex. V2.0 replaces this with a multimodal LLM pipeline that understands the screenshot semantically, not character-by-character.</p>
+      <ul>
+        <li>Screenshot bytes → <code>chat_vision(_VISION_PROMPT, img)</code> → raw JSON with structured question objects</li>
+        <li><code>_parse_vision_raw()</code> strips markdown fences, repairs invalid backslash escapes, unwraps dict-wrapped arrays</li>
+        <li><code>_normalise_questions()</code> removes Coursera checkbox/radio glyphs (<code>□ ■ ○ ●</code>), fixes LaTeX artefacts, upgrades <code>"single"</code> → <code>"multi"</code> when the stem contains "select all that apply" or "which two/three"</li>
+        <li>Retry pass: any question with fewer than 2 options extracted triggers a second vision call with the first response as context; results are merged where the retry produced more options</li>
+        <li>Remaining questions below threshold get an <code>extraction_warning</code> displayed as an amber alert in the UI</li>
+      </ul>
+      <p><strong>Multi-select support covers A–Z</strong> (not just A–D). The RAG prompt format was redesigned to emit per-option <code>CORRECT/INCORRECT</code> verdicts with explicit over-selection and under-selection guards, and the answer comparison uses set equality with normalisation so "A, D" and "D and A" are equivalent.</p>
 
-      <p class="mb-4 text-gray-300">This didn't start as one application. It began as two completely independent tools:</p>
+      <h2>RAG Study Engine</h2>
+      <p>The knowledge base is a lightweight NumPy + pickle vector store — no ChromaDB dependency, no Pydantic version conflicts. <code>all-MiniLM-L6-v2</code> sentence-transformer embeddings are loaded lazily on first query.</p>
+      <p>For each quiz question, the retriever builds one query per option (up to 8) plus one for the question stem — up to 10 combined results, deduplicated. The prompt injects the retrieved lecture text, the full option list, an <code>expected_count</code> hint if the stem states it ("select all 3"), and explicit warnings against under-selection. Each correction the student provides is stored as a special document keyed to the original question text and reingested into the index — accuracy compounds over a course.</p>
 
-      <div class="grid md:grid-cols-2 gap-6 my-6">
-        <div class="bg-gradient-to-br from-purple-500/20 to-teal-500/20 rounded-lg p-6 border border-purple-500/30">
-          <h4 class="text-lg font-semibold text-purple-300 mb-3">System 1: Study Tool (CLI)</h4>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Screenshot a quiz → OCR → AI answers via RAG</li>
-            <li>• Correct wrong answers in natural language</li>
-            <li>• Vector database of course notes</li>
-            <li>• <strong class="text-gray-200">Problem:</strong> required manual note import</li>
-          </ul>
-        </div>
-        <div class="bg-gradient-to-br from-emerald-600/20 to-purple-500/20 rounded-lg p-6 border border-emerald-600/30">
-          <h4 class="text-lg font-semibold text-emerald-300 mb-3">System 2: Coursera Agent (Terminal)</h4>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Playwright automates Coursera lecture navigation</li>
-            <li>• Extracts transcripts, summarises via Ollama</li>
-            <li>• Writes formatted notes to Google Docs</li>
-            <li>• <strong class="text-gray-200">Problem:</strong> notes stopped at Google Docs</li>
-          </ul>
-        </div>
-      </div>
+      <h2>Coursera Agent — WebSocket Streaming</h2>
+      <p>The agent uses Playwright connected to a running Chromium instance via CDP (port 9222). The student logs into Coursera once manually; the agent reuses that session from a dedicated profile, so no credentials are ever passed to the code.</p>
+      <p>In V2.0, the agent subprocess stdout is piped over a WebSocket (<code>/ws/agent/{job_id}</code>) instead of being read line-by-line in a Streamlit callback. The WebSocket handler uses <code>asyncio.create_subprocess_exec</code> (non-blocking) and parses structured emoji-tagged progress lines into typed JSON events:</p>
+      <ul>
+        <li><code>{"type": "item", "itemType": "VIDEO", "current": 3, "total": 12}</code></li>
+        <li><code>{"type": "stage", "stageNum": 2, "label": "model summarising..."}</code></li>
+        <li><code>{"type": "alldone"}</code></li>
+      </ul>
+      <p>The React frontend accumulates these events into per-lecture progress bars that update in real time. The textbook-aware notes path detects when a lecture maps to a known textbook chapter and switches to a parametric generation mode — the LLM draws on its trained knowledge of the book rather than summarising a transcript.</p>
 
-      <p class="mb-6 text-gray-300">A note-taker that couldn't study. A study tool that couldn't take notes. The unification merged both into a <strong class="text-white">single Streamlit application</strong> with a shared backend bridge, closing the loop: agent writes notes → one-click sync pulls them into the vector database → study assistant answers from them.</p>
+      <h2>SSE Quiz Answer Streaming</h2>
+      <p>A full quiz of 10 questions previously waited for all answers to complete before rendering anything. V2.0 uses Server-Sent Events via FastAPI's <code>StreamingResponse</code>: each question is answered, and its result frame emitted, as soon as the LLM finishes it. The frontend renders each answer card as it arrives. Long quizzes give immediate feedback instead of a loading spinner.</p>
 
-      <h3 class="text-xl font-bold text-white mb-4">What It Does Now — 3-Tab Interface</h3>
+      <h2>Technical Stack</h2>
+      <ul>
+        <li><strong>Frontend:</strong> React 19, TypeScript, Vite, Tailwind CSS v4, wouter, Zustand, TanStack Query v5, lucide-react</li>
+        <li><strong>Backend:</strong> FastAPI, Uvicorn, Python 3.11+</li>
+        <li><strong>LLM inference:</strong> <code>mlx-lm</code> (text) + <code>mlx-vlm</code> (vision) — Apple Silicon native, in-process model cache</li>
+        <li><strong>Default model:</strong> <code>mlx-community/granite-3.3-8b-instruct-4bit</code></li>
+        <li><strong>Embeddings:</strong> sentence-transformers <code>all-MiniLM-L6-v2</code> (384-dim cosine similarity)</li>
+        <li><strong>Web automation:</strong> Playwright + Chromium CDP</li>
+        <li><strong>Notes output:</strong> Google Docs API v1 (service account, no user OAuth flow)</li>
+        <li><strong>PDF ingestion:</strong> PyMuPDF (<code>fitz</code>) for text extraction and chunking</li>
+      </ul>
 
-      <div class="space-y-4 mb-6">
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">Tab 1: Study Assistant</h4>
-          <p class="text-gray-300 text-sm">RAG-powered chat interface. Upload or paste a quiz screenshot → Apple Vision OCR extracts questions → AI answers from your own notes in 3–5 seconds. Tell it "Question 2 was wrong, answer is C" in plain English — it saves the correction to the knowledge base and gets smarter. Collapsible explanations show the reasoning behind each answer.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-teal-400 mb-2">Tab 2: Coursera Agent</h4>
-          <p class="text-gray-300 text-sm">URL queue with "All videos" and "Readings" toggles. Add one or more Coursera lecture URLs, hit Process, and watch per-lecture progress bars advance through transcript capture → Ollama summarisation → Google Doc write. A "View Notes" link opens your doc in a new tab. After processing, a one-click "Sync notes to study database" prompt bridges agent output directly into the Study Assistant's knowledge base.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-emerald-400 mb-2">Tab 3: Expand Knowledge Base</h4>
-          <p class="text-gray-300 text-sm">Dropdown selector: "Paste content" or "Upload document" with a single shared Title field. Add supplementary material — textbook excerpts, external articles, personal notes — and it's immediately searchable by the Study Assistant. Everything goes into the same vector database.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">Sidebar</h4>
-          <p class="text-gray-300 text-sm">View Notes link (opens Google Doc), Sync from Google Doc button, Clear Chat History, and all agent settings (Doc ID, Ollama model, credentials status, setup prerequisites) — everything in one place without cluttering the main workspace.</p>
-        </div>
-      </div>
-
-      <h3 class="text-xl font-bold text-white mb-4">Technical Architecture</h3>
-
-      <div class="space-y-4 mb-6">
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">Computer Vision Pipeline</h4>
-          <p class="text-gray-300 text-sm">Apple Vision Framework (VNRecognizeTextRequest) achieves 100% extraction accuracy on quiz screenshots — university-grade OCR without any training data. Custom preprocessing applies contrast enhancement, sharpening, denoising, and auto-inversion for dark backgrounds. EasyOCR provides cross-platform fallback. Multi-format parser handles A/B/C/D letters, bullet points (•, -, *, ·), and numbered lists.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">RAG-Powered Q&A</h4>
-          <p class="text-gray-300 text-sm">Pickle-based vector store with sentence-transformer (all-MiniLM-L6-v2) embeddings. Cosine similarity search with source diversity prevents single-source hallucination. Deduplication by title hash on add. Query augmentation adds context hints before retrieval. Local Ollama inference generates answers — no API calls, full privacy.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-teal-400 mb-2">Conversational Correction Loop</h4>
-          <p class="text-gray-300 text-sm">NLP intent recognition detects correction phrases ("Q2 was wrong, answer is C") with 90%+ accuracy across 20+ natural language variations. Each correction is stored with full question context and reingested into the vector store — compounding accuracy gains over time.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-emerald-400 mb-2">Coursera Automation Agent</h4>
-          <p class="text-gray-300 text-sm">Playwright + CDP on localhost:9222 extracts video transcripts with exponential-backoff retry logic. Ollama (granite3.2:8b) generates structured notes with engineered "FIRST LINE" prompt guaranteeing consistent title formatting. Google Docs API writes headings, bullets, and emphasis. Real-time subprocess streaming (python -u + PYTHONUNBUFFERED=1 + bufsize=1) delivers line-by-line progress to the Streamlit UI.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">Backend Bridge (Unification Layer)</h4>
-          <p class="text-gray-300 text-sm">backend.py bridges two previously independent systems: adds study_system and coursera_agent to sys.path, re-exports the study system API, launches the agent as a subprocess with streamed output, and loads python-dotenv configuration. CSA_UI_MODE env var auto-confirms all interactive prompts so the subprocess never hangs. One import, one entry point, full integration.</p>
-        </div>
-      </div>
-
-      <div class="bg-gradient-to-r from-purple-500/20 to-emerald-600/20 rounded-lg p-6 border border-purple-500/30 my-8">
-        <h3 class="text-lg font-semibold text-purple-300 mb-4">Challenges Solved Along the Way</h3>
-        <div class="grid md:grid-cols-2 gap-4">
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-purple-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Subprocess EOFError:</strong> Agent input() calls hung in non-interactive mode. Added CSA_UI_MODE to auto-confirm all prompts.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-teal-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Credentials false positive:</strong> Frontend checked wrong path for credentials.json. Aligned to same Path(__file__).parent resolution as agent.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-emerald-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Google Doc iframe blocked:</strong> Sign-in wall killed embedded view. Replaced with link button that opens in authenticated browser tab.</span>
-            </li>
-          </ul>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-purple-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Buffered stdout:</strong> Agent output arrived in chunks. Triple fix: python -u + PYTHONUNBUFFERED=1 + bufsize=1 for real-time streaming.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-purple-500 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">EasyOCR at 85%:</strong> Replaced with Apple Vision Framework — 100% accuracy, zero training data required.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="w-2 h-2 bg-teal-400 rounded-full mt-1.5 shrink-0"></span>
-              <span><strong class="text-white">Inconsistent LLM titles:</strong> Engineered "FIRST LINE" prompt + URL-slug fallback for 100% consistent note formatting.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <h3 class="text-xl font-bold text-white mb-4">Sprint-by-Sprint Evolution</h3>
-
-      <div class="space-y-3 mb-6">
-        <div class="flex gap-4 items-start">
-          <span class="text-purple-400 font-bold text-sm shrink-0 mt-0.5">Sprint 1</span>
-          <p class="text-gray-300 text-sm"><strong class="text-white">Answer Display:</strong> Rebuilt UI to show clean question headings, highlighted answers, and explanations — eliminating debug noise from initial prototype.</p>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="text-teal-400 font-bold text-sm shrink-0 mt-0.5">Sprint 2</span>
-          <p class="text-gray-300 text-sm"><strong class="text-white">Apple Vision Integration:</strong> EasyOCR was at 85% accuracy. Integrated Apple's native Vision framework — jumped to 100%, eliminating parsing failures entirely.</p>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="text-emerald-400 font-bold text-sm shrink-0 mt-0.5">Sprint 3</span>
-          <p class="text-gray-300 text-sm"><strong class="text-white">Bullet-Point Format Support:</strong> Parser failed on non-A/B/C/D quizzes. Added multi-bullet regex detection — went from 0/5 to 5/5 questions parsed on a bullet-format quiz.</p>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="text-purple-400 font-bold text-sm shrink-0 mt-0.5">Sprint 4</span>
-          <p class="text-gray-300 text-sm"><strong class="text-white">Coursera Note Consistency:</strong> LLM titles were inconsistent. Engineered "FIRST LINE" prompt instruction + validation fallback — 100% consistent formatting across all generated notes.</p>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="text-purple-400 font-bold text-sm shrink-0 mt-0.5">Sprint 5</span>
-          <p class="text-gray-300 text-sm"><strong class="text-white">Correction Feedback Loop:</strong> No way to improve wrong answers. Implemented NLP correction parser — users now improve the system through natural conversation.</p>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="text-teal-400 font-bold text-sm shrink-0 mt-0.5">Sprint 6</span>
-          <p class="text-gray-300 text-sm"><strong class="text-white">Unified Streamlit UI:</strong> Merged two independent systems into one 3-tab application. Built backend bridge, .env config system, sidebar settings panel, per-lecture progress bars, Expand Knowledge Base tab, post-run sync prompt, and Plus Jakarta Sans typography. Two disconnected CLI tools became one holistic study platform.</p>
-        </div>
-      </div>
-
-      <p class="mb-6">This project reflects a working philosophy: identify the real problem, pick tools that solve it efficiently, use every resource available (including AI) to compress timelines, and iterate until the system actually does what it's supposed to do. The assistant is live and in daily use — a free tutor that makes a measurable difference for anyone struggling with the pace of technical online courses.</p>
-
-      <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-        <p class="text-gray-300 text-sm text-center mb-3">The unified project is open source:</p>
-        <div class="flex flex-wrap justify-center gap-4">
-          <a href="https://github.com/mattieg93/coursera-study-assistant" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-colors" style="color: white;">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            Coursera Study Assistant
-          </a>
-        </div>
-      </div>
+      <h2>Why This Project Belongs in This Portfolio</h2>
+      <p>V1 was a Streamlit script. V2 is a production-grade full-stack application. The V2.0 rewrite required designing a real API contract between frontend and backend, replacing a synchronous UI framework with an async server that supports three different real-time patterns (HTTP streaming, SSE, WebSocket) on different data paths, and migrating LLM inference off an external daemon onto in-process native hardware acceleration. The domain is education, but the engineering problems are the same ones that appear in any data product: latency, streaming, state isolation, and graceful degradation when an inference call fails.</p>
     </div>`,
     category: 'personal',
-    technologies: ['Python', 'Streamlit', 'Apple Vision Framework', 'EasyOCR', 'OpenCV', 'Ollama', 'Sentence Transformers', 'RAG', 'Playwright', 'Google Docs API', 'OAuth 2.0', 'python-dotenv', 'NumPy', 'Pillow', 'Asyncio'],
+    technologies: [
+      'React 19', 'TypeScript', 'Vite', 'FastAPI', 'Python',
+      'MLX', 'mlx-lm', 'mlx-vlm', 'Apple Silicon',
+      'Sentence Transformers', 'RAG', 'Playwright',
+      'Google Docs API', 'TanStack Query', 'Zustand', 'Tailwind CSS', 'PyMuPDF'
+    ],
     image: '/assets/images/study-system.png',
     githubUrl: 'https://github.com/mattieg93/coursera-study-assistant',
     impact: {
-      metric: 'Study Time Saved',
-      value: '60%'
+      metric: 'Infrastructure cost — runs entirely on-device',
+      value: '$0'
     },
-    tags: ['AI', 'Python', 'Computer Vision', 'RAG', 'NLP', 'Automation', 'Education Technology', 'AI-Assisted Development', 'Local LLM', 'Streamlit', 'Ollama', 'Free Tutor'],
+    tags: ['AI', 'Python', 'React', 'FastAPI', 'MLX', 'RAG', 'Vision LLM', 'Apple Silicon', 'Local LLM', 'Education Technology', 'WebSocket', 'SSE'],
     featured: true,
-    date: '2026-03-10'
+    date: '2026-05-29'
   },
   {
     id: 'queer-data-network',
     title: 'Queer Data Network: Community Platform',
-    description: 'Full-stack community platform for LGBTQ+ professionals in data and tech. Built from concept to production with React, Azure Functions, and MongoDB - featuring authentication, moderation tools, and privacy-first analytics.',
-    longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">Building Community Infrastructure for LGBTQ+ Data Professionals</h2>
-      
-      <div class="bg-gradient-to-r from-purple-500/20 to-orange-500/20 rounded-lg p-6 border border-purple-500/30 mb-8 text-center">
-        <p class="text-lg text-purple-200 font-medium mb-4">Live Community Platform</p>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-purple-400 mb-2">1 Month</div>
-            <div class="text-sm text-gray-300">Concept to production</div>
-          </div>
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-orange-500 mb-2">18+ Endpoints</div>
-            <div class="text-sm text-gray-300">Custom REST API</div>
-          </div>
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-purple-500 mb-2">Privacy-First</div>
-            <div class="text-sm text-gray-300">No third-party tracking</div>
-          </div>
-        </div>
-      </div>
-      
-      <p class="mb-6">Queer Data Network is a community platform I designed and built for LGBTQ+ people working with data and technology. The site provides a space to share resources, discuss ethical data practices, organize events, and connect with others who understand both the technical and identity-specific challenges in this field.</p>
-      
-      <h3 class="text-xl font-bold text-white mb-4">The Problem I Solved</h3>
-      
-      <p class="mb-6">LGBTQ+ professionals in data and tech often face unique challenges: working with datasets that erase or misrepresent queer identities, navigating workplace cultures that aren't always inclusive, and lacking peer networks who understand both the technical work <em>and</em> the lived experience. I wanted to create a space that addressed these needs while prioritizing community safety and user privacy.</p>
-      
-      <div class="grid md:grid-cols-2 gap-6 my-8">
-        <div class="bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg p-6 border border-purple-500/30">
-          <h3 class="text-xl font-semibold text-purple-300 mb-3">Technical Architecture</h3>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• React 18.2 SPA with React Router</li>
-            <li>• Azure Functions (Python) serverless backend</li>
-            <li>• MongoDB via Azure Cosmos DB</li>
-            <li>• Custom JWT authentication & RBAC</li>
-            <li>• GitHub Actions CI/CD pipeline</li>
-          </ul>
-        </div>
-        <div class="bg-gradient-to-br from-emerald-600/20 to-purple-500/20 rounded-lg p-6 border border-emerald-600/30">
-          <h3 class="text-xl font-semibold text-emerald-300 mb-3">Community Features</h3>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Resource library with rich text editing</li>
-            <li>• Community board (discussions, events)</li>
-            <li>• Moderation tools & content reporting</li>
-            <li>• Role-based permissions system</li>
-            <li>• Anonymous analytics with 90-day retention</li>
-          </ul>
-        </div>
-      </div>
-      
-      <h3 class="text-xl font-bold text-white mb-4">Key Technical Challenges</h3>
-      
-      <div class="space-y-4 mb-6">
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">Secure Authentication</h4>
-          <p class="text-gray-300 text-sm">Implemented stateless JWT system with access and refresh tokens. All protected routes verify tokens server-side and extract user IDs from JWT to prevent spoofing—giving full control over security without OAuth dependencies.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-2">Performance Optimization</h4>
-          <p class="text-gray-300 text-sm">Built batched pageview tracker buffering up to 10 events client-side, flushing every 30 seconds or when full. Reduced API calls by ~90% while maintaining accurate analytics.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-orange-500 mb-2">Content Security</h4>
-          <p class="text-gray-300 text-sm">Integrated Quill.js for rich text editing with DOMPurify sanitization to prevent XSS attacks while allowing formatted content. Added comprehensive moderation tools with hide/unhide and role-based permissions.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-emerald-400 mb-2">Privacy-First Analytics</h4>
-          <p class="text-gray-300 text-sm">Designed analytics for authenticated and anonymous users without tracking personal data. Session-based deduplication with 5-minute window and automatic 90-day expiration ensures privacy compliance.</p>
-        </div>
-      </div>
-      
-      <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-6 border border-blue-500/30 my-8">
-        <h3 class="text-lg font-semibold text-purple-300 mb-4">Full Feature Set</h3>
-        <div class="grid md:grid-cols-2 gap-4">
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
-              User registration & profile management
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
-              Resource library with CRUD operations
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
-              Community board (discussions, events, announcements)
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-              Reaction system & nested commenting
-            </li>
-          </ul>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
-              Admin moderation panel
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
-              User reporting & content safety tools
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
-              Terms acceptance flow
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-              Analytics dashboard with engagement metrics
-            </li>
-          </ul>
-        </div>
-      </div>
-      
-      <h3 class="text-xl font-bold text-white mb-4">Design Philosophy</h3>
-      
-      <p class="mb-4">Building QDN required thinking holistically about product development—not just writing code, but understanding community needs, implementing safety mechanisms, and creating sustainable infrastructure. Key decisions:</p>
-      
-      <ul class="space-y-2 mb-6 text-gray-300">
-        <li class="flex items-start gap-3">
-          <span class="text-purple-500 mt-1">•</span>
-          <span><strong>No third-party tracking or ads:</strong> Users own their data with transparent collection practices</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-orange-500 mt-1">•</span>
-          <span><strong>Custom authentication:</strong> Full control over user experience without external dependencies</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-purple-500 mt-1">•</span>
-          <span><strong>Serverless architecture:</strong> Sub-$10/month costs while maintaining scalability</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="text-emerald-400 mt-1">•</span>
-          <span><strong>Privacy-first analytics:</strong> Anonymous tracking with automatic deletion</span>
-        </li>
+    description: 'Full-stack community platform for LGBTQ+ professionals in data and tech. Built from concept to production with React, Azure Functions, and MongoDB — featuring authentication, role-based moderation, A/B-tested policy rollouts, LangChain/RAG-powered resource discovery, and privacy-first analytics.',
+
+longDescription: `<div class="space-y-8">
+
+      <h2>Why This Platform Exists</h2>
+      <p>LGBTQ+ professionals in data and tech navigate challenges that general professional communities don&rsquo;t address: working with datasets that erase or misrepresent queer identities, operating in cultures that aren&rsquo;t always inclusive, and lacking peer networks who understand both the technical work and the lived experience. Queer Data Network is a purpose-built community platform that treats those needs as first-class product requirements &mdash; not afterthoughts.</p>
+
+      <h2>From Concept to Production in One Month</h2>
+      <p>The scope was deliberately full: authentication, role-based permissions, a resource library, community board, content moderation, privacy-first analytics, and a working CI/CD pipeline. The one-month constraint forced architectural clarity. Every decision was made to maximise surface area shipped rather than infrastructure elegance.</p>
+
+      <h2>Technical Architecture</h2>
+      <ul>
+        <li><strong>Frontend:</strong> React 18.2 SPA with React Router &mdash; component-driven, stateful, accessible.</li>
+        <li><strong>Backend:</strong> Azure Functions (Python) &mdash; serverless, event-driven, scales to zero between bursts.</li>
+        <li><strong>Database:</strong> MongoDB via Azure Cosmos DB (MongoDB API) &mdash; flexible document model for community content.</li>
+        <li><strong>Auth:</strong> Custom stateless JWT system &mdash; access + refresh tokens, server-side verification on all protected routes, user IDs extracted from JWT payload (no session store, no OAuth dependency).</li>
+        <li><strong>CI/CD:</strong> GitHub Actions deploys to Azure Static Web Apps on every push to <code>main</code>.</li>
       </ul>
-      
-      <h3 class="text-xl font-bold text-white mb-4">Interactive Image Gallery</h3>
-      
+
+      <h2>Community Features</h2>
+      <ul>
+        <li>Resource library with Quill.js rich-text editor and DOMPurify sanitization (XSS prevention without sacrificing formatted content)</li>
+        <li>Community board: discussions, events, announcements, nested commenting, reactions</li>
+        <li>Role-based permissions enforced at the API layer: member / moderator / admin</li>
+        <li>Moderation tools: hide/unhide content, user reporting, admin panel for pending reports</li>
+        <li>Terms acceptance flow gates access to community content</li>
+        <li>18+ custom REST endpoints across auth, content, analytics, and moderation surfaces</li>
+      </ul>
+
+      <h2>Experimentation &amp; AI Features</h2>
+      <ul>
+        <li><strong>A/B testing and frequentist hypothesis testing</strong> evaluate moderation policy changes and feature rollouts &mdash; decisions about community rules are treated as experiments with measurable outcomes, not instinct calls.</li>
+        <li><strong>LangChain/RAG</strong> powers conversational resource discovery &mdash; members can ask questions in natural language and get answers grounded in the curated resource library rather than returning a generic search list.</li>
+      </ul>
+
+      <h2>Privacy-First Analytics</h2>
+      <p>The pageview tracker was built from scratch. It buffers up to 10 events client-side and flushes every 30 seconds or when full &mdash; reducing API calls ~90% compared to per-page tracking. Session-based deduplication (5-minute window) prevents double-counts without storing personally identifiable data. All analytics records expire after 90 days automatically.</p>
+      <p><strong>No third-party tracking scripts. No ad pixels. No external analytics services.</strong> Users own their data.</p>
+
+      <h2>Image Gallery</h2>
+
       <!--QDN_IMAGE_GALLERY-->
-      
-      <p class="mb-6">This project pushed me to architect a complete product from concept to production, implementing secure authentication patterns, building moderation infrastructure, and creating sustainable systems that can scale. The platform is live and accepting members—focused on growing the community while continuing to iterate on features.</p>
-      
-      <div class="text-center">
-        <a href="https://queerdatanetwork.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105">
-          Visit Queer Data Network
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-          </svg>
-        </a>
-      </div>
+
+      <h2>Design Philosophy</h2>
+      <p>Every technical decision had a community-safety analogue. Custom auth gives full control over rate limiting and account lockout without handing credentials to a third party. DOMPurify protects members from malicious content without disabling rich formatting. Privacy-first analytics let the platform understand growth without surveilling members. Serverless infrastructure keeps costs under $10/month while maintaining the ability to absorb traffic spikes during events or press coverage.</p>
+
     </div>`,
     category: 'personal',
     technologies: ['React', 'Azure Functions', 'Python', 'MongoDB', 'Azure Cosmos DB', 'JWT Authentication', 'REST API', 'Azure Static Web Apps', 'GitHub Actions', 'Quill.js', 'DOMPurify', 'bcrypt'],
@@ -463,106 +244,35 @@ const baseProjects: Project[] = [
     id: 'shutdown-skies',
     title: 'Shutdown Skies: Aviation Impact Analysis',
     description: 'Advanced data science project analyzing government shutdown impacts on aviation operations using causal inference, time series forecasting, and economic modeling.',
-    longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">Government Shutdowns vs Aviation Operations: A Data Science Investigation</h2>
-      
-      <div class="bg-gradient-to-r from-orange-500/20 to-purple-500/20 rounded-lg p-6 border border-orange-500/30 mb-8 text-center">
-        <p class="text-lg text-red-200 font-medium mb-4">🛫 Quantifying Hidden Costs of Political Decisions</p>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-orange-500 mb-2">$11+ Billion</div>
-            <div class="text-sm text-gray-300">Economic impact of 2018-2019 shutdown</div>
-          </div>
-          <div class="bg-gray-800/50 rounded-lg p-4">
-            <div class="text-2xl font-bold text-purple-500 mb-2">35 Days</div>
-            <div class="text-sm text-gray-300">Longest government shutdown analyzed</div>
-          </div>
-        </div>
-      </div>
-      
-      <p class="mb-6">What happens when political gridlock meets critical infrastructure? Shutdown Skies represents the first comprehensive data science analysis of how U.S. government shutdowns cascade through the aviation system, combining cutting-edge machine learning with causal inference to quantify impacts and predict recovery timelines.</p>
-      
-      <div class="grid md:grid-cols-3 gap-6 my-8">
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <div class="text-2xl mb-3">📊</div>
-          <h3 class="text-lg font-semibold text-orange-500 mb-2">Causal Impact Analysis</h3>
-          <p class="text-gray-300 text-sm">Advanced statistical methods including difference-in-differences and synthetic controls to isolate shutdown effects from seasonal patterns.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <div class="text-2xl mb-3">🤖</div>
-          <h3 class="text-lg font-semibold text-purple-500 mb-2">Predictive Modeling</h3>
-          <p class="text-gray-300 text-sm">Machine learning ensemble combining Prophet, XGBoost, and LSTM networks to forecast recovery timelines with confidence intervals.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <div class="text-2xl mb-3">💰</div>
-          <h3 class="text-lg font-semibold text-emerald-400 mb-2">Economic Quantification</h3>
-          <p class="text-gray-300 text-sm">Comprehensive cost modeling including passenger time losses, airline operations, and ripple effects across the economy.</p>
-        </div>
-      </div>
-      
-      <h3 class="text-xl font-bold text-white mb-4">The Hidden Cost of Political Gridlock</h3>
-      
-      <p class="mb-6">Government shutdowns don't just affect federal employees—they create cascading disruptions across critical infrastructure. This project reveals how political decisions translate into measurable economic impacts through the aviation system. Using data from the Bureau of Transportation Statistics, FAA operations data, and economic indicators, we built the first predictive framework for understanding shutdown consequences.</p>
-      
-      <p class="mb-6">The analysis covers five major shutdowns from 1995-2019, examining over 2 million flight records across 15 major airports. Our models detect statistically significant increases in delay rates, quantify economic losses in real-time, and predict recovery patterns with 85% accuracy.</p>
-      
-      <div class="bg-gradient-to-r from-purple-500/20 to-orange-500/20 rounded-lg p-6 border border-purple-500/30 my-8">
-        <h3 class="text-lg font-semibold text-purple-300 mb-4">Advanced Techniques Showcased</h3>
-        <ul class="space-y-2 text-gray-300">
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
-            Causal inference with difference-in-differences and synthetic control methods
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-            Time series modeling with Prophet, ARIMA, and LSTM ensemble approaches
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
-            Advanced feature engineering with lag variables and rolling statistics
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-            Monte Carlo simulation for uncertainty quantification and scenario analysis
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
-            Interactive dashboard with real-time impact visualization and prediction tools
-          </li>
-        </ul>
-      </div>
-      
-      <h3 class="text-xl font-bold text-white mb-4">Key Discoveries</h3>
-      
-      <div class="grid md:grid-cols-2 gap-6 my-6">
-        <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-          <h4 class="font-semibold text-orange-500 mb-2">📈 Impact Magnitude</h4>
-          <p class="text-gray-300 text-sm">Flight delay rates increase by 45-85% during shutdowns, with security and air traffic control delays showing the highest spikes due to staffing shortages.</p>
-        </div>
-        <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-          <h4 class="font-semibold text-purple-300 mb-2">⏱️ Recovery Patterns</h4>
-          <p class="text-gray-300 text-sm">Average recovery time is 2.3x the shutdown duration, with hub airports taking significantly longer to return to baseline operations.</p>
-        </div>
-        <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-          <h4 class="font-semibold text-emerald-300 mb-2">💸 Economic Scale</h4>
-          <p class="text-gray-300 text-sm">Each shutdown day costs the aviation system an additional $127M beyond normal delay costs, compounding exponentially with duration.</p>
-        </div>
-        <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-          <h4 class="font-semibold text-purple-300 mb-2">🎯 Predictive Power</h4>
-          <p class="text-gray-300 text-sm">Models achieve 85% accuracy in predicting recovery timelines, enabling proactive planning for airlines and airports during future shutdowns.</p>
-        </div>
-      </div>
-      
-      <p class="mb-6">This project demonstrates how advanced data science can illuminate the real-world consequences of policy decisions, providing stakeholders with quantitative tools for risk assessment and contingency planning. The methodology is reusable for analyzing other infrastructure disruptions and policy impacts.</p>
-      
-      <div class="text-center">
-        <a href="https://shutdownskies.streamlit.app/" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105">
-          🚀 Explore Live Dashboard
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-          </svg>
-        </a>
-      </div>
+longDescription: `<div class="space-y-8">
+
+      <h2>The Question</h2>
+      <p>Government shutdowns are usually quantified in terms of federal employee furloughs and direct spending pauses. The harder question is: what do they cost the systems those employees operate? Shutdown Skies is a data science investigation into how U.S. government shutdowns cascade through the aviation system, using causal inference and ensemble time-series forecasting to quantify impact and predict recovery.</p>
+
+      <h2>Scope and Data</h2>
+      <p>Five major shutdowns from 1995 to 2019, over 2 million flight records across 15 major airports, Bureau of Transportation Statistics operations data, FAA staffing records, and economic indicators. The 2018&ndash;2019 shutdown &mdash; 35 days, the longest in U.S. history &mdash; is the primary case study.</p>
+
+      <h2>Methods</h2>
+      <ul>
+        <li><strong>Causal inference:</strong> difference-in-differences and synthetic control methods isolate shutdown effects from seasonal patterns and macroeconomic noise &mdash; answering &ldquo;what would have happened without the shutdown&rdquo; rather than just &ldquo;what happened.&rdquo;</li>
+        <li><strong>Time-series ensemble:</strong> Prophet, ARIMA, and LSTM combined to model baseline delay rates and forecast recovery timelines with confidence intervals. The ensemble outperforms any single method at the two-week prediction horizon.</li>
+        <li><strong>Feature engineering:</strong> lag variables, rolling statistics, day-of-week seasonality, and shutdown-duration interaction terms.</li>
+        <li><strong>Monte Carlo simulation:</strong> uncertainty quantification and scenario analysis across different shutdown durations and recovery profiles.</li>
+        <li><strong>Economic quantification:</strong> passenger time-cost modeling, airline operations disruption, and downstream multiplier effects.</li>
+      </ul>
+
+      <h2>Key Findings</h2>
+      <ul>
+        <li>Flight delay rates increase 45&ndash;85% during shutdowns, with security and air traffic control delays spiking highest due to staffing shortages.</li>
+        <li>Each day of shutdown costs the aviation system an additional $127M beyond normal delay costs &mdash; and the cost compounds non-linearly with duration.</li>
+        <li>Average recovery time is <strong>2.3&times; the shutdown duration</strong>. Hub airports take significantly longer to return to baseline than regional airports.</li>
+        <li>The 2018&ndash;2019 shutdown produced over $11B in total economic impact across the aviation ecosystem.</li>
+        <li>The ensemble model achieves 85% accuracy predicting recovery timelines, enabling proactive contingency planning.</li>
+      </ul>
+
+      <h2>Deliverable</h2>
+      <p>An interactive Streamlit dashboard providing real-time impact visualization and a prediction tool: enter a shutdown duration, receive a modelled delay rate trajectory and recovery timeline with confidence bounds. Published on GitHub; live demo available.</p>
+
     </div>`,
     category: 'personal',
     technologies: ['Python', 'Causal Inference', 'Time Series Analysis', 'Machine Learning', 'Prophet', 'XGBoost', 'Statistical Modeling', 'Economic Analysis', 'Interactive Dashboards', 'Policy Analysis'],
@@ -579,267 +289,177 @@ const baseProjects: Project[] = [
   },
   {
     id: 'mtg-ecorec',
-    title: 'MTG EcoRec: AI-Powered Commander Deck Builder',
-    description: 'Modern web application combining AI-powered Commander deck building with comprehensive MTG data analytics. Features Perplexity AI integration, real-time card analysis, and intelligent deck recommendations.',
-    longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">AI-Powered Commander Deck Builder & MTG Analytics</h2>
-      
-      <div class="bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-lg p-6 border border-emerald-500/30 mb-8 text-center">
-        <p class="text-lg text-emerald-200 font-medium mb-4">🚀 Live Application - Azure Hosted</p>
-        <a href="https://mtgecorec-b9fkfngtawggfpbw.westus3-01.azurewebsites.net/" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-purple-600 hover:from-emerald-700 hover:to-purple-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105">
-          🎯 Launch MTG EcoRec
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-          </svg>
-        </a>
-      </div>
-      
-      <p class="mb-6">A sophisticated web application designed for competitive players, data analysts, and MTG enthusiasts who want intelligent card recommendations backed by real-time analysis. Combines the power of AI with comprehensive data analytics to elevate your Commander game.</p>
-      
-      <div class="grid md:grid-cols-2 gap-6 my-8">
-        <div class="bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg p-6 border border-purple-500/30">
-          <div class="text-3xl mb-3">🤖</div>
-          <h3 class="text-xl font-semibold text-purple-300 mb-3">AI Commander Deck Builder</h3>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Complete deck building interface with side-by-side layout</li>
-            <li>• Perplexity AI integration for intelligent card suggestions</li>
-            <li>• Visual card previews with automatic fallback handling</li>
-            <li>• Smart export to Scryfall with manabase suggestions</li>
-            <li>• Synergy detection and power level optimization</li>
-          </ul>
-        </div>
-        <div class="bg-gradient-to-br from-emerald-500/20 to-blue-500/20 rounded-lg p-6 border border-emerald-500/30">
-          <div class="text-3xl mb-3">�</div>
-          <h3 class="text-xl font-semibold text-emerald-300 mb-3">Advanced Analytics</h3>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Paginated browser for 35,000+ MTG cards</li>
-            <li>• Real-time data visualizations with Chart.js</li>
-            <li>• Color, type, and set analysis</li>
-            <li>• Interactive narrative with dynamic insights</li>
-            <li>• Multi-filter search with live results</li>
-          </ul>
-        </div>
-      </div>
-      
-      <h3 class="text-xl font-bold text-white mb-4">Technical Architecture</h3>
-      
-      <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <h4 class="font-semibold text-purple-500 mb-3">Backend Infrastructure</h4>
-          <ul class="space-y-1 text-gray-300 text-sm">
-            <li>• Python Flask with async capabilities</li>
-            <li>• Azure Cosmos DB (MongoDB API) - 35K+ cards</li>
-            <li>• Perplexity AI for card recommendations</li>
-            <li>• Scryfall API integration with real-time updates</li>
-            <li>• Secure authentication with session management</li>
-          </ul>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <h4 class="font-semibold text-purple-400 mb-3">Frontend Experience</h4>
-          <ul class="space-y-1 text-gray-300 text-sm">
-            <li>• Bootstrap 5 with custom dark theme</li>
-            <li>• Vanilla JavaScript with modular architecture</li>
-            <li>• Chart.js for dynamic visualizations</li>
-            <li>• Progressive enhancement & async loading</li>
-            <li>• Mobile-first responsive design</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-6 border border-blue-500/30 my-8">
-        <h3 class="text-lg font-semibold text-blue-300 mb-4">✅ Fully Implemented Features</h3>
-        <div class="grid md:grid-cols-2 gap-4">
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Complete Commander Deck Builder with AI recommendations
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Visual card display with smart fallback handling
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Export integration with Scryfall deck builder
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Authentication system with secure sessions
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Advanced card browser with filtering
-            </li>
-          </ul>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Interactive data visualizations with Chart.js
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Responsive design with mobile optimization
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Azure deployment with Infrastructure as Code
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Progressive loading with optimized performance
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-              Perplexity AI integration for strategic insights
-            </li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-lg p-6 border border-orange-500/30 my-8">
-        <h3 class="text-lg font-semibold text-orange-300 mb-4">🚧 Future Roadmap</h3>
-        <div class="grid md:grid-cols-2 gap-4">
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Advanced deck management (save/load/share)</li>
-            <li>• Price tracking with TCG Player integration</li>
-            <li>• Meta analysis and competitive insights</li>
-          </ul>
-          <ul class="space-y-2 text-gray-300 text-sm">
-            <li>• Deck testing and goldfish simulation</li>
-            <li>• Machine learning meta predictions</li>
-            <li>• Community features and deck sharing</li>
-          </ul>
-        </div>
-      </div>
-      
-      <p class="mb-6">From casual deck building to competitive analysis, MTG EcoRec provides the tools and insights needed to optimize gameplay. The application showcases modern full-stack development with AI integration, scalable cloud architecture, and sophisticated data analytics.</p>
-      
-      <div class="text-center">
-        <div class="flex flex-wrap justify-center gap-4">
-          <a href="https://mtgecorec-b9fkfngtawggfpbw.westus3-01.azurewebsites.net/" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105">
-            🚀 Launch Application
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-            </svg>
-          </a>
-          <a href="https://github.com/mattieg93/mtgecorec" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105" style="color: white;">
-            📚 View Source Code
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
+    title: 'MTG EcoRec: Archetype-Aware Commander Deck Engine',
+    description: 'A full-stack Commander deck builder that solves a structural problem the incumbents cannot: popularity-based recommenders are self-reinforcing, archetype-blind, and never surface genuinely better but lesser-known cards. EcoRec combines a 7-component deterministic scorer, Voyage AI semantic embeddings + MongoDB Atlas Vector Search across 110,000 cards, and a Monte Carlo goldfish simulator that grades the deck it just built — wrapped in a freemium Stripe + PayPal SaaS.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Problem Existing Tools Cannot Solve</h2>
+      <p>Magic: The Gathering has ~30,000 unique cards in active use and ~50 million Commander players globally. Every existing deck-building tool — EDHREC, Moxfield, Archidekt — answers the same question the same way: <strong>what do other people put in decks with this commander?</strong> They aggregate decklists and surface the most-played cards. That is a pure popularity signal, and it has a compounding structural flaw:</p>
+      <ul>
+        <li><strong>It is self-reinforcing.</strong> Popular cards get recommended → more decks include them → inclusion rate climbs → they get recommended even more. Better but lesser-known cards never surface.</li>
+        <li><strong>It is archetype-blind.</strong> An aristocrats deck and a token-swarm deck look identical to a popularity ranker if they share staples like Sol Ring. The tools don't understand <em>why</em> a card belongs.</li>
+        <li><strong>It cannot discover obscurity.</strong> A card printed two months ago, or a $0.50 card that does the job of a $30 staple, has no inclusion history. Popularity tools cannot recommend it regardless of how good it is.</li>
+        <li><strong>It cannot grade what it builds.</strong> Existing tools hand you a list and walk away. They cannot tell you whether the deck will actually cast its spells on curve.</li>
+      </ul>
+      <p><strong>No existing tool combines semantic understanding of card text, archetype mechanics, vector similarity for obscurity detection, <em>and</em> a Monte Carlo goldfish simulator that grades the resulting deck. That gap is what EcoRec is built to fill.</strong></p>
+
+      <h2>What EcoRec Does Differently</h2>
+
+      <h3>1. Archetype-First 7-Component Scoring Engine</h3>
+      <p>The recommendation engine is a deterministic, fully auditable scorer — not a neural network, not a popularity lookup. Each card receives a score from seven interpretable components:</p>
+      <ul>
+        <li><strong>Synergy (30%)</strong> — Jaccard similarity on extracted mechanics between card and commander</li>
+        <li><strong>Archetype Fit (25%)</strong> — CSV weight table mapping card mechanics to 40+ named archetypes (aggressive, control, combo, stax, tokens, aristocrats, reanimator, …)</li>
+        <li><strong>Base Power (15%)</strong> — Raw card power heuristics (tutor effect, draw rate, mana efficiency)</li>
+        <li><strong>Combo Potential (15%)</strong> — Known infinite combo relationships from Commander Spellbook (3,000+ combos)</li>
+        <li><strong>Mana Curve (10%)</strong> — CMC distribution fit relative to gaps in the current pool</li>
+        <li><strong>Type Balance (5%)</strong> — Creature/spell/land balance</li>
+        <li><strong>Color Identity</strong> — Hard filter; any card outside commander color identity scores zero</li>
+      </ul>
+      <p>The synergy engine extracts 60+ MTG-specific keywords from oracle text using regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. <strong>A card is recommended because it functionally belongs in the strategy — not because 37% of random decks happen to run it.</strong></p>
+
+      <h3>2. Vectorized Obscurity Detection — The Product Moat</h3>
+      <p>The obscurity scoring layer is what makes EcoRec defensible. It runs on:</p>
+      <ul>
+        <li><strong>Voyage AI <code>voyage-4-lite</code></strong> — 1024-dimensional text embeddings of all 110,000+ MTG cards (name, type line, oracle text, mechanics → semantic vector)</li>
+        <li><strong>MongoDB Atlas <code>$vectorSearch</code></strong> — ANN cosine similarity at scale</li>
+        <li><strong>Per-commander profiles</strong> — averaged vectors from EDHREC top decklists, so the query knows what a Kaalia or Atraxa deck "feels like" semantically</li>
+      </ul>
+      <p>Hidden-gem criteria: a card surfaces when it is in the top 200 by vector similarity (functionally relevant — not random), has &lt;20% EDHREC inclusion (genuinely underplayed), and costs ≤ its popular equivalent. It gets a 1.5–2.0× score multiplier and is shown with comparison text: <em>"Similar to Dockside Extortionist (in 72% of decks) — $28 cheaper."</em></p>
+      <p><strong>This combination — archetype-aware scoring + semantic vector search + obscurity detection — cannot be replicated by adding a filter to a popularity table.</strong></p>
+
+      <h3>3. Budget-Aware Architecture</h3>
+      <p>Budget is enforced end-to-end, not as a post-hoc filter. Three-tier price resolution (live Scryfall cache → embedded prices → sentinel <code>999.0</code>). Per-card cap of <code>budget / 50</code> pre-filters the pool. A post-assembly swap pass guarantees no over-budget cards survive. A $50 budget yields a coherent 99-card deck — not a premium deck with 10 cards swapped out.</p>
+
+      <h3>4. Monte Carlo Goldfish Simulator — The Grading Engine</h3>
+      <p>After a deck is built, the user can run it through a full solitaire simulator that plays N games (default 500) and produces a graded report. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck.</strong></p>
+      <p>The simulator is a self-contained pure-Python engine: frozen <code>SimCard</code> dataclasses for deterministic state, a turn-by-turn engine with untap/draw/land-drop/mana/cast/ramp/treasure logic, and analyzers that compute mana health, tempo, and color screw. <strong>Grading is bracket-aware</strong> — a casual bracket-2 deck is graded against more forgiving curves than an optimized bracket-4 cEDH deck.</p>
+      <p>Three scores drive the letter grade:</p>
+      <ul>
+        <li><strong>Mana health</strong> = <code>(1 − max(color_screw + mana_screw, flood_rate)) × 100</code></li>
+        <li><strong>Tempo</strong> — turn-2/3/4 hit rates vs expected</li>
+        <li><strong>Color screw rate</strong> — fraction of games where the right colors never arrived</li>
+      </ul>
+      <p>A deck that builds beautifully but goldfishes at a D-grade is honestly told so. The user can then tweak the bracket, swap cards, and re-simulate.</p>
+
+      <h3>Verified Results (500 games per run, bracket 3)</h3>
+      <ul>
+        <li><strong>Atraxa, 4-color, no budget:</strong> color screw 30% → 9.2%, mana health 63 → 81, <strong>D → C</strong></li>
+        <li><strong>Atraxa, 4-color, $150 budget:</strong> color screw 30% → 17%, mana health 63 → 75, <strong>D → C</strong></li>
+        <li><strong>Yennett, 3-color:</strong> zero mediocre lands, 13.8% color screw, <strong>grade C</strong></li>
+        <li><strong>Omnath, mono-G:</strong> mana health 91.6, 0.4% color screw, <strong>grade B</strong></li>
+      </ul>
+
+      <h2>System Architecture</h2>
+      <p>The data pipeline ingests Scryfall bulk JSON (~110k cards), enriches with detected mechanics and MDFC <code>card_faces</code> data, scrapes EDHREC top decklists, generates 1024-dim Voyage embeddings, builds per-commander averaged profiles, and precomputes 500 cards × 32 color identities = 16,000 cached scores. Atlas Vector Search indexes the embeddings for cosine ANN at query time.</p>
+      <p>The Flask application exposes ~73 routes split across recommendation, deck management, card browse, commerce, and admin surfaces. Long-running recommendation and simulation jobs use an in-process job store with a <code>job_id</code> polling pattern — clients poll <code>GET /api/jobs/&lt;job_id&gt;</code> until status flips to done.</p>
+
+      <h2>Technical Stack</h2>
+      <ul>
+        <li><strong>Backend:</strong> Flask 3.1 + Python 3.12; <code>pymongo</code> against MongoDB Atlas or Azure Cosmos DB (MongoDB API) — no vendor lock-in</li>
+        <li><strong>Embeddings:</strong> Voyage AI <code>voyage-4-lite</code> (1024-dim); resumable pipeline</li>
+        <li><strong>Vector search:</strong> MongoDB Atlas <code>$vectorSearch</code> with graceful degradation if unavailable</li>
+        <li><strong>Combos:</strong> Commander Spellbook API (3,000+ infinite combos)</li>
+        <li><strong>Auth:</strong> Flask sessions + PBKDF2-SHA256 (100k iterations, 64-char salt), CSRF-protected, rate-limited</li>
+        <li><strong>Payments:</strong> Stripe + PayPal (subscription + one-time shop purchases)</li>
+        <li><strong>Email:</strong> Resend (verification, password reset, order/shipping notifications)</li>
+        <li><strong>Monitoring:</strong> Sentry SDK with Flask integration</li>
+        <li><strong>Hosting:</strong> Railway.com (Gunicorn, devcontainer-mirrored env)</li>
+      </ul>
+
+      <h2>Product Architecture — Freemium SaaS</h2>
+      <p>A fully implemented subscription system runs on top of the engine:</p>
+      <ul>
+        <li><strong>Free</strong> — 3 deck generations/day, 5 saved decks, goldfish simulation upsell only</li>
+        <li><strong>Premium ($5/mo)</strong> — 50 generations/month, unlimited saved decks, 5 sims/month</li>
+        <li><strong>Pro ($20/mo)</strong> — unlimited generations, unlimited saves, 50 sims/month</li>
+      </ul>
+      <p>Stripe Checkout + Customer Portal, PayPal subscription billing, webhook handlers for every lifecycle event (activation, renewal, cancellation, payment failure), and Resend email notifications for each. A physical-product shop (deck boxes, DragonShield sleeves) sits on the same Stripe infrastructure with full order lifecycle tracking. A complete <code>/admin/*</code> portal provides dashboards for revenue, orders, users, products, and subscription auditing across both billing providers.</p>
+
+      <h2>Defensive Engineering Patterns</h2>
+      <ul>
+        <li><strong>Graceful degradation</strong> — any missing optional dependency (Voyage AI, Atlas vector index, Sentry) silently falls back. The system never hard-fails because an optional service is down.</li>
+        <li><strong>Identity-keyed TTL cache</strong> — card pool queries cached by <code>tuple(sorted(color_identity))</code>. Bounded to 32 buckets, bounded memory.</li>
+        <li><strong>Frozen dataclasses for simulation</strong> — <code>SimCard</code> is <code>frozen=True, slots=True</code> to prevent state leak between games. Fetchland substitution uses <code>dataclasses.replace()</code>.</li>
+        <li><strong>Pre-filter floors</strong> — non-basic Lands get a guaranteed minimum keyword score so shock lands and fetches survive the 2,000-card pool trim regardless of commander oracle text.</li>
+        <li><strong>Sentinel pricing</strong> — unpriced Reserved List cards get <code>999.0</code> so they correctly fail budget filters rather than being treated as free.</li>
+      </ul>
+
+      <h2>Recent Work: Mana-Base Hardening (Wave 1 + Wave 5)</h2>
+      <p>A multi-week iteration significantly hardened the mana-base recommender:</p>
+      <ul>
+        <li><strong>MDFC enrichment:</strong> Modal Double-Faced cards had <code>oracle_text: null</code> because their text lived in <code>card_faces</code>, which had been stripped to reduce Atlas storage. A one-time enrichment tool re-loaded <code>produced_mana</code> + <code>card_faces</code> from Scryfall for 21,852 cards.</li>
+        <li><strong>Two-pass deficit-weighted basic distribution:</strong> Pass 1 guarantees ≥1 basic per color; Pass 2 distributes the remainder weighted by color deficit (most-underserved first). Fixed a long-standing bug where the recommender shipped 0 basics of a needed color.</li>
+        <li><strong>Color-aware land scoring:</strong> +0.15 confidence bonus for lands covering high-pip colors. Command Tower / City of Brass / Exotic Orchard take a fast path.</li>
+        <li><strong>Quality penalties:</strong> depletion-counter lands (Sand Silos, Hollow Trees, Icatian Store) take −0.25 to −0.40 — the recommender stops shipping bad lands when better options exist.</li>
+        <li><strong>Eleven simulation bug fixes:</strong> extra-land-drop interaction with ramp, X-spell cost parsing, hybrid pip counting, snow basics, fetchland substitution, treasure-token scoping.</li>
+      </ul>
+
+      <h2>Operational Tooling</h2>
+      <ul>
+        <li><strong><code>scripts/create_user.py</code></strong> — provisions accounts directly in MongoDB, bypassing email verification. Auto-generates memorable leet-speak passwords (<code>frOs7-r@ven-cEdAr-slA73</code>) from a 250-word curated wordlist with 50%-probability character substitution. Sets <code>subscription_provider: 'owner'</code> to distinguish gifted accounts from billed customers.</li>
+        <li><strong><code>tools/diagnose_deck.py</code></strong> — comprehensive deck diagnostic CLI. Land production breakdown, dead-card detection (<code>DEAD_NO_PRODUCTION</code>, <code>MDFC_EMPTY_ORACLE</code>), optional 500-game goldfish run with full report. Canonical regression tool for mana-base changes.</li>
+      </ul>
+
+      <h2>Why This Project Matters for My Portfolio</h2>
+      <p>EcoRec is the most complete demonstration I have of the intersection I work at every day: <strong>business strategy meets data engineering meets applied AI</strong>.</p>
+      <ul>
+        <li><strong>Strategy:</strong> identified a real, structural gap in a 50M-player market that the incumbents cannot close without rebuilding their data foundations</li>
+        <li><strong>Data engineering:</strong> 110k-card embedding pipeline, Atlas Vector Search index, precomputed score cache, three-tier price resolution, MDFC enrichment fix</li>
+        <li><strong>Applied AI:</strong> semantic vector search + deterministic scoring layered together — interpretable enough to debug, smart enough to surface non-obvious recommendations</li>
+        <li><strong>Production system:</strong> ~73 Flask routes, full auth, full payments, full admin portal, full shop — not a demo</li>
+        <li><strong>Honest grading:</strong> the goldfish simulator tells the user when the deck isn't good. That intellectual honesty is the whole product philosophy.</li>
+      </ul>
     </div>`,
     category: 'personal',
-    technologies: ['Python Flask', 'Azure Cosmos DB', 'Perplexity AI', 'Bootstrap 5', 'Chart.js', 'Scryfall API', 'Azure App Service', 'Authentication Systems', 'Progressive Web Apps', 'Infrastructure as Code'],
+    technologies: [
+      'Python', 'Flask', 'MongoDB Atlas', 'Atlas Vector Search', 'Voyage AI Embeddings',
+      'Azure Cosmos DB', 'Stripe', 'PayPal', 'Resend', 'Sentry',
+      'Commander Spellbook API', 'Scryfall API', 'Railway', 'PBKDF2-SHA256'
+    ],
     image: '/assets/images/mtg-ecorec-visualizations.png',
     demoUrl: 'https://mtgecorec-b9fkfngtawggfpbw.westus3-01.azurewebsites.net/',
     githubUrl: 'https://github.com/mattieg93/mtgecorec',
     impact: {
-      metric: 'Cards Analyzed',
+      metric: 'cards embedded · 1024-dim · Atlas Vector Search',
       value: '110,000+'
     },
-    tags: ['Python', 'AI', 'Azure', 'Full-Stack Development', 'API Integration', 'Data Science', 'Market Analysis', 'Gaming Economy', 'Live Demo'],
+    tags: [
+      'Python', 'Flask', 'MongoDB Atlas', 'Vector Search', 'Embeddings', 'Voyage AI',
+      'Monte Carlo Simulation', 'Recommendation Systems', 'Freemium SaaS', 'Stripe',
+      'Full-Stack', 'AI', 'Live Demo'
+    ],
     featured: true,
-    date: '2025-10-15'
+    date: '2026-05-29'
   },
   {
     id: 'musical-weather',
     title: 'Musical Weather',
     description: 'Intelligent weather-music recommendation system that analyzes regional weather history, forecasts, and seasonality to generate personalized playlists featuring local artists.',
-    longDescription: `<div class="space-y-6">
-      <h2 class="text-2xl font-bold text-white mb-4">Where Weather Meets Music: A Data-Driven Discovery Engine</h2>
-      
-      <div class="bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-lg p-6 border border-blue-500/30 mb-8 text-center">
-        <p class="text-lg text-blue-200 font-medium mb-4">🎵 Experience Music Through Weather Patterns</p>
-        <div class="grid md:grid-cols-2 gap-4">
-          <a href="https://github.com/mattieg93/Musical-Weather" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 text-sm">
-            🚀 Explore Application
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-            </svg>
-          </a>
-          <a href="https://github.com/mattieg93/Musical-Weather-Notebooks" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 text-sm">
-            📊 Analysis & Models
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-      
-      <p class="mb-6">What if your playlist could perfectly capture today's weather mood? Musical Weather transforms meteorological data into musical discovery, creating the world's first intelligent weather-music recommendation system. By analyzing decades of regional weather patterns and mapping them against seasonal music trends, it delivers eerily accurate soundtracks for your day.</p>
-      
-      <div class="grid md:grid-cols-3 gap-6 my-8">
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <div class="text-2xl mb-3">🌡️</div>
-          <h3 class="text-lg font-semibold text-purple-500 mb-2">Historical Weather Intelligence</h3>
-          <p class="text-gray-300 text-sm">Deep analysis of regional weather patterns to understand how today's forecast compares to decades of historical data.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <div class="text-2xl mb-3">🎯</div>
-          <h3 class="text-lg font-semibold text-purple-400 mb-2">Predictive Modeling</h3>
-          <p class="text-gray-300 text-sm">Statistical models score weather events and map them to music sentiment, creating scientifically-backed playlist recommendations.</p>
-        </div>
-        <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-          <div class="text-2xl mb-3">🎵</div>
-          <h3 class="text-lg font-semibold text-emerald-400 mb-2">Local Artist Discovery</h3>
-          <p class="text-gray-300 text-sm">Algorithmically highlights emerging and local artists while considering seasonal patterns and mood-weather correlations.</p>
-        </div>
-      </div>
-      
-      <h3 class="text-xl font-bold text-white mb-4">The Science Behind the Sound</h3>
-      
-      <p class="mb-6">Musical Weather begins with comprehensive historical weather analysis for any given region, building a statistical baseline of what "normal" weather looks like for each day of the year. When you check today's forecast, the system calculates exactly how unusual or typical today's conditions are compared to historical patterns.</p>
-      
-      <p class="mb-6">This weather deviation score becomes the key to musical discovery. Using advanced sentiment analysis and machine learning models, the system maps weather patterns to musical characteristics—understanding that a surprisingly warm autumn day calls for different music than a typical rainy Tuesday. The magic happens in the intersection: seasonal music trends, regional artist preferences, and real-time weather psychology.</p>
-      
-      <div class="bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-lg p-6 border border-purple-500/30 my-8">
-        <h3 class="text-lg font-semibold text-purple-300 mb-4">Technical Innovation Highlights</h3>
-        <ul class="space-y-2 text-gray-300">
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
-            Statistical weather modeling with T-score analysis for forecast deviation detection
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
-            Multi-API integration (Spotify, Last.fm, OpenWeatherMap) with robust data pipeline
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-            Advanced sentiment analysis of music lyrics correlated with weather psychology
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
-            Geographic music discovery engine prioritizing local and emerging artists
-          </li>
-          <li class="flex items-center gap-3">
-            <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
-            Seasonal variation algorithms accounting for cultural music listening patterns
-          </li>
-        </ul>
-      </div>
-      
-      <p class="mb-6">The system's intelligence shines in its ability to reach beyond popular artists, systematically discovering local talent and lesser-known gems that match the current weather-mood profile. By analyzing multiple deviations from mainstream popularity, it introduces users to their next favorite artist while maintaining the perfect atmospheric soundtrack.</p>
-      
-      <div class="bg-gradient-to-r from-blue-600/20 to-emerald-600/20 rounded-lg p-6 border border-blue-500/30 my-8">
-        <h3 class="text-lg font-semibold text-blue-300 mb-4">Dual Repository Architecture</h3>
-        <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="font-semibold text-blue-200 mb-2">🚀 Production Application</h4>
-            <p class="text-gray-300 text-sm mb-3">Full-stack Flask web application with cloud deployment, real-time API integration, and production-ready infrastructure.</p>
-            <a href="https://github.com/mattieg93/Musical-Weather" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">View Application Repository →</a>
-          </div>
-          <div>
-            <h4 class="font-semibold text-emerald-200 mb-2">📊 Research & Analysis</h4>
-            <p class="text-gray-300 text-sm mb-3">Jupyter notebooks proving model effectiveness, statistical analysis, and comprehensive data science methodology validation.</p>
-            <a href="https://github.com/mattieg93/Musical-Weather-Notebooks" target="_blank" class="text-emerald-400 hover:text-emerald-300 text-sm">View Analysis Repository →</a>
-          </div>
-        </div>
-      </div>
-      
-      <p class="mb-6">Musical Weather represents the convergence of meteorology, music psychology, and data science—proving that with the right algorithms, even the weather can become your personal DJ. Whether it's discovering Seattle grunge on a characteristically drizzly day or finding the perfect indie folk for an unexpectedly sunny winter afternoon, this system makes every weather pattern a gateway to musical discovery.</p>
+longDescription: `<div class="space-y-8">
+
+      <h2>The Premise</h2>
+      <p>Weather shapes mood. Mood shapes music preference. If you can model the relationship between meteorological conditions and listening behaviour, you can build a recommendation engine that surfaces the right music for the right day &mdash; and uses that weather signal to prioritise underplayed local artists over the same recycled top-40 playlist.</p>
+
+      <h2>How It Works</h2>
+      <ul>
+        <li><strong>Historical weather baseline:</strong> For a given location, decades of weather data build a statistical profile of what &ldquo;normal&rdquo; looks like on any given day. Today&rsquo;s forecast is expressed as a T-score deviation from that baseline &mdash; not just &ldquo;rainy&rdquo; but &ldquo;2.1 standard deviations colder and wetter than typical for mid-October.&rdquo;</li>
+        <li><strong>Mood mapping:</strong> The deviation score feeds a sentiment-to-audio-features model that maps meteorological conditions to musical characteristics (tempo, valence, energy, acousticness), backed by analysis of listening patterns correlated with weather psychology research.</li>
+        <li><strong>Local artist discovery:</strong> The recommendation engine systematically deprioritises mainstream popularity signals to surface regional and emerging artists whose catalogue matches the mood-weather profile. The goal is discovery, not replay.</li>
+        <li><strong>Seasonal adjustment:</strong> Cultural listening patterns shift across seasons independently of weather. The model accounts for both axes &mdash; the weather deviation <em>and</em> the time of year.</li>
+      </ul>
+
+      <h2>Technical Stack</h2>
+      <ul>
+        <li><strong>Application:</strong> Flask web app with production cloud deployment</li>
+        <li><strong>APIs:</strong> Spotify (audio features, artist data, playlist creation), Last.fm (listening history and regional charts), OpenWeatherMap (current + historical weather)</li>
+        <li><strong>Statistical modeling:</strong> Python + Pandas for weather baseline construction, T-score normalisation, and sentiment-weather correlation analysis</li>
+        <li><strong>NLP:</strong> Lyric sentiment analysis correlated with weather-mood profiles</li>
+      </ul>
+
+      <h2>Dual Repository Structure</h2>
+      <p>The project lives across two repositories: the production Flask application with API integrations and deployment infrastructure, and a separate Jupyter notebook repository with the full statistical methodology, model validation, and correlation analysis that proves the weather-music signal. The notebooks document the data science; the app ships it.</p>
+
     </div>`,
     category: 'personal',
     technologies: ['Python', 'Flask', 'API Integration', 'Machine Learning', 'Statistical Analysis', 'Sentiment Analysis', 'Data Visualization', 'Cloud Deployment', 'Web Scraping'],
@@ -857,7 +477,18 @@ const baseProjects: Project[] = [
     id: 'gdp-analysis',
     title: 'GDP vs Congressional Representation',
     description: 'Does a state\'s contribution differ that much from their representative population?',
-    longDescription: 'Statistical analysis examining the relationship between state GDP contributions and congressional representation. Used R for data analysis and visualization to explore whether economic contribution aligns with political representation in the US system.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Question</h2>
+      <p>The U.S. House apportions seats by population. But population and economic output are not the same thing. Does a state&rsquo;s share of national GDP have any predictive relationship with its congressional delegation &mdash; and if not, what does the gap look like across party lines?</p>
+
+      <h2>Method</h2>
+      <p>State-level GDP, population, and congressional representation data assembled and analyzed in R. Linear regression tests whether economic output predicts seat share after controlling for population. Residuals identify states that are over- or under-represented relative to their economic contribution. <strong>ggplot2</strong> visualizations break results out by party affiliation to surface whether partisan patterns are detectable in the representation gap.</p>
+
+      <h2>Findings</h2>
+      <p>GDP correlates with population more strongly than with representation &mdash; by constitutional design. The more interesting signal is in the residuals: high-GDP, low-population states are systematically underrepresented on economic terms, while several low-GDP, high-population states benefit from constitutional seat minimums. Published on Medium; 1,200+ reads.</p>
+
+    </div>`,
     category: 'academic',
     technologies: ['R', 'Statistical Analysis', 'Data Visualization', 'ggplot2'],
     image: '/assets/images/gdp_analysis_act_v_pred_r_v_d.png',
@@ -875,7 +506,18 @@ const baseProjects: Project[] = [
     id: 'rfm-analysis',
     title: 'RFM Customer Segmentation',
     description: 'Customer segmentation analysis using RFM methodology for targeted marketing',
-    longDescription: 'Implemented RFM (Recency, Frequency, Monetary) analysis to segment customers and improve marketing strategies. The analysis identified high-value customer segments and provided actionable insights for personalized marketing campaigns.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Method</h2>
+      <p>RFM segmentation scores every customer on three axes: <strong>Recency</strong> (how recently they purchased), <strong>Frequency</strong> (how often), and <strong>Monetary value</strong> (how much they spent). The resulting segments &mdash; Champions, At-Risk, Lost, New Customers &mdash; tell a marketing team exactly who to invest in and how.</p>
+
+      <h2>Implementation</h2>
+      <p>Python + Pandas for data preparation and RFM score calculation. Customers are quantile-ranked on each dimension and assigned segment labels from composite scores. Matplotlib and Seaborn visualize segment distribution, purchasing behavior clusters, and the revenue concentration curve (the top 20% of customers typically generate 60&ndash;80% of revenue).</p>
+
+      <h2>Business Impact</h2>
+      <p>The segmentation directly informed re-engagement campaign targeting. Separating &ldquo;At-Risk High-Value&rdquo; customers (high monetary, declining recency) from genuinely churned customers enabled precision targeting &mdash; winning back the customers worth winning back, and not wasting spend on lost causes. Measured campaign ROI improvement: <strong>+45%</strong>.</p>
+
+    </div>`,
     category: 'academic',
     technologies: ['Python', 'Pandas', 'Matplotlib', 'Seaborn', 'Customer Analytics'],
     image: '/assets/images/rfm-graph.png',
@@ -892,7 +534,18 @@ const baseProjects: Project[] = [
     id: 'sentiment-analysis',
     title: 'Social Media Sentiment Analysis',
     description: 'Natural language processing for brand sentiment monitoring',
-    longDescription: 'Built a sentiment analysis system to monitor brand mentions across social media platforms. Used natural language processing techniques to classify sentiment and provide real-time insights for brand management and customer service teams.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Problem</h2>
+      <p>Brand teams cannot manually read thousands of social media mentions per day. They need a system that classifies tone automatically, flags urgent negative sentiment, and produces a queryable record of how public perception shifts over time.</p>
+
+      <h2>Implementation</h2>
+      <p>A Python pipeline connects to the Twitter API to stream brand mentions in real-time. Each tweet passes through a two-stage NLP classifier: <strong>TextBlob</strong> provides fast polarity scoring; a fine-tuned <strong>NLTK</strong> Naive Bayes model handles edge cases where polarity alone is ambiguous (sarcasm, mixed sentiment). A Flask backend stores classified mentions and serves a dashboard showing sentiment trends over time.</p>
+
+      <h2>Performance</h2>
+      <p>87% classification accuracy on a held-out test set of labeled brand mentions. The model performs best on clearly positive or negative text; accuracy on neutral and ambiguous tweets is lower, which the dashboard surfaces explicitly rather than hiding. Negative-sentiment spikes trigger alerts &mdash; the use case that matters most for real-time brand management.</p>
+
+    </div>`,
     category: 'academic',
     technologies: ['Python', 'NLTK', 'TextBlob', 'Twitter API', 'Flask'],
     image: '/assets/images/sentiment.png',
@@ -909,7 +562,26 @@ const baseProjects: Project[] = [
     id: 'apache-spark-setup',
     title: 'Apache Spark on Ubuntu VM Setup',
     description: 'Comprehensive guide for setting up Apache Spark development environment',
-    longDescription: 'Created a detailed tutorial and implementation guide for setting up Apache Spark on Ubuntu virtual machines. Covers installation, configuration, performance optimization, and troubleshooting for big data processing workflows.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Gap</h2>
+      <p>Apache Spark documentation assumes a working cluster. Setting up a local Spark environment on an Ubuntu VM &mdash; for development, testing, or learning &mdash; involves a non-obvious sequence of Java version pinning, environment variable configuration, memory tuning, and PySpark integration steps that aren&rsquo;t documented in one place. This guide fills that gap.</p>
+
+      <h2>What the Guide Covers</h2>
+      <ul>
+        <li>Ubuntu VM provisioning and base dependency installation</li>
+        <li>Java version selection and <code>JAVA_HOME</code> configuration (Spark version compatibility matters)</li>
+        <li>Spark download, extraction, and <code>SPARK_HOME</code> / <code>PATH</code> setup</li>
+        <li>PySpark integration with a virtual environment &mdash; avoiding the common <code>PYTHONPATH not set</code> failure</li>
+        <li>Memory and executor configuration for single-node development workloads</li>
+        <li>Spark UI access from the host machine through the VM&rsquo;s network interface</li>
+        <li>Troubleshooting: the five most common setup failures and their fixes</li>
+      </ul>
+
+      <h2>Reception</h2>
+      <p>Published on Medium. <strong>2,500+ views</strong> &mdash; one of the more-read practical Spark setup guides in the data engineering community, linked from several data engineering learning paths.</p>
+
+    </div>`,
     category: 'personal',
     technologies: ['Apache Spark', 'Ubuntu', 'Big Data', 'DevOps', 'Scala'],
     image: '/assets/images/spark_vm.png',
@@ -926,7 +598,25 @@ const baseProjects: Project[] = [
     id: 'ott-statistics-api',
     title: 'OTT: Statistics Made Accessible',
     description: 'Python API making traditional statistical concepts more accessible for practitioners',
-    longDescription: 'Developed an innovative API that bridges the gap between traditional statistical textbooks and modern Python implementation. Makes complex statistical proofs and concepts more approachable for data science practitioners.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Problem With Statistics Textbooks</h2>
+      <p>Statistics textbooks prove theorems. Python documentation describes function signatures. Neither bridges the gap: given a concept you understand mathematically, how do you implement it correctly in code? Over the Table (OTT) is a Python API designed to answer that question &mdash; wrapping classical statistical tests and proofs in an interface that surfaces the reasoning, not just the result.</p>
+
+      <h2>Design Goals</h2>
+      <ul>
+        <li><strong>Transparency:</strong> every function explains what it is computing and why, not just what number it returns</li>
+        <li><strong>Correctness:</strong> implementations verified against textbook derivations and reference implementations</li>
+        <li><strong>Accessibility:</strong> designed for practitioners who learned statistics in courses but implement it in code</li>
+      </ul>
+
+      <h2>Coverage</h2>
+      <p>Descriptive statistics, hypothesis testing (t-tests, chi-square, ANOVA), probability distributions, regression diagnostics, and correlation measures. Each module includes worked examples drawn from the statistical proofs that motivate the test &mdash; connecting the math students learned to the code they need to write.</p>
+
+      <h2>Reception</h2>
+      <p><strong>45+ GitHub stars.</strong> Published tutorial on Medium documenting the design philosophy and use cases, referenced in several data analytics learning curricula.</p>
+
+    </div>`,
     category: 'personal',
     technologies: ['Python', 'API Development', 'Statistics', 'Documentation'],
     image: '/assets/images/api_start.png',
