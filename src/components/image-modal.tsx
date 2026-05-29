@@ -27,8 +27,6 @@ export function ImageModal({ images, initialIndex, isOpen, onClose }: ImageModal
     }
   }, [initialIndex, isOpen]);
 
-  if (!isOpen) return null;
-
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
@@ -37,7 +35,7 @@ export function ImageModal({ images, initialIndex, isOpen, onClose }: ImageModal
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  // Handle keyboard navigation
+  // Handle keyboard navigation — must be declared before any early return
   useEffect(() => {
     if (!isOpen) return;
 
@@ -61,7 +59,10 @@ export function ImageModal({ images, initialIndex, isOpen, onClose }: ImageModal
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
 
   const currentImage = images[currentIndex];
 

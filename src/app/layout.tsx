@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | Mattie Graham",
   },
   description:
-    "AI & Analytics Engineer specializing in data pipelines, machine learning, RAG systems, and full-stack analytics tooling. Available for freelance projects on Upwork.",
+    "Senior AI & Analytics Engineer. 9+ years at Meta and Microsoft building production AI, forecasting, and experimentation systems at the intersection of business strategy, data engineering, and applied AI. Pursuing an MS in AI at CU Boulder.",
   keywords: [
     "AI engineer",
     "analytics engineer",
@@ -24,10 +24,10 @@ export const metadata: Metadata = {
     "RAG",
     "Python",
     "Azure",
-    "full-stack",
-    "Upwork",
-    "freelance data engineer",
+    "data engineering",
     "Mattie Graham",
+    "University of Colorado Boulder",
+    "MS Artificial Intelligence",
   ],
   authors: [{ name: "Mattie Graham", url: siteUrl }],
   creator: "Mattie Graham",
@@ -36,9 +36,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Mattie Graham",
-    title: "Mattie Graham | AI & Analytics Engineer",
+    title: "Mattie Graham | Senior AI & Analytics Engineer",
     description:
-      "AI & Analytics Engineer specializing in data pipelines, machine learning, RAG systems, and full-stack analytics tooling. Available for freelance projects on Upwork.",
+      "9+ years at Meta and Microsoft building production AI, forecasting, and experimentation systems. Business strategy + data engineering + applied AI.",
     images: [
       {
         url: "/assets/images/1843.png",
@@ -50,9 +50,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mattie Graham | AI & Analytics Engineer",
+    title: "Mattie Graham | Senior AI & Analytics Engineer",
     description:
-      "AI & Analytics Engineer - data pipelines, ML, RAG, full-stack analytics. Available for Upwork projects.",
+      "Production AI, forecasting, and experimentation systems. Meta + Microsoft. MS AI · CU Boulder.",
     images: ["/assets/images/1843.png"],
   },
   robots: {
@@ -80,8 +80,14 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const theme = localStorage.getItem('theme') || 'light';
+                var theme = localStorage.getItem('theme') || 'dark';
+                var validPalettes = ['core', 'editorial-impact', 'editorial-lab'];
+                var urlPalette = new URLSearchParams(window.location.search).get('palette');
+                var palette = (urlPalette && validPalettes.indexOf(urlPalette) !== -1)
+                  ? urlPalette
+                  : (localStorage.getItem('palette') || 'core');
                 document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-palette', palette);
                 if (theme === 'dark') {
                   document.documentElement.classList.add('dark');
                 } else {

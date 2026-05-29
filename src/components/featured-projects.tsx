@@ -1,85 +1,101 @@
 import Link from "next/link";
-import { projects, featuredConfig } from '@/data/cms-config';
+import { projects } from '@/data/cms-config';
 import ProjectImage from './project-image';
+import { ScrollReveal } from './scroll-reveal';
 
-// Get featured projects from CMS data
 const featuredProjects = projects
-  .filter(project => project.featured && !project.hidden)
-  .slice(0, featuredConfig.maxFeaturedProjects)
-  .map(project => ({
-    title: project.title,
-    description: project.description,
-    image: project.image,
-    link: `/projects/${project.id}`, // Always link to project page first
-    tags: project.tags
-  }));
+  .filter((p) => p.featured && !p.hidden)
+  .slice(0, 3);
 
 export function FeaturedProjects() {
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">Featured Projects</h2>
-          <p className="text-xl text-gray-700 dark:text-gray-400 mb-8">Professional and personal work showcasing data-driven solutions</p>
-          <div className="w-24 h-1 mx-auto" style={{ backgroundColor: 'var(--primary)' }}></div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {featuredProjects.map((project, index) => (
-            <Link 
-              key={index}
-              href={project.link}
-              className="group bg-white dark:bg-gray-800/50 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700 hover:border-[color-mix(in_srgb,var(--primary)_50%,transparent)] transition-all duration-500 ease-out hover:shadow-xl hover:transform hover:scale-[1.02] block cursor-pointer"
+    <section className="py-20 px-6" style={{ background: 'var(--bg-surface)' }}>
+      <div className="max-w-6xl mx-auto">
+        <ScrollReveal>
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <h2 className="section-heading mb-3">Selected Work</h2>
+              <p className="mt-4 text-base" style={{ color: 'var(--fg-muted)' }}>
+                A sample of recent projects across AI, data engineering, and full-stack.
+              </p>
+            </div>
+            <Link
+              href="/work"
+              className="hidden sm:inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200"
+              style={{ color: 'var(--primary)' }}
             >
-              <div className="relative overflow-hidden">
-                <ProjectImage
-                  src={project.image}
-                  alt={project.title}
-                  width={600}
-                  height={300}
-                  className="w-full h-64 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out"></div>
-              </div>
-              
-              <div className="p-6">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {project.tags.map((tag, tagIndex) => (
-                    <span 
-                      key={tagIndex}
-                      className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-full border border-gray-300 dark:border-gray-600"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-[color-mix(in_srgb,var(--primary)_80%,white)] mb-3 transition-colors duration-300 ease-out">
-                  {project.title}
-                </h3>
-                
-                <p className="text-gray-700 dark:text-gray-400 mb-4 leading-relaxed">
-                  {project.description}
-                </p>
-                
-                <div className="inline-flex items-center gap-2 font-semibold transition-all duration-300 ease-out text-gray-900 dark:text-teal-400">
-                  Read More
-                  <svg className="w-4 h-4 transition-transform duration-300 ease-out group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
+              View all work
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </Link>
+          </div>
+        </ScrollReveal>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredProjects.map((project, i) => (
+            <ScrollReveal key={project.id} delay={i * 0.08}>
+              <Link
+                href={`/work/${project.id}`}
+                className="card group flex flex-col h-full overflow-hidden block"
+              >
+                <div className="relative overflow-hidden" style={{ height: '180px' }}>
+                  <ProjectImage
+                    src={project.image}
+                    alt={project.title}
+                    width={480}
+                    height={180}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Category badge */}
+                  <span
+                    className="absolute top-3 left-3 pill"
+                    style={{
+                      background: 'color-mix(in srgb, var(--primary) 85%, transparent)',
+                      color: 'var(--on-emphasis)',
+                      borderColor: 'transparent',
+                      fontSize: '0.7rem',
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    {project.category}
+                  </span>
+                </div>
+
+                <div className="p-5 flex flex-col gap-3 flex-1">
+                  <h3 className="font-semibold text-base leading-snug transition-colors duration-200 group-hover:text-[var(--primary)]"
+                    style={{ color: 'var(--fg)' }}>
+                    {project.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed flex-1" style={{ color: 'var(--fg-muted)' }}>
+                    {project.description}
+                  </p>
+
+                  {project.impact && (
+                    <div className="pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <span className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>
+                        {project.impact.value}
+                      </span>
+                      <span className="text-xs ml-1" style={{ color: 'var(--fg-subtle)' }}>
+                        {project.impact.metric}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {project.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="pill" style={{ fontSize: '0.7rem' }}>{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            </ScrollReveal>
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <Link
-            href="/projects"
-            className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl hover:opacity-90"
-            style={{ backgroundColor: 'var(--primary)', color: 'white' }}
-          >
-            View All Projects
+        <div className="mt-10 text-center sm:hidden">
+          <Link href="/work" className="btn-outline text-sm px-5 py-2.5 inline-block rounded-md">
+            View all projects
           </Link>
         </div>
       </div>

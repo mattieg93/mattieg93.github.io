@@ -1,130 +1,169 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const highlights = [
+  { value: "$9B+", label: "Decisions guided" },
+  { value: "9+", label: "Years in production" },
+  { value: "160+", label: "Analyst hrs/mo automated" },
+  { value: "400+", label: "MAU platform" },
+];
+
 export function Hero() {
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 py-20">
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-        {/* Image Container */}
-        <div className="flex justify-center lg:justify-end">
-          <div className="relative">
-            <div 
-              className="w-80 h-80 rounded-2xl overflow-hidden border-2 shadow-2xl"
+    <section
+      className="min-h-screen flex items-center px-6 pt-24 pb-16"
+      style={{ background: "var(--bg)" }}
+    >
+      <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-[1fr_auto] gap-16 lg:gap-24 items-center">
+        {/* Text column */}
+        <div>
+          {/* Status badge */}
+          <div
+            className="inline-flex items-center gap-2 mb-10 px-3 py-1.5 rounded-full border text-xs font-medium"
+            style={{
+              borderColor: "color-mix(in srgb, var(--success) 35%, transparent)",
+              background: "color-mix(in srgb, var(--success) 8%, transparent)",
+              color: "var(--success)",
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+            Open to senior AI &amp; data roles
+          </div>
+
+          {/* Swiss-style eyebrow with accent rule */}
+          <div className="mb-4 flex items-center gap-3">
+            <span
+              className="text-xs font-semibold uppercase"
               style={{
-                borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
-                boxShadow: '0 25px 50px -12px color-mix(in srgb, var(--primary) 20%, transparent)'
+                color: "var(--accent)",
+                letterSpacing: "0.2em",
+              }}
+            >
+              Senior AI &amp; Analytics Engineer
+            </span>
+            <span
+              className="h-px flex-1 max-w-[120px]"
+              style={{ background: "var(--accent)" }}
+            />
+          </div>
+
+          {/* Display name */}
+          <h1
+            className="text-6xl lg:text-8xl font-bold mb-8 leading-[0.95]"
+            style={{
+              color: "var(--fg)",
+              letterSpacing: "-0.04em",
+            }}
+          >
+            Mattie
+            <br />
+            Graham
+          </h1>
+
+          {/* Body paragraph — copy preserved verbatim */}
+          <p
+            className="text-base lg:text-lg leading-relaxed mb-12 max-w-xl"
+            style={{ color: "var(--fg-muted)" }}
+          >
+            I sit at the intersection of{" "}
+            <strong style={{ color: "var(--fg)", fontWeight: 600 }}>
+              business strategy, data engineering, and applied AI
+            </strong>{" "}
+            — turning ambiguous problems into production systems that ship measurable outcomes.
+            9+ years embedded with{" "}
+            <strong style={{ color: "var(--fg)", fontWeight: 600 }}>
+              Meta and Microsoft
+            </strong>{" "}
+            teams, building experimentation frameworks, forecasting models, RAG systems, and the
+            analytics infrastructure beneath them.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-wrap gap-3 mb-16">
+            <Link href="/work" className="btn-primary">
+              See My Work
+            </Link>
+            <Link href="/contact" className="btn-outline">
+              Get in Touch
+            </Link>
+          </div>
+
+          {/* Stats: editorial tabular strip with thin top rule */}
+          <div
+            className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4"
+            style={{ borderTop: "1px solid var(--border-subtle)" }}
+          >
+            {highlights.map(({ value, label }) => (
+              <div key={label} className="text-left">
+                <p
+                  className="text-3xl font-bold mb-1"
+                  style={{
+                    color: "var(--fg)",
+                    fontVariantNumeric: "tabular-nums",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {value}
+                </p>
+                <p
+                  className="font-semibold uppercase"
+                  style={{
+                    color: "var(--fg-subtle)",
+                    fontSize: "0.6875rem",
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  {label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Photo column — hard-edged offset accent block, no gradient */}
+        <div className="hidden lg:flex justify-end">
+          <div className="relative w-80 h-80">
+            {/* Hard offset accent block — peeks out behind photo as editorial frame */}
+            <div
+              className="absolute"
+              style={{
+                background: "var(--accent)",
+                top: "16px",
+                left: "16px",
+                right: "-16px",
+                bottom: "-16px",
+              }}
+              aria-hidden="true"
+            />
+
+            {/* Photo */}
+            <div
+              className="relative w-full h-full overflow-hidden"
+              style={{
+                border: "2px solid var(--fg)",
               }}
             >
               <Image
                 src="/assets/images/1843.png"
-                alt="Mattie #1843"
+                alt="Mattie Graham"
                 width={320}
                 height={320}
                 className="w-full h-full object-cover"
                 priority
               />
             </div>
+
+            {/* Name badge — kept */}
             <div
-              className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg border"
-              style={{ backgroundColor: 'var(--pill-bg)', borderColor: 'var(--pill-border)' }}
+              className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-1.5 text-xs font-semibold"
+              style={{
+                background: "var(--bg-elevated)",
+                border: "1px solid var(--border)",
+                color: "var(--fg-muted)",
+              }}
             >
-              <span className="text-sm" style={{ color: 'var(--pill-fg)' }}>Mattie #1843</span>
+              Mattie #1843
             </div>
-          </div>
-        </div>
-
-        {/* Text Content */}
-        <div className="text-center lg:text-left">
-          {/* Pills row */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {/* Available badge */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium"
-              style={{
-                borderColor: 'color-mix(in srgb, var(--secondary) 40%, transparent)',
-                backgroundColor: 'color-mix(in srgb, var(--secondary) 10%, transparent)',
-                color: 'var(--secondary)'
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse flex-shrink-0" />
-              Available for work
-            </div>
-
-            {/* Upwork badge - now clickable */}
-            <a
-              href="https://www.upwork.com/freelancers/mattiegraham"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2.5 py-1 rounded-full border text-xs font-medium transition-colors duration-200 hover:bg-[#00bdaa]/10 cursor-pointer"
-              style={{
-                borderColor: 'color-mix(in srgb, var(--secondary) 40%, transparent)',
-                backgroundColor: 'color-mix(in srgb, var(--secondary) 10%, transparent)',
-                color: 'var(--secondary)'
-              }}
-            >
-              <img 
-                src="/assets/icons/upwork.png" 
-                alt="Upwork" 
-                className="h-3.5 w-3.5 flex-shrink-0 object-contain" 
-                loading="lazy"
-              />
-              View on Upwork
-            </a>
-          </div>          
-          <div className="mb-6">
-            <h1
-              className="text-5xl lg:text-6xl font-bold mb-3"
-              style={{
-                color: 'var(--primary)'
-              }}
-            >
-              Mattie Graham
-            </h1>
-            <p className="text-xl lg:text-2xl font-semibold mb-4" style={{ color: 'var(--secondary)' }}>
-              AI &amp; Analytics Engineer
-            </p>
-            <p className="text-lg text-gray-300 leading-relaxed">
-              I build
-              <span className="font-semibold" style={{ color: 'var(--primary)' }}> AI-powered data platforms</span> -
-              from experimentation frameworks and forecasting models to self-serve analytics systems.
-              I turn ambiguous business questions into
-              <span className="font-semibold" style={{ color: 'var(--secondary)' }}> automated, production-ready tools</span> that
-              deliver measurable outcomes.
-            </p>
-          </div>
-
-          {/* Outcome pills */}
-          <div className="flex flex-wrap gap-2 mb-8 justify-center lg:justify-start">
-            {['$9B+ business impact', '37% SLA improvement', '160+ hours/mo automated', '400+ MAU platform', '95% issue reduction', '12+ production models'].map((stat) => (
-              <span
-                key={stat}
-                className="text-xs px-3 py-1 rounded-full border text-gray-300"
-                style={{ borderColor: 'color-mix(in srgb, var(--primary) 30%, transparent)', backgroundColor: 'color-mix(in srgb, var(--primary) 8%, transparent)' }}
-              >
-                {stat}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Link
-              href="/projects"
-              className="px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              style={{ backgroundColor: 'var(--primary)', color: 'white' }}
-            >
-              See My Work
-            </Link>
-            <Link
-              href="/contact"
-              className="px-8 py-4 border border-gray-600 rounded-lg font-semibold transition-all duration-300 hero-button-primary"
-            >
-              Work With Me
-            </Link>
-            <Link
-              href="/resume"
-              className="px-8 py-4 border border-gray-600 rounded-lg font-semibold transition-all duration-300 hero-button-secondary"
-            >
-              View Resume
-            </Link>
           </div>
         </div>
       </div>

@@ -10,12 +10,11 @@ const nextConfig: NextConfig = {
   // GitHub Pages deployment configuration  
   basePath: process.env.NODE_ENV === 'production' ? '' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
-  // Disable ESLint during build for deployment
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   }
 };
 

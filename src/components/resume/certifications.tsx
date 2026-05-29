@@ -117,6 +117,7 @@ export function Certifications() {
         <p className="text-center text-gray-400 text-sm mb-6">Completing the IBM AI Engineering Professional Certificate - deep learning, ML pipelines, LLMs/RAG, and AI agents</p>
         <div className="grid md:grid-cols-3 gap-6">
           {certifications.filter(cert => cert.issuer === "IBM").map((cert, index) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const colors = getColorClasses(cert.color);
             return (
               <div

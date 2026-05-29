@@ -1,325 +1,380 @@
 @import "tailwindcss";
 
+/* ─── View transitions: cross-fade between routes ───────────────────── */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 200ms ease forwards;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in 250ms ease 50ms backwards;
+}
+
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ─── Dark mode (default) ──────────────────────────────────────────── */
 :root {
-  /* Dark theme (default) */
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #8b5cf6;
-  --secondary: #0f9c70;
-  --muted: #374151;
-  --border: #374151;
-  /* Pill/tag variables */
-  --pill-bg: #1f2937;
-  --pill-fg: #d1d5db;
-  --pill-border: #374151;
+  --bg:              #0a0f1e;
+  --bg-surface:      #111827;
+  --bg-elevated:     #1e2d44;
+  --fg:              #f0f4f8;
+  --fg-muted:        #8899aa;
+  --fg-subtle:       #5a6a7a;
+  --border:          #1e3a5f;
+  --border-subtle:   #162032;
+  --primary:         #4a8cc4;
+  --accent:          #d4a853;
+  --success:         #10b981;
+  --error:           #f87171;
+  --on-emphasis:     #f8fafc;
+  --pill-bg:         #1e2d44;
+  --pill-fg:         #8899aa;
+  --pill-border:     #2d4a6e;
+  /* legacy aliases kept for admin component */
+  --background:      #0a0f1e;
+  --foreground:      #f0f4f8;
+  --secondary:       #10b981;
+  --muted:           #1e2d44;
+  /* Palette preview swatches — static, used by ThemePaletteToggle */
+  --swatch-core:              #d4a853;
+  --swatch-editorial-impact:  #e8b840;
+  --swatch-editorial-lab:     #ff6030;
 }
 
-[data-theme="light"] {
-  /* Light theme */
-  --background: #ffffff;
-  --foreground: #1e293b;
-  --primary: #6366f1;
-  --secondary: #0d9488;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  /* Pill/tag variables */
-  --pill-bg: #f1f5f9;
-  --pill-fg: #334155;
-  --pill-border: #cbd5e1;
+/* ─── Core palette: Light mode ─────────────────────────────────────── */
+[data-theme="light"],
+[data-palette="core"][data-theme="light"] {
+  --bg:              #f8fafc;
+  --bg-surface:      #ffffff;
+  --bg-elevated:     #ffffff;
+  --fg:              #1a2332;
+  --fg-muted:        #4a6080;
+  --fg-subtle:       #7890a8;
+  --border:          #d0dce8;
+  --border-subtle:   #e8eff5;
+  --primary:         #1e3a5f;
+  --accent:          #b8872a;
+  --success:         #047857;
+  --error:           #dc2626;
+  --on-emphasis:     #f8fafc;
+  --pill-bg:         #eef3f8;
+  --pill-fg:         #4a6080;
+  --pill-border:     #c8d8e8;
+  /* legacy aliases */
+  --background:      #f8fafc;
+  --foreground:      #1a2332;
+  --secondary:       #047857;
+  --muted:           #eef3f8;
 }
 
-* {
+/* ══════════════════════════════════════════════════════════════════════
+   PALETTE: editorial-impact
+   Mood: near-black + warm newsprint white + punchy gold. No gradients.
+   Rule: gold = editorial emphasis only; blue = interaction only;
+         green = status only; 80% neutrals dominate.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* editorial-impact: Dark ──────────────────────────────────────────── */
+[data-palette="editorial-impact"][data-theme="dark"] {
+  --bg:              #0a0908;
+  --bg-surface:      #141210;
+  --bg-elevated:     #1e1c19;
+  --fg:              #f4f1ec;
+  --fg-muted:        #a09890;
+  --fg-subtle:       #6b6560;
+  --border:          #2a2826;
+  --border-subtle:   #1e1c19;
+  --primary:         #4a90d9;
+  --accent:          #e8b840;
+  --success:         #22c55e;
+  --error:           #f87171;
+  --on-emphasis:     #f4f1ec;
+  --pill-bg:         #1e1c19;
+  --pill-fg:         #a09890;
+  --pill-border:     #2a2826;
+  /* legacy aliases */
+  --background:      #0a0908;
+  --foreground:      #f4f1ec;
+  --secondary:       #22c55e;
+  --muted:           #1e1c19;
+}
+
+/* editorial-impact: Light ─────────────────────────────────────────── */
+[data-palette="editorial-impact"][data-theme="light"] {
+  --bg:              #f2ede4;
+  --bg-surface:      #faf8f3;
+  --bg-elevated:     #ffffff;
+  --fg:              #0f0d09;
+  --fg-muted:        #4a4540;
+  --fg-subtle:       #807872;
+  --border:          #d6cfc4;
+  --border-subtle:   #e8e3da;
+  --primary:         #1a4a8c;
+  --accent:          #c47a12;
+  --success:         #15803d;
+  --error:           #dc2626;
+  --on-emphasis:     #faf8f3;
+  --pill-bg:         #e8e3da;
+  --pill-fg:         #4a4540;
+  --pill-border:     #d6cfc4;
+  /* legacy aliases */
+  --background:      #f2ede4;
+  --foreground:      #0f0d09;
+  --secondary:       #15803d;
+  --muted:           #e8e3da;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PALETTE: editorial-lab
+   Mood: deep purple-black + electric purple + vivid orange. Experimental.
+   Rule: same role rules as impact; orange = emphasis, purple = action.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* editorial-lab: Dark ─────────────────────────────────────────────── */
+[data-palette="editorial-lab"][data-theme="dark"] {
+  --bg:              #0e0b16;
+  --bg-surface:      #160e28;
+  --bg-elevated:     #1f1638;
+  --fg:              #f0ecff;
+  --fg-muted:        #9488b8;
+  --fg-subtle:       #6b5f88;
+  --border:          #2d1f50;
+  --border-subtle:   #211640;
+  --primary:         #7c6fff;
+  --accent:          #ff6030;
+  --success:         #10b981;
+  --error:           #f87171;
+  --on-emphasis:     #f0ecff;
+  --pill-bg:         #1f1638;
+  --pill-fg:         #9488b8;
+  --pill-border:     #2d1f50;
+  /* legacy aliases */
+  --background:      #0e0b16;
+  --foreground:      #f0ecff;
+  --secondary:       #10b981;
+  --muted:           #1f1638;
+}
+
+/* editorial-lab: Light ────────────────────────────────────────────── */
+[data-palette="editorial-lab"][data-theme="light"] {
+  --bg:              #fdfcff;
+  --bg-surface:      #f5f0ff;
+  --bg-elevated:     #ffffff;
+  --fg:              #12073a;
+  --fg-muted:        #5a4a7a;
+  --fg-subtle:       #8a7aa0;
+  --border:          #d8d0f0;
+  --border-subtle:   #ece8f8;
+  --primary:         #5a3fcf;
+  --accent:          #e5510a;
+  --success:         #15803d;
+  --error:           #dc2626;
+  --on-emphasis:     #f5f0ff;
+  --pill-bg:         #ece8f8;
+  --pill-fg:         #5a4a7a;
+  --pill-border:     #d8d0f0;
+  /* legacy aliases */
+  --background:      #fdfcff;
+  --foreground:      #12073a;
+  --secondary:       #15803d;
+  --muted:           #ece8f8;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SEMANTIC ALIAS BRIDGE
+   Maps new stable names → existing tokens.
+   Components should migrate toward --color-* names over time.
+   Old token names remain valid throughout migration.
+   ══════════════════════════════════════════════════════════════════════ */
+:root {
+  --color-bg:           var(--bg);
+  --color-surface:      var(--bg-surface);
+  --color-elevated:     var(--bg-elevated);
+  --color-content:      var(--fg);
+  --color-content-2:    var(--fg-muted);
+  --color-content-3:    var(--fg-subtle);
+  --color-border:       var(--border);
+  --color-border-2:     var(--border-subtle);
+  --color-action:       var(--primary);
+  --color-emphasis:     var(--accent);
+  --color-status:       var(--success);
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
   border-color: var(--border);
 }
 
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* ─── Scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--muted);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-}
-
-/* Smooth transitions for theme-aware elements only */
-html, body, nav, main, section, article, aside,
+/* ─── Theme transitions ─────────────────────────────────────────────── */
+nav, main, section, header, footer, aside,
 button, a, input, textarea, select {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
-/* Force light mode styles when data-theme="light", overriding system dark mode preference */
-[data-theme="light"] .bg-white {
-  background-color: #ffffff !important;
+/* ─── Utility: semantic color helpers ──────────────────────────────── */
+.text-fg        { color: var(--fg); }
+.text-fg-muted  { color: var(--fg-muted); }
+.text-fg-subtle { color: var(--fg-subtle); }
+.text-primary   { color: var(--primary); }
+.text-accent    { color: var(--accent); }
+.text-success   { color: var(--success); }
+.bg-surface     { background-color: var(--bg-surface); }
+.bg-elevated    { background-color: var(--bg-elevated); }
+.border-theme   { border-color: var(--border); }
+
+/* ─── Focus ring ────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
-[data-theme="light"] .dark\:bg-gray-800,
-[data-theme="light"] .dark\:bg-gray-800\/50 {
-  background-color: #ffffff !important;
-}
+/* ─── Section alternating backgrounds ──────────────────────────────── */
+.section-alt { background-color: var(--bg-surface); }
 
-[data-theme="light"] .dark\:bg-gray-700,
-[data-theme="light"] .dark\:bg-gray-700\/30 {
-  background-color: #f8fafc !important;
-}
-
-[data-theme="light"] .dark\:border-gray-600,
-[data-theme="light"] .dark\:border-gray-700 {
-  border-color: #d1d5db !important;
-}
-
-[data-theme="light"] .dark\:text-white {
-  color: #1f2937 !important;
-}
-
-[data-theme="light"] .dark\:text-gray-200 {
-  color: #374151 !important;
-}
-
-[data-theme="light"] .dark\:text-gray-300 {
-  color: #475569 !important;
-}
-
-[data-theme="light"] .dark\:text-gray-400 {
-  color: #64748b !important;
-}
-
-[data-theme="light"] .dark\:text-teal-400 {
-  color: #0d9488 !important;
-}
-
-/* Override Tailwind gray utilities for better readability in light mode */
-[data-theme="light"] .text-gray-300 {
-  color: #475569 !important;
-}
-
-[data-theme="light"] .text-gray-400 {
-  color: #64748b !important;
-}
-
-[data-theme="light"] .text-gray-500 {
-  color: #64748b !important;
-}
-
-[data-theme="light"] .text-gray-600 {
-  color: #475569 !important;
-}
-
-[data-theme="light"] .text-gray-700 {
-  color: #334155 !important;
-}
-
-/* Fix emerald/green colors for better readability in light mode */
-[data-theme="light"] .text-emerald-400,
-[data-theme="light"] .text-emerald-500 {
-  color: #059669 !important;
-}
-
-[data-theme="light"] .bg-emerald-500\/10 {
-  background-color: rgba(5, 150, 105, 0.15) !important;
-}
-
-[data-theme="light"] .border-emerald-500\/30 {
-  border-color: rgba(5, 150, 105, 0.4) !important;
-}
-
-/* Fix purple colors for better contrast */
-[data-theme="light"] .text-purple-400,
-[data-theme="light"] .text-purple-500 {
-  color: #7c3aed !important;
-}
-
-[data-theme="light"] .text-purple-300 {
-  color: #6d28d9 !important;
-}
-
-[data-theme="light"] .bg-purple-500\/20 {
-  background-color: rgba(124, 58, 237, 0.15) !important;
-}
-
-[data-theme="light"] .border-purple-500\/50 {
-  border-color: rgba(124, 58, 237, 0.3) !important;
-}
-
-/* Fix orange colors */
-[data-theme="light"] .text-orange-500 {
-  color: #ea580c !important;
-}
-
-[data-theme="light"] .text-orange-300 {
-  color: #c2410c !important;
-}
-
-[data-theme="light"] .bg-orange-500\/20 {
-  background-color: rgba(234, 88, 12, 0.15) !important;
-}
-
-[data-theme="light"] .border-orange-500\/50 {
-  border-color: rgba(234, 88, 12, 0.3) !important;
-}
-
-/* Fix indigo colors */
-[data-theme="light"] .text-indigo-300,
-[data-theme="light"] .text-indigo-400 {
-  color: #4f46e5 !important;
-}
-
-[data-theme="light"] .bg-indigo-500\/20 {
-  background-color: rgba(79, 70, 229, 0.15) !important;
-}
-
-[data-theme="light"] .border-indigo-500\/50 {
-  border-color: rgba(79, 70, 229, 0.3) !important;
-}
-
-/* Better emerald contrast */
-[data-theme="light"] .text-emerald-300 {
-  color: #047857 !important;
-}
-
-[data-theme="light"] .bg-emerald-600\/20 {
-  background-color: rgba(4, 120, 87, 0.15) !important;
-}
-
-[data-theme="light"] .border-emerald-600\/50 {
-  border-color: rgba(4, 120, 87, 0.3) !important;
-}
-
-/* Ensure small text is always readable */
-[data-theme="light"] .text-xs {
+/* ─── Pill / tag base style ─────────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
   font-weight: 500;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  border: 1px solid var(--pill-border);
 }
 
-/* Ensure readable text on cards and sections */
-[data-theme="light"] p,
-[data-theme="light"] span:not([class*="text-"]):not([class*="bg-"]),
-[data-theme="light"] div:not([class*="text-"]):not([class*="bg-"]) {
-  color: var(--foreground);
+/* ─── Card base style ───────────────────────────────────────────────── */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-
-/* Override white text in light mode */
-[data-theme="light"] .text-white {
-  color: var(--foreground) !important;
-}
-
-/* Preserve white text on dark gray buttons/links (GitHub buttons etc.) in light mode */
-[data-theme="light"] a.bg-gray-700,
-[data-theme="light"] button.bg-gray-700 {
-  color: white !important;
-}
-
-/* Ensure all headings are always visible */
-[data-theme="light"] h1:not([class*="text-transparent"]),
-[data-theme="light"] h2,
-[data-theme="light"] h3,
-[data-theme="light"] h4,
-[data-theme="light"] h5,
-[data-theme="light"] h6 {
-  color: var(--foreground) !important;
-}
-
-/* Fix low contrast description text */
-[data-theme="light"] .text-gray-300,
-[data-theme="light"] .text-gray-400,
-[data-theme="light"] .opacity-80,
-[data-theme="light"] .opacity-70 {
-  opacity: 1;
-}
-
-/* Fix hardcoded (non-dark:) dark backgrounds in light mode — used in dangerouslySetInnerHTML project content */
-[data-theme="light"] .bg-gray-800\/50 {
-  background-color: #f8fafc !important;
-}
-
-[data-theme="light"] .bg-gray-800\/50 .border-gray-700 {
-  border-color: #e2e8f0 !important;
-}
-
-/* Ensure borders are visible in light mode */
-[data-theme="light"] .border-gray-600,
-[data-theme="light"] .border-gray-700,
-[data-theme="light"] .border-gray-800 {
-  border-color: #cbd5e1 !important;
-}
-
-[data-theme="light"] .border-purple-500\/50 {
-  border-color: rgba(124, 58, 237, 0.3) !important;
-}
-
-[data-theme="light"] .border-t {
-  border-top-color: var(--border);
-}
-
-/* Fix muted/secondary text to be darker in light mode */
-[data-theme="light"] .text-gray-500 {
-  color: #64748b !important;
-}
-
-/* Navigation link hover effect */
-.nav-link:hover {
-  color: var(--primary) !important;
-}
-
-/* Resume link hover effects */
-.resume-link-primary:hover {
-  opacity: 0.8;
-}
-
-.resume-link-secondary:hover {
-  opacity: 0.8;
-}
-
-.resume-link-accent:hover {
-  opacity: 0.8;
-}
-
-/* Hero button hover effects */
-.hero-button-primary:hover {
+.card:hover {
   border-color: var(--primary);
-  background-color: rgba(139, 92, 246, 0.1); /* Fallback */
-  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
-.hero-button-secondary:hover {
-  border-color: var(--secondary);
-  background-color: rgba(15, 156, 112, 0.1); /* Fallback */
-  background-color: color-mix(in srgb, var(--secondary) 10%, transparent);
+/* ─── Button base styles ─────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
-/* Social Link Colors */
-.social-link-primary:hover {
-  color: var(--primary) !important;
+.btn-accent {
+  background: var(--accent);
+  color: #0a0f1e;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+.btn-accent:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
-.social-link-secondary:hover {
-  color: var(--secondary) !important;
+.btn-outline {
+  background: transparent;
+  color: var(--fg);
+  border: 1.5px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
-
-.social-link-accent:hover {
-  color: var(--accent) !important;
-}
-
-/* Project card hover effects */
-.group:hover .group-hover\:text-primary {
-  color: var(--primary) !important;
-}
-
-/* Contact form focus styles */
-.contact-input:focus {
-  --tw-ring-color: var(--primary);
+.btn-outline:hover {
   border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
 }
+
+/* ─── Section heading decoration ────────────────────────────────────── */
+.section-heading {
+  display: inline-block;
+  position: relative;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--fg);
+  padding-bottom: 0.5rem;
+}
+.section-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 2.5rem;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* ─── Dividers ──────────────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── Prose content (dangerouslySetInnerHTML project content) ──────── */
+.prose-content h2,
+.prose-content h3 {
+  color: var(--fg);
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.prose-content p { color: var(--fg-muted); line-height: 1.7; margin-bottom: 1rem; }
+.prose-content ul { padding-left: 1.25rem; list-style: disc; color: var(--fg-muted); }
+.prose-content li { margin-bottom: 0.4rem; }
+.prose-content strong { color: var(--fg); font-weight: 600; }
+.prose-content code {
+  background: var(--bg-elevated);
+  color: var(--accent);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+

@@ -2,58 +2,66 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+export type Theme = "light" | "dark";
+export type Palette = "core" | "editorial-impact" | "editorial-lab";
+
+export const PALETTES: Palette[] = ["core", "editorial-impact", "editorial-lab"];
 
 interface ThemeContextType {
   theme: Theme;
+  palette: Palette;
   toggleTheme: () => void;
+  setPalette: (palette: Palette) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function applyToDOM(theme: Theme, palette: Palette) {
+  document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.setAttribute("data-palette", palette);
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  // Default to dark to match CSS :root token defaults
+  const [theme, setTheme] = useState<Theme>("dark");
+  const [palette, setPaletteState] = useState<Palette>("core");
 
   useEffect(() => {
-    // This effect runs after hydration, just for hydration safety
-    const savedTheme = localStorage.getItem("theme") as Theme;
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-      if (savedTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    } else {
-      setTheme("light");
-      document.documentElement.setAttribute("data-theme", "light");
-      document.documentElement.classList.remove("dark");
-    }
+    // URL param takes precedence for shareable palette previews
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPalette = urlParams.get("palette") as Palette | null;
+
+    const resolvedTheme = (localStorage.getItem("theme") as Theme) || "dark";
+    const resolvedPalette =
+      urlPalette && PALETTES.includes(urlPalette)
+        ? urlPalette
+        : ((localStorage.getItem("palette") as Palette) || "editorial-impact");
+
+    setTheme(resolvedTheme);
+    setPaletteState(resolvedPalette);
+    applyToDOM(resolvedTheme, resolvedPalette);
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
+    const newTheme: Theme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    applyToDOM(newTheme, palette);
   };
 
-  // Optimized context value
-  const value = {
-    theme,
-    toggleTheme
+  const setPalette = (newPalette: Palette) => {
+    setPaletteState(newPalette);
+    localStorage.setItem("palette", newPalette);
+    applyToDOM(theme, newPalette);
   };
 
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{ theme, palette, toggleTheme, setPalette }}>
       {children}
     </ThemeContext.Provider>
   );

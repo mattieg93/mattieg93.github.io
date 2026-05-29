@@ -64,14 +64,23 @@ export default function ContactForm() {
     }
   };
 
+  const inputCls = "w-full px-4 py-3 rounded-lg text-sm transition-colors outline-none focus:ring-2";
+  const inputStyle = {
+    background: "var(--bg-elevated)",
+    border: "1px solid var(--border)",
+    color: "var(--fg)",
+  } as React.CSSProperties;
+
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-      <h3 className="text-2xl font-bold mb-6 text-white">Send a Message</h3>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="card p-8">
+      <h3 className="text-xl font-semibold mb-6" style={{ color: "var(--fg)" }}>
+        Send a Message
+      </h3>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="name" className="block text-xs font-medium mb-1.5" style={{ color: "var(--fg-muted)" }}>
               Your Name *
             </label>
             <input
@@ -81,13 +90,14 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 text-white placeholder-gray-400 transition-colors contact-input"
-              placeholder="John Doe"
+              className={inputCls}
+              style={inputStyle}
+              placeholder="Jane Smith"
             />
           </div>
-          
+
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-xs font-medium mb-1.5" style={{ color: "var(--fg-muted)" }}>
               Email Address *
             </label>
             <input
@@ -97,14 +107,15 @@ export default function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 text-white placeholder-gray-400 transition-colors contact-input"
-              placeholder="john@example.com"
+              className={inputCls}
+              style={inputStyle}
+              placeholder="jane@company.com"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="subject" className="block text-xs font-medium mb-1.5" style={{ color: "var(--fg-muted)" }}>
             Subject *
           </label>
           <input
@@ -114,13 +125,14 @@ export default function ContactForm() {
             value={formData.subject}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 text-white placeholder-gray-400 transition-colors contact-input"
-            placeholder="Project Collaboration Opportunity"
+            className={inputCls}
+            style={inputStyle}
+            placeholder="Project Collaboration"
           />
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+          <label htmlFor="message" className="block text-xs font-medium mb-1.5" style={{ color: "var(--fg-muted)" }}>
             Message *
           </label>
           <textarea
@@ -130,7 +142,8 @@ export default function ContactForm() {
             onChange={handleChange}
             required
             rows={6}
-            className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 text-white placeholder-gray-400 transition-colors resize-vertical contact-input"
+            className={`${inputCls} resize-vertical`}
+            style={inputStyle}
             placeholder="Tell me about your project or how we can work together..."
           />
         </div>
@@ -138,10 +151,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50"
-          style={{
-            backgroundColor: isSubmitting ? '#6b7280' : 'var(--secondary)'
-          }}
+          className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -156,22 +166,29 @@ export default function ContactForm() {
           )}
         </button>
 
-        {submitStatus === 'success' && (
-          <div 
-            className="rounded-lg p-4 border"
+        {submitStatus === "success" && (
+          <div
+            className="rounded-lg p-4 text-sm"
             style={{
-              backgroundColor: 'color-mix(in srgb, var(--secondary) 20%, transparent)',
-              borderColor: 'color-mix(in srgb, var(--secondary) 50%, transparent)',
-              color: 'var(--secondary)'
+              background: "color-mix(in srgb, var(--success) 12%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--success) 35%, transparent)",
+              color: "var(--success)",
             }}
           >
-            ✅ Message sent successfully! I&apos;ll get back to you soon.
+            Message sent! I&apos;ll get back to you soon.
           </div>
         )}
 
-        {submitStatus === 'error' && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-300">
-            ❌ There was an error sending your message. Please try again or email me directly.
+        {submitStatus === "error" && (
+          <div
+            className="rounded-lg p-4 text-sm"
+            style={{
+              background: "color-mix(in srgb, var(--error) 10%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--error) 30%, transparent)",
+              color: "var(--error)",
+            }}
+          >
+            There was an error sending your message. Please try again or email me directly.
           </div>
         )}
       </form>

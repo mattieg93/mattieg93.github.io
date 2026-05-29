@@ -3,14 +3,22 @@
 import { useState } from "react";
 
 interface ProjectFilterProps {
-  projects: any[];
+  projects: { category: string; tags: string[] }[];
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
   selectedTags: string[];
   onTagsChange: (tags: string[]) => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
+  onClear?: () => void;
 }
+
+const CATEGORY_LABELS: Record<string, string> = {
+  all: "All",
+  professional: "Professional",
+  academic: "Academic",
+  personal: "Personal",
+};
 
 export function ProjectFilter({
   projects,
@@ -20,193 +28,160 @@ export function ProjectFilter({
   onTagsChange,
   searchTerm,
   onSearchChange,
+  onClear,
 }: ProjectFilterProps) {
   const [showAllTags, setShowAllTags] = useState(false);
 
-  // Only show category buttons that have at least one project
-  const rawCategories = [
-    { id: "all", label: "All Projects", count: projects.length },
-    { id: "professional", label: "Professional", count: projects.filter(p => p.category === "professional").length },
-    { id: "academic", label: "Academic", count: projects.filter(p => p.category === "academic").length },
-    { id: "personal", label: "Personal", count: projects.filter(p => p.category === "personal").length },
-  ];
-  const categories = rawCategories.filter(c => c.id === "all" || c.count > 0);
+  const categories = ["all", "professional", "academic", "personal"].filter(
+    (c) => c === "all" || projects.some((p) => p.category === c)
+  );
 
-  // Compute tag frequency across all projects, sorted descending by count
-  const tagCounts = projects.reduce((acc, project) => {
-    project.tags.forEach((tag: string) => {
-      acc[tag] = (acc[tag] || 0) + 1;
-    });
+  const tagCounts = projects.reduce<Record<string, number>>((acc, p) => {
+    p.tags.forEach((tag) => { acc[tag] = (acc[tag] || 0) + 1; });
     return acc;
-  }, {} as Record<string, number>);
+  }, {});
 
-  const sortedTags = (Object.entries(tagCounts) as [string, number][])
-    .sort((a, b) => b[1] - a[1])
+  const sortedTags = Object.entries(tagCounts)
+    .sort(([, a], [, b]) => b - a)
     .map(([tag, count]) => ({ tag, count }));
 
-  const VISIBLE_COUNT = 8;
-  const visibleTags = showAllTags ? sortedTags : sortedTags.slice(0, VISIBLE_COUNT);
-  const hiddenCount = sortedTags.length - VISIBLE_COUNT;
+  const VISIBLE = 10;
+  const visibleTags = showAllTags ? sortedTags : sortedTags.slice(0, VISIBLE);
 
   const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      onTagsChange(selectedTags.filter(t => t !== tag));
-    } else {
-      onTagsChange([...selectedTags, tag]);
-    }
+    onTagsChange(
+      selectedTags.includes(tag)
+        ? selectedTags.filter((t) => t !== tag)
+        : [...selectedTags, tag]
+    );
   };
 
+  const hasFilters = selectedCategory !== "all" || selectedTags.length > 0 || searchTerm;
+
   return (
-    <div className="mb-12 space-y-6">
-      {/* Search Bar */}
-      <div className="max-w-md mx-auto">
-        <div className="relative">
-          <svg 
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search projects..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 focus:border-[var(--primary)] focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-          />
-        </div>
+    <div className="space-y-5 mb-8">
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+          style={{ color: 'var(--fg-subtle)' }}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="search"
+          placeholder="Search projects..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="w-full pl-9 pr-4 py-2 text-sm rounded-md border"
+          style={{
+            background: 'var(--bg-surface)',
+            color: 'var(--fg)',
+            borderColor: 'var(--border)',
+          }}
+        />
       </div>
 
-      {/* Category Filter - only show categories with at least one project */}
-      <div className="flex flex-wrap justify-center gap-4">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => onCategoryChange(category.id)}
-            className="px-6 py-3 rounded-lg font-medium transition-all duration-300 border shadow-sm"
-            style={selectedCategory === category.id ? {
-              backgroundColor: 'var(--secondary)',
-              color: 'white',
-              borderColor: 'var(--secondary)'
-            } : {
-              backgroundColor: 'var(--pill-bg)',
-              color: 'var(--pill-fg)',
-              borderColor: 'var(--pill-border)'
-            }}
-          >
-            {category.label}
-            <span className="ml-2 text-sm opacity-75">({category.count})</span>
-          </button>
-        ))}
+      {/* Categories */}
+      <div className="flex flex-wrap gap-2">
+        {categories.map((c) => {
+          const count = c === "all" ? projects.length : projects.filter((p) => p.category === c).length;
+          const active = selectedCategory === c;
+          return (
+            <button
+              key={c}
+              onClick={() => onCategoryChange(c)}
+              className="text-sm font-medium px-3.5 py-1.5 rounded-full border transition-colors duration-150"
+              style={{
+                background: active ? 'var(--primary)' : 'var(--pill-bg)',
+                color: active ? 'var(--on-emphasis)' : 'var(--pill-fg)',
+                borderColor: active ? 'var(--primary)' : 'var(--pill-border)',
+              }}
+            >
+              {CATEGORY_LABELS[c]}
+              <span className="ml-1.5 opacity-60 text-xs">{count}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Tag Filter - sorted by frequency desc, collapsed to first 8 with expand toggle */}
-      <div className="max-w-4xl mx-auto">
-        <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 text-center uppercase tracking-wider">
-          Filter by Technology
-        </h3>
-        <div className="flex flex-wrap justify-center gap-2">
-          {visibleTags.map(({ tag, count }) => (
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {visibleTags.map(({ tag, count }) => {
+          const active = selectedTags.includes(tag);
+          return (
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className="px-3 py-1 text-sm rounded-full transition-all duration-300 border"
-              style={selectedTags.includes(tag) ? {
-                backgroundColor: 'color-mix(in srgb, var(--secondary) 20%, transparent)',
-                color: 'var(--secondary)',
-                borderColor: 'color-mix(in srgb, var(--secondary) 50%, transparent)'
-              } : {
-                backgroundColor: 'var(--pill-bg)',
-                color: 'var(--pill-fg)',
-                borderColor: 'var(--pill-border)'
+              className="text-xs px-3 py-1 rounded-full border transition-colors duration-150"
+              style={{
+                background: active ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'var(--pill-bg)',
+                color: active ? 'var(--accent)' : 'var(--pill-fg)',
+                borderColor: active ? 'color-mix(in srgb, var(--accent) 45%, transparent)' : 'var(--pill-border)',
               }}
             >
               {tag}
-              <span className="ml-1 opacity-50 text-xs">{count}</span>
+              <span className="ml-1 opacity-50">{count}</span>
             </button>
-          ))}
-
-          {hiddenCount > 0 && !showAllTags && (
-            <button
-              onClick={() => setShowAllTags(true)}
-              className="px-3 py-1 text-sm rounded-full border border-dashed transition-all duration-300"
-              style={{ color: 'var(--pill-fg)', borderColor: 'var(--pill-border)' }}
-            >
-              +{hiddenCount} more
-            </button>
-          )}
-          {showAllTags && sortedTags.length > VISIBLE_COUNT && (
-            <button
-              onClick={() => setShowAllTags(false)}
-              className="px-3 py-1 text-sm rounded-full border border-dashed transition-all duration-300"
-              style={{ color: 'var(--pill-fg)', borderColor: 'var(--pill-border)' }}
-            >
-              Show less
-            </button>
-          )}
-        </div>
+          );
+        })}
+        {!showAllTags && sortedTags.length > VISIBLE && (
+          <button
+            onClick={() => setShowAllTags(true)}
+            className="text-xs px-3 py-1 rounded-full border border-dashed"
+            style={{ color: 'var(--fg-subtle)', borderColor: 'var(--border)' }}
+          >
+            +{sortedTags.length - VISIBLE} more
+          </button>
+        )}
+        {showAllTags && sortedTags.length > VISIBLE && (
+          <button
+            onClick={() => setShowAllTags(false)}
+            className="text-xs px-3 py-1 rounded-full border border-dashed"
+            style={{ color: 'var(--fg-subtle)', borderColor: 'var(--border)' }}
+          >
+            Show less
+          </button>
+        )}
       </div>
 
-      {/* Active Filters */}
-      {(selectedCategory !== "all" || selectedTags.length > 0 || searchTerm) && (
-        <div className="flex flex-wrap justify-center gap-2 pt-4 border-t border-gray-300 dark:border-gray-700">
-          <span className="text-gray-700 dark:text-gray-400 text-sm">Active filters:</span>
+      {/* Active filter chips + clear */}
+      {hasFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs" style={{ color: 'var(--fg-subtle)' }}>Active:</span>
           {selectedCategory !== "all" && (
-            <span 
-              className="px-3 py-1 rounded-full text-sm flex items-center gap-2"
-              style={{
-                backgroundColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
-                color: 'var(--primary)'
-              }}
+            <span
+              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border"
+              style={{ background: 'color-mix(in srgb, var(--primary) 12%, transparent)', color: 'var(--primary)', borderColor: 'color-mix(in srgb, var(--primary) 30%, transparent)' }}
             >
-              {selectedCategory}
-              <button 
-                onClick={() => onCategoryChange("all")}
-                className="hover:opacity-80"
-              >
-                ×
-              </button>
+              {CATEGORY_LABELS[selectedCategory]}
+              <button onClick={() => onCategoryChange("all")} className="hover:opacity-70" aria-label="Remove">×</button>
             </span>
           )}
           {selectedTags.map((tag) => (
-            <span 
-              key={tag} 
-              className="px-3 py-1 rounded-full text-sm flex items-center gap-2"
-              style={{
-                backgroundColor: 'color-mix(in srgb, var(--secondary) 20%, transparent)',
-                color: 'var(--secondary)'
-              }}
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border"
+              style={{ background: 'color-mix(in srgb, var(--accent) 12%, transparent)', color: 'var(--accent)', borderColor: 'color-mix(in srgb, var(--accent) 30%, transparent)' }}
             >
               {tag}
-              <button 
-                onClick={() => toggleTag(tag)}
-                className="hover:opacity-80"
-              >
-                ×
-              </button>
+              <button onClick={() => toggleTag(tag)} className="hover:opacity-70" aria-label="Remove">×</button>
             </span>
           ))}
-          {searchTerm && (
-            <span 
-              className="px-3 py-1 rounded-full text-sm flex items-center gap-2"
-              style={{
-                backgroundColor: 'color-mix(in srgb, var(--secondary) 20%, transparent)',
-                color: 'var(--secondary)'
-              }}
+          {onClear && (
+            <button
+              onClick={onClear}
+              className="text-xs ml-1 underline-offset-2 underline"
+              style={{ color: 'var(--fg-subtle)' }}
             >
-              &quot;{searchTerm}&quot;
-              <button 
-                onClick={() => onSearchChange("")}
-                className="hover:opacity-80"
-              >
-                ×
-              </button>
-            </span>
+              Clear all
+            </button>
           )}
         </div>
       )}
     </div>
   );
 }
+

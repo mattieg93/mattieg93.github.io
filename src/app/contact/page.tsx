@@ -1,77 +1,130 @@
-import ContactForm from '@/components/contact-form';
-import SocialLinks from '@/components/social-links';
-import ContactInfo from '@/components/contact-info';
+import type { Metadata } from "next";
+import ContactForm from "@/components/contact-form";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Get in touch with Mattie Graham — AI & Analytics Engineer. Let's discuss your data project.",
+};
+
+const infoItems = [
+  {
+    label: "Location",
+    value: "United States\nOpen to remote",
+  },
+  {
+    label: "Response Time",
+    value: "Within 24–48 hours",
+  },
+  {
+    label: "Availability",
+    value: "Open to new projects",
+  },
+];
+
+const links = [
+  { label: "Email", href: "mailto:eight-amens76@icloud.com", text: "eight-amens76@icloud.com" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/mattiegraham", text: "linkedin.com/in/mattiegraham" },
+  { label: "GitHub", href: "https://github.com/mattieg93", text: "github.com/mattieg93" },
+];
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen pt-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4" style={{ color: 'var(--secondary)' }}>
-            Get in Touch
+    <div className="min-h-screen pt-24 pb-20" style={{ background: "var(--bg)" }}>
+      <div className="max-w-5xl mx-auto px-6">
+
+        {/* Header */}
+        <div className="mb-14 max-w-xl">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: "var(--fg)" }}>
+            Let&apos;s build something{" "}
+            <span style={{ color: "var(--accent)" }}>meaningful</span>
           </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Ready to collaborate on your next data project? I'd love to hear from you. 
-            Whether you have a question, project idea, or just want to connect, let's start a conversation.
+          <p className="text-base leading-relaxed" style={{ color: "var(--fg-muted)" }}>
+            Whether you have a project in mind, a question about my work, or just want to connect —
+            I&apos;d love to hear from you.
           </p>
-          <div className="w-24 h-1 mx-auto mt-8" style={{ backgroundColor: 'var(--secondary)' }}></div>
         </div>
-        
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          {/* Left Column - Contact Form */}
-          <div>
-            <ContactForm />
-          </div>
-          
-          {/* Right Column - Contact Info */}
-          <div className="space-y-8">
-            <ContactInfo />
-            <SocialLinks />
+
+        {/* Content grid */}
+        <div className="grid lg:grid-cols-[1fr_340px] gap-10">
+
+          {/* Form */}
+          <ContactForm />
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+
+            {/* Info cards */}
+            <div className="card p-6 space-y-5">
+              {infoItems.map((item) => (
+                <div key={item.label}>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "var(--fg-subtle)" }}>
+                    {item.label}
+                  </p>
+                  <p className="text-sm whitespace-pre-line" style={{ color: "var(--fg-muted)" }}>
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Links */}
+            <div className="card p-6">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--fg-subtle)" }}>
+                Connect
+              </p>
+              <div className="space-y-3">
+                {links.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target={link.href.startsWith("mailto") ? undefined : "_blank"}
+                    rel={link.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+                    className="flex items-start gap-2 text-sm group"
+                    style={{ color: "var(--fg-muted)" }}
+                  >
+                    <span
+                      className="text-xs font-medium mt-0.5 w-16 flex-shrink-0"
+                      style={{ color: "var(--fg-subtle)" }}
+                    >
+                      {link.label}
+                    </span>
+                    <span
+                      className="group-hover:underline"
+                      style={{ color: "var(--primary)" }}
+                    >
+                      {link.text}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Availability badge */}
+            <div
+              className="rounded-xl p-5 text-center"
+              style={{
+                background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--accent) 22%, transparent)",
+              }}
+            >
+              <div
+                className="inline-flex items-center gap-2 text-sm font-medium mb-2"
+                style={{ color: "var(--accent)" }}
+              >
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: "var(--success)" }}
+                />
+                Available for new projects
+              </div>
+              <p className="text-xs" style={{ color: "var(--fg-muted)" }}>
+                AI &amp; data engineering, ML systems, analytics platforms
+              </p>
+            </div>
+
           </div>
         </div>
 
-        {/* Call to Action Section */}
-        <div className="rounded-2xl p-8 border text-center" style={{ backgroundColor: 'rgba(15, 156, 112, 0.1)', borderColor: 'var(--secondary)' }}>
-          <h2 className="text-3xl font-bold mb-4 text-white">
-            Let's Build Something That Works
-          </h2>
-          <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-            I build AI-powered data systems that ship - from RAG pipelines and ML models
-            to full-stack analytics tooling. If you need production-grade AI engineering,
-            automated data pipelines, or a working MVP in under a month, let's talk.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://www.upwork.com/freelancers/mattiegraham"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 bg-[#00bdaa] hover:bg-[#00a896] text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 inline-flex"
-            >
-              <img 
-                src="/assets/icons/upwork.png" 
-                alt="Upwork" 
-                className="h-5 w-5"
-              />
-              Upwork Profile
-            </a>
-            <a
-              href="mailto:eight-amens76@icloud.com"
-              className="text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 inline-flex items-center justify-center hover:opacity-90"
-              style={{ backgroundColor: 'var(--secondary)' }}
-            >
-              Send Email Directly
-            </a>
-            <a
-              href="/resume"
-              className="border font-semibold py-3 px-8 rounded-lg transition-all duration-300 inline-flex items-center justify-center"
-              style={{ borderColor: 'var(--primary)', color: 'var(--primary)' }}
-            >
-              View My Resume
-            </a>
-          </div>        
-        </div>
       </div>
     </div>
   );

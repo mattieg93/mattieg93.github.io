@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { FaSave, FaCopy, FaCheck, FaLock, FaSignOutAlt, FaEye, FaEyeSlash, FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
-import { projects as buildTimeProjects, baseProjects, Project } from '@/data/cms-config';
+import { projects as buildTimeProjects, Project } from '@/data/cms-config';
 import { fetchOverrides, commitOverrides, type ProjectsOverrides } from '@/lib/github-api';
 
 // ─── PIN gate ──────────────────────────────────────────────────────────────
@@ -68,6 +68,7 @@ function projectToForm(p: Project): NewProject {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateHideInstruction(p: Project, hide: boolean): string {
   return `// In src/data/cms-config.ts, find the project with id: '${p.id}'
 // ${hide ? 'Add' : 'Remove'} the hidden flag inside that entry:
@@ -78,6 +79,7 @@ function generateHideInstruction(p: Project, hide: boolean): string {
   // ... rest of entry unchanged`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateDeleteInstruction(p: Project): string {
   return `// In src/data/cms-config.ts, delete the entire project block with:
 //   id: '${p.id}'
@@ -137,7 +139,6 @@ export default function CMSAdmin() {
 
   useEffect(() => {
     if (authed) loadOverrides();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authed]);
 
   const loadOverrides = async () => {
@@ -298,12 +299,12 @@ export default function CMSAdmin() {
   // ── PIN gate ────────────────────────────────────────────────────────────
   if (!authed) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <div className="text-5xl mb-4">🔐</div>
-            <h1 className="text-2xl font-bold text-white">Admin</h1>
-            <p className="text-gray-500 text-sm mt-1">Portfolio management</p>
+            <h1 className="text-2xl font-bold text-[var(--fg)]">Admin</h1>
+            <p className="text-[var(--fg-subtle)] text-sm mt-1">Portfolio management</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -313,7 +314,7 @@ export default function CMSAdmin() {
                 value={pin}
                 onChange={(e) => { setPin(e.target.value); setPinError(false); }}
                 placeholder="Enter PIN"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white text-center text-lg tracking-widest focus:outline-none focus:border-purple-500"
+                className="w-full px-4 py-3 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] text-center text-lg tracking-widest focus:outline-none focus:border-[var(--primary)]"
                 autoFocus
               />
             </div>
@@ -328,7 +329,7 @@ export default function CMSAdmin() {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-lg text-white font-semibold transition-all duration-300"
+              className="w-full py-3 rounded-lg text-[var(--fg)] font-semibold transition-all duration-300"
               style={{ backgroundColor: 'var(--primary)' }}
             >
               <FaLock className="inline mr-2" />
@@ -342,17 +343,17 @@ export default function CMSAdmin() {
 
   // ── Admin UI ────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-950 p-4 pt-6">
+    <div className="min-h-screen bg-[var(--bg)] p-4 pt-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">Portfolio Admin</h1>
-            <p className="text-gray-500 text-sm mt-1">Hidden from navigation - bookmark this URL</p>
+            <h1 className="text-2xl font-bold text-[var(--fg)]">Portfolio Admin</h1>
+            <p className="text-[var(--fg-subtle)] text-sm mt-1">Hidden from navigation - bookmark this URL</p>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 rounded-lg hover:border-gray-500 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] border border-[var(--border)] rounded-lg hover:border-[var(--primary)] transition-colors"
           >
             <FaSignOutAlt />
             Lock
@@ -360,7 +361,7 @@ export default function CMSAdmin() {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-800 mb-8">
+        <div className="border-b border-[var(--border)] mb-8">
           <nav className="flex gap-8">
             {[
               { id: 'add-project', label: editingId ? '✏️ Edit Project' : '+ Add Project' },
@@ -372,8 +373,8 @@ export default function CMSAdmin() {
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? 'border-purple-500 text-purple-400'
-                    : 'border-transparent text-gray-500 hover:text-gray-300'
+                    ? 'border-[var(--primary)] text-[var(--primary)]'
+                    : 'border-transparent text-[var(--fg-subtle)] hover:text-[var(--fg-muted)]'
                 }`}
               >
                 {tab.label}
@@ -391,50 +392,50 @@ export default function CMSAdmin() {
                   Editing <code className="font-mono">{editingId}</code> — generate the snippet, then <strong>find &amp; replace</strong> the existing entry in{' '}
                   <code className="text-xs">src/data/cms-config.ts</code>.
                 </p>
-                <button onClick={() => { setEditingId(null); setProject(emptyProject); setSnippet(''); }} className="ml-4 text-gray-500 hover:text-white">
+                <button onClick={() => { setEditingId(null); setProject(emptyProject); setSnippet(''); }} className="ml-4 text-[var(--fg-subtle)] hover:text-[var(--fg)]">
                   <FaTimes />
                 </button>
               </div>
             ) : (
-              <p className="text-gray-400 text-sm">
-                Fill in the fields below, click <strong className="text-white">Generate snippet</strong>, then copy and paste into{' '}
-                <code className="bg-gray-800 px-1.5 py-0.5 rounded text-purple-300 text-xs">src/data/cms-config.ts</code>{' '}
-                inside the <code className="bg-gray-800 px-1.5 py-0.5 rounded text-purple-300 text-xs">projects</code> array.
+              <p className="text-[var(--fg-muted)] text-sm">
+                Fill in the fields below, click <strong className="text-[var(--fg)]">Generate snippet</strong>, then copy and paste into{' '}
+                <code className="bg-[var(--bg-surface)] px-1.5 py-0.5 rounded text-[var(--primary)] text-xs">src/data/cms-config.ts</code>{' '}
+                inside the <code className="bg-[var(--bg-surface)] px-1.5 py-0.5 rounded text-[var(--primary)] text-xs">projects</code> array.
               </p>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Title */}
               <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-1.5">Project title *</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Project title *</label>
                 <input
                   type="text"
                   value={project.title}
                   onChange={(e) => updateField('title', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   placeholder="My Awesome Project"
                 />
               </div>
 
               {/* ID / slug */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Slug (auto-generated)</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Slug (auto-generated)</label>
                 <input
                   type="text"
                   value={project.id}
                   onChange={(e) => updateField('id', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none font-mono text-sm"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none font-mono text-sm"
                   placeholder="my-awesome-project"
                 />
               </div>
 
               {/* Category */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Category</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Category</label>
                 <select
                   value={project.category}
                   onChange={(e) => updateField('category', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                 >
                   <option value="personal">Personal</option>
                   <option value="academic">Academic</option>
@@ -444,72 +445,72 @@ export default function CMSAdmin() {
 
               {/* Description */}
               <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-1.5">Short description *</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Short description *</label>
                 <textarea
                   value={project.description}
                   onChange={(e) => updateField('description', e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none resize-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none resize-none"
                   placeholder="One-sentence description shown on project cards"
                 />
               </div>
 
               {/* Tags */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Tags (comma-separated)</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Tags (comma-separated)</label>
                 <input
                   type="text"
                   value={project.tags}
                   onChange={(e) => updateField('tags', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   placeholder="Python, Machine Learning, NLP"
                 />
               </div>
 
               {/* Technologies */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Technologies (comma-separated)</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Technologies (comma-separated)</label>
                 <input
                   type="text"
                   value={project.technologies}
                   onChange={(e) => updateField('technologies', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   placeholder="Python, LangChain, FastAPI"
                 />
               </div>
 
               {/* GitHub URL */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">GitHub URL</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">GitHub URL</label>
                 <input
                   type="url"
                   value={project.githubUrl}
                   onChange={(e) => updateField('githubUrl', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   placeholder="https://github.com/mattieg93/..."
                 />
               </div>
 
               {/* Live URL */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Live demo URL</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Live demo URL</label>
                 <input
                   type="url"
                   value={project.liveUrl}
                   onChange={(e) => updateField('liveUrl', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   placeholder="https://..."
                 />
               </div>
 
               {/* Image */}
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Image path</label>
+                <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Image path</label>
                 <input
                   type="text"
                   value={project.imageUrl}
                   onChange={(e) => updateField('imageUrl', e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                  className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   placeholder="/assets/images/my-project.png"
                 />
               </div>
@@ -517,11 +518,11 @@ export default function CMSAdmin() {
               {/* Status + Featured */}
               <div className="flex gap-4 items-end">
                 <div className="flex-1">
-                  <label className="block text-sm text-gray-400 mb-1.5">Status</label>
+                  <label className="block text-sm text-[var(--fg-muted)] mb-1.5">Status</label>
                   <select
                     value={project.status}
                     onChange={(e) => updateField('status', e.target.value)}
-                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                    className="w-full px-3 py-2.5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg text-[var(--fg)] focus:border-[var(--primary)] focus:outline-none"
                   >
                     <option value="completed">Completed</option>
                     <option value="in-progress">In Progress</option>
@@ -533,9 +534,9 @@ export default function CMSAdmin() {
                     type="checkbox"
                     checked={project.featured}
                     onChange={(e) => updateField('featured', e.target.checked)}
-                    className="w-4 h-4 rounded accent-purple-500"
+                    className="w-4 h-4 rounded accent-[var(--primary)]"
                   />
-                  <span className="text-sm text-gray-400">Featured</span>
+                  <span className="text-sm text-[var(--fg-muted)]">Featured</span>
                 </label>
               </div>
             </div>
@@ -552,7 +553,7 @@ export default function CMSAdmin() {
                 <button
                   onClick={handleSaveToGitHub}
                   disabled={!project.title || saving === (project.id || slugify(project.title))}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-[var(--fg)] font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ backgroundColor: 'var(--primary)' }}
                 >
                   <FaSave />
@@ -575,7 +576,7 @@ export default function CMSAdmin() {
                 <button
                   onClick={handleGenerate}
                   disabled={!project.title}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-[var(--fg)] font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ backgroundColor: 'var(--primary)' }}
                 >
                   <FaSave />
@@ -587,18 +588,18 @@ export default function CMSAdmin() {
             {snippet && (
               <div className="mt-4">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-400">
-                    Paste inside <code className="text-purple-300">src/data/projects-overrides.json</code> → <code className="text-gray-500">projects</code> array
+                  <span className="text-sm text-[var(--fg-muted)]">
+                    Paste inside <code className="text-[var(--primary)]">src/data/projects-overrides.json</code> → <code className="text-[var(--fg-subtle)]">projects</code> array
                   </span>
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg border border-gray-700 hover:border-gray-500 text-gray-300 hover:text-white transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg border border-[var(--border)] hover:border-[var(--primary)] text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
                   >
                     {copied ? <FaCheck style={{ color: 'var(--secondary)' }} /> : <FaCopy />}
                     {copied ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <pre className="bg-gray-900 border border-gray-700 rounded-lg p-4 text-xs overflow-x-auto whitespace-pre" style={{ color: 'var(--secondary)' }}>
+                <pre className="bg-[var(--bg)] border border-[var(--border)] rounded-lg p-4 text-xs overflow-x-auto whitespace-pre" style={{ color: 'var(--secondary)' }}>
                   {snippet}
                 </pre>
               </div>
@@ -610,7 +611,7 @@ export default function CMSAdmin() {
         {activeTab === 'manage' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-gray-400 text-sm">
+              <p className="text-[var(--fg-muted)] text-sm">
                 {HAS_TOKEN
                   ? 'Changes commit directly to GitHub and trigger a rebuild (~2-3 min to go live).'
                   : 'Set NEXT_PUBLIC_GITHUB_TOKEN to enable live edits.'}
@@ -618,7 +619,7 @@ export default function CMSAdmin() {
               <button
                 onClick={loadOverrides}
                 disabled={loadingOverrides}
-                className="text-xs text-gray-500 hover:text-white border border-gray-800 rounded px-2.5 py-1.5 transition-colors"
+                className="text-xs text-[var(--fg-subtle)] hover:text-[var(--fg)] border border-[var(--border)] rounded px-2.5 py-1.5 transition-colors"
               >
                 {loadingOverrides ? 'Loading…' : '↻ Refresh'}
               </button>
@@ -636,24 +637,24 @@ export default function CMSAdmin() {
                   key={p.id}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors ${
                     p.hidden
-                      ? 'bg-gray-900/40 border-gray-800 opacity-60'
-                      : 'bg-gray-900 border-gray-800'
+                      ? 'bg-[var(--bg)]/40 border-[var(--border)] opacity-60'
+                      : 'bg-[var(--bg)] border-[var(--border)]'
                   }`}
                 >
                   {/* Status dot */}
-                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${p.hidden ? 'bg-gray-600' : ''}`} style={!p.hidden ? { backgroundColor: 'var(--secondary)' } : {}} />
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.hidden ? 'var(--border)' : 'var(--success)' }} />
 
                   {/* Title + badges */}
                   <div className="flex-1 min-w-0">
-                    <span className={`text-sm font-medium truncate block ${p.hidden ? 'text-gray-500 line-through' : 'text-white'}`}>
+                    <span className={`text-sm font-medium truncate block ${p.hidden ? 'text-[var(--fg-subtle)] line-through' : 'text-[var(--fg)]'}`}>
                       {p.title}
                     </span>
                     <div className="flex gap-2 mt-1">
-                      <span className="text-xs text-gray-600 font-mono">{p.category}</span>
+                      <span className="text-xs text-[var(--fg-subtle)] font-mono">{p.category}</span>
                       {p.featured && <span className="text-xs text-yellow-500">⭐ featured</span>}
-                      {p.hidden && <span className="text-xs text-gray-500 italic">hidden</span>}
+                      {p.hidden && <span className="text-xs text-[var(--fg-subtle)] italic">hidden</span>}
                       {overrides.projects.some(op => op.id === p.id) && (
-                        <span className="text-xs text-purple-500 italic">admin-managed</span>
+                        <span className="text-xs text-[var(--primary)] italic">admin-managed</span>
                       )}
                     </div>
                   </div>
@@ -664,9 +665,9 @@ export default function CMSAdmin() {
                     <button
                       onClick={() => handleEdit(p)}
                       title="Edit — pre-fills form"
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-gray-700 text-gray-400 hover:text-white hover:border-purple-500 transition-colors"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border border-[var(--border)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:border-[var(--primary)] transition-colors"
                     >
-                      <FaEdit className="text-purple-400" />
+                      <FaEdit className="text-[var(--primary)]" />
                       Edit
                     </button>
 
@@ -679,8 +680,8 @@ export default function CMSAdmin() {
                         savedId === p.id + '-hide'
                           ? ''
                           : p.hidden
-                          ? 'border-gray-700 text-gray-400'
-                          : 'border-gray-700 text-gray-400 hover:text-yellow-400 hover:border-yellow-600'
+                          ? 'border-[var(--border)] text-[var(--fg-muted)]'
+                          : 'border-[var(--border)] text-[var(--fg-muted)] hover:text-yellow-400 hover:border-yellow-600'
                       }`}
                       style={savedId === p.id + '-hide' ? { borderColor: 'var(--secondary)', color: 'var(--secondary)' } : {}}
                     >
@@ -704,7 +705,7 @@ export default function CMSAdmin() {
                       className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
                         savedId === p.id + '-delete'
                           ? ''
-                          : 'border-gray-700 text-gray-400 hover:text-red-400 hover:border-red-700'
+                          : 'border-[var(--border)] text-[var(--fg-muted)] hover:text-red-400 hover:border-red-700'
                       }`}
                       style={savedId === p.id + '-delete' ? { borderColor: 'var(--secondary)', color: 'var(--secondary)' } : {}}
                     >
@@ -725,10 +726,10 @@ export default function CMSAdmin() {
         {/* Edit guide tab */}
         {activeTab === 'guide' && (
           <div className="space-y-4">
-            <p className="text-gray-400 text-sm">All content is stored in one file. Open it in VS Code to edit anything.</p>
+            <p className="text-[var(--fg-muted)] text-sm">All content is stored in one file. Open it in VS Code to edit anything.</p>
             {[
               {
-                color: 'text-purple-400',
+                color: 'text-[var(--primary)]',
                 title: 'Add or edit a project',
                 steps: [
                   'Open src/data/cms-config.ts',
@@ -755,9 +756,9 @@ export default function CMSAdmin() {
                 ],
               },
             ].map((section) => (
-              <div key={section.title} className="bg-gray-900 rounded-lg p-5 border border-gray-800">
+              <div key={section.title} className="bg-[var(--bg)] rounded-lg p-5 border border-[var(--border)]">
                 <h3 className={`font-semibold mb-3 ${section.color}`}>{section.title}</h3>
-                <ol className="space-y-1 text-sm text-gray-400">
+                <ol className="space-y-1 text-sm text-[var(--fg-muted)]">
                   {section.steps.map((step, i) => (
                     <li key={i}>{i + 1}. {step}</li>
                   ))}
