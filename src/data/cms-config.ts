@@ -52,15 +52,15 @@ const baseProjects: Project[] = [
   {
     id: 'mtg-ecorec',
     title: 'MTG EcoRec: Archetype-Aware Commander Deck Engine',
-    description: 'A full-stack Commander deck builder that solves a structural problem the incumbents cannot: popularity-based recommenders are self-reinforcing, archetype-blind, and never surface genuinely better but lesser-known cards. EcoRec combines a 7-component deterministic scorer, Voyage AI semantic embeddings + MongoDB Atlas Vector Search across 110,000 cards, a Monte Carlo goldfish simulator that grades the deck it just built, and a full collection management system with decklist import — wrapped in a freemium Stripe + PayPal SaaS.',
+    description: 'Commander has 50 million players and a broken recommender problem: every tool surfaces the same popular cards because popularity compounds itself. EcoRec breaks that loop with a 7-component deterministic scorer, Voyage AI semantic embeddings + MongoDB Atlas Vector Search across 110,000 cards, a Monte Carlo simulator that grades the deck it just built, and a full collection management system — wrapped in a freemium Stripe + PayPal SaaS.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Problem Existing Tools Cannot Solve</h2>
-      <p>Magic: The Gathering has ~30,000 unique cards in active use and ~50 million Commander players globally. Every existing deck-building tool — EDHREC, Moxfield, Archidekt — answers the same question the same way: <strong>what do other people put in decks with this commander?</strong> They aggregate decklists and surface the most-played cards. That is a pure popularity signal with a compounding structural flaw:</p>
+      <p>Magic: The Gathering's Commander format has ~30,000 unique cards in active rotation and ~50 million players globally. The deck-building problem is not card selection — it's signal quality. Every major tool (EDHREC, Moxfield, Archidekt) answers the same question the same way: <strong>what do other people put in decks with this commander?</strong> They aggregate community decklists and surface the most-played cards. That is a pure popularity signal, and popularity compounds.</p>
       <ul>
-        <li><strong>Self-reinforcing.</strong> Popular cards get recommended → more decks include them → inclusion rate climbs → they get recommended even more. Better but lesser-known cards never surface.</li>
+        <li><strong>Self-reinforcing.</strong> Popular cards get recommended → more decks include them → inclusion rate climbs → they get recommended even more. Cards that are cheaper, more synergistic, or simply newer never break through.</li>
         <li><strong>Archetype-blind.</strong> An aristocrats deck and a token-swarm deck look identical to a popularity ranker if they share staples like Sol Ring. The tools don't understand <em>why</em> a card belongs.</li>
-        <li><strong>Cannot discover obscurity.</strong> A card printed two months ago, or a $0.50 card that does the job of a $30 staple, has no inclusion history. Popularity tools cannot recommend it regardless of how good it is.</li>
+        <li><strong>Cannot discover obscurity.</strong> A $0.50 card that does the job of a $30 staple has no inclusion history. Popularity tools cannot recommend it regardless of how good it is.</li>
         <li><strong>Cannot grade what it builds.</strong> Existing tools hand you a list and walk away. They cannot tell you whether the deck will actually cast its spells on curve.</li>
       </ul>
       <p><strong>No existing tool combines semantic understanding of card text, archetype mechanics, vector similarity for obscurity detection, <em>and</em> a full Monte Carlo goldfish simulator that grades the resulting deck. That gap is what MTG EcoRec is built to fill.</strong></p>
@@ -68,26 +68,26 @@ const baseProjects: Project[] = [
       <h2>What EcoRec Does Differently</h2>
 
       <h3>1. Archetype-First 7-Component Scoring Engine</h3>
-      <p>The recommendation engine is a deterministic, fully auditable scorer — not a neural network, not a popularity lookup. Each card receives a score from seven interpretable components: Synergy (30%), Archetype Fit (25%), Base Power (15%), Combo Potential (15%), Mana Curve (10%), Type Balance (5%), and a hard Color Identity filter. The synergy engine extracts 60+ MTG-specific keywords from oracle text using regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. Archetype weights encode domain knowledge about which mechanics matter for 40+ named playstyles.</p>
+      <p>The scorer is deterministic and fully auditable — not a neural network, not a popularity lookup. Every recommendation can be explained in plain English. Each card receives a composite score from seven interpretable components: Synergy (30%), Archetype Fit (25%), Base Power (15%), Combo Potential (15%), Mana Curve (10%), Type Balance (5%), and a hard Color Identity filter. The synergy engine extracts 60+ MTG-specific keywords from oracle text via regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. Archetype weights encode domain knowledge about which mechanics matter for 40+ named playstyles (stax, reanimator, combo, voltron, and more).</p>
 
-      <h3>2. Vectorized Obscurity Detection</h3>
-      <p>The obscurity scoring layer is the product moat. Voyage AI <code>voyage-4-lite</code> generates 1024-dimensional text embeddings of all 110,000+ MTG cards. MongoDB Atlas <code>$vectorSearch</code> performs ANN cosine similarity at query time against per-commander averaged profiles built from EDHREC top decklists. Cards in the top 200 by vector similarity with &lt;20% EDHREC inclusion and cost ≤ their popular equivalent receive a 1.5–2.0× score multiplier and a "Hidden Gem" badge. <strong>This combination — archetype-aware scoring + semantic vector search + obscurity detection — cannot be replicated by adding a filter to a popularity table.</strong></p>
+      <h3>2. Vectorized Obscurity Detection — The Product Moat</h3>
+      <p>Popularity-beating requires knowing which cards are semantically similar to the popular ones but underexposed. <code>voyage-4-lite</code> generates 1024-dimensional text embeddings of all 110,000+ MTG cards. MongoDB Atlas <code>$vectorSearch</code> performs ANN cosine similarity at query time against per-commander averaged profiles built from EDHREC's top decklists. Cards in the top 200 by vector similarity with &lt;20% EDHREC inclusion and cost ≤ their popular equivalent receive a 1.5–2.0× score multiplier and a "Hidden Gem" badge — these are the cards that play like staples but cost $0.50 and appear in 3% of decks. <strong>This combination — archetype-aware scoring + semantic vector search + obscurity detection — cannot be replicated by adding a filter to a popularity table.</strong> It requires a fundamentally different data architecture.</p>
 
-      <h3>3. Budget-Aware Architecture</h3>
-      <p>Budget is enforced end-to-end, not as a post-hoc filter. Three-tier price resolution (live Scryfall cache → embedded prices → sentinel 999.0), per-card cap of budget/50 pre-filters the pool, and a post-assembly swap pass guarantees no over-budget cards survive. A $50 budget yields a coherent 99-card deck — not a premium deck with 10 cards swapped out.</p>
+      <h3>3. Budget as a Constraint, Not a Filter</h3>
+      <p>Budget is enforced end-to-end. Three-tier price resolution (live Scryfall cache → embedded prices → sentinel 999.0), a per-card cap of budget/50 pre-filters the candidate pool, and a post-assembly swap pass guarantees no over-budget cards survive final assembly. A $50 budget yields a coherent, playable 99-card deck — not a premium list with 10 cards swapped out after the fact.</p>
 
       <h3>4. Monte Carlo Goldfish Simulator</h3>
-      <p>After a deck is built, the user can run it through a full solitaire simulator that plays N games (default 500, calibrated empirically) and produces a graded report across six categories: Mana Health, Tempo, Throughput, Early Game, Board Development, and Graveyard Recursion. Grading is bracket-aware — a casual bracket-2 deck is graded against more forgiving curves than an optimized bracket-4 cEDH deck. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck.</strong></p>
+      <p>After a deck is assembled, the user runs it through a full solitaire simulator: N games (default 500) producing a graded report across six categories: Mana Health, Tempo, Throughput, Early Game, Board Development, and Graveyard Recursion. Grading is bracket-aware — a casual bracket-2 deck is evaluated against more forgiving curves than a cEDH bracket-4 build. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck</strong> — you don't just get a list, you get a performance report on the list.</p>
+      <p>N=500 is the empirically optimal default — calibrated across a 6-deck panel run at N ∈ {50, 100, 200, 300, 500, 1000} with 5 deterministic seeds per N. It is 46% faster than N=1000 with equivalent information for solidly-in-band decks. Three of six test decks converged by N=50–200; three were genuine boundary cases that remained unstable at any N, confirming the need for tier-aware caps (Premium: 750, Pro: 1000).</p>
 
-      <h2>Wave 6: Production Hardening &amp; Simulation Calibration</h2>
-      <p>After deploying to Railway, settled RSS was 823 MB against a 512 MB target. The root cause was glibc arena fragmentation: glibc defaults to one malloc arena per CPU thread, and Railway's container reports 22+ threads. Setting <code>MALLOC_ARENA_MAX=2</code> reduced RSS to 558 MB — a 32% reduction, confirmed on Railway via <code>/admin/_memory</code>. Additional observability was added: <code>tracemalloc</code> gated behind <code>ENABLE_TRACEMALLOC=1</code>, and <code>/admin/_memory</code> extended with RSS, peak RSS, and thread tracking.</p>
-      <p>Simulation game count was calibrated empirically using a 6-deck panel run at N ∈ {50, 100, 200, 300, 500, 1000} with 5 deterministic seeds per N. Three of six decks converged by N=50–200; three were genuine boundary decks unstable at any N. <strong>Conclusion: N=500 is the optimal default</strong> — 46% faster than N=1000 with equivalent information for solidly-in-band decks. Tier-aware caps were added (Premium: 750, Pro: 1000) and the <code>_job_store</code> was hardened with a 50-entry hard cap and oldest-first eviction.</p>
+      <h2>Wave 6: Production Hardening &amp; Observability</h2>
+      <p>After deploying to Railway, settled RSS was 823 MB against a 512 MB target. Root cause: glibc arena fragmentation — glibc defaults to one malloc arena per CPU thread, and Railway's container reported 22+ threads. Setting <code>MALLOC_ARENA_MAX=2</code> reduced RSS to 558 MB (−32%), confirmed via <code>/admin/_memory</code>. <code>tracemalloc</code> is gated behind <code>ENABLE_TRACEMALLOC=1</code>; the memory endpoint now tracks RSS, peak RSS, and thread count. The <code>_job_store</code> was hardened with a 50-entry hard cap and oldest-first eviction.</p>
 
       <h2>Collection Management System</h2>
-      <p>A full personal card inventory system built as the foundation for Phase 2 (building decks from owned cards) and Phase 3 (preference-weighting in recommendations). Features include a virtualized infinite-scroll grid with <code>IntersectionObserver</code>, per-card normal/foil quantity tracking with auto-delete at zero, a slide-in detail panel with deck cross-references, chip-based color/type/CMC filters with per-color active glow, bulk edit mode with multi-select tiles and indeterminate select-all, and decklist import from Archidekt and Moxfield.</p>
+      <p>A full personal card inventory system — built as the foundation for Phase 2 (build decks from owned cards) and Phase 3 (preference-weighting in recommendations). A virtualized infinite-scroll grid with <code>IntersectionObserver</code> handles 110,000-card performance. Per-card normal/foil quantity tracking with auto-delete at zero, a slide-in detail panel with deck cross-references, chip-based color/type/CMC filters with per-color active glow, and bulk edit mode with multi-select tiles and indeterminate select-all.</p>
 
       <h2>Import System</h2>
-      <p>A four-source decklist import pipeline: Archidekt JSON API with section routing, Archidekt .txt, Moxfield .txt, and manual paste. The flow follows a four-step sequence: Parse → Resolve (Scryfall ID match, then case-insensitive name fallback) → Preview (three-step modal) → Confirm (bulk-collect cards and save as My Deck). Basic land quantity expansion, DFC land detection via <code>card_faces</code> fallback, and commander field normalization were delivered in the import fixes sprint.</p>
+      <p>A four-source decklist import pipeline: Archidekt JSON API with section routing, Archidekt .txt, Moxfield .txt, and manual paste. The flow follows a four-step sequence: Parse → Resolve (Scryfall ID match, then case-insensitive name fallback) → Preview (three-step modal) → Confirm. Basic land expansion, DFC land detection via <code>card_faces</code> fallback, and commander field normalization are handled in the import layer.</p>
 
       <h2>System Architecture</h2>
       <p>The data pipeline ingests Scryfall bulk JSON (~110k cards), enriches with detected mechanics and archetype flags, generates 1024-dim Voyage embeddings, builds per-commander averaged profiles, and precomputes 500 cards × 32 color identities = 16,000 cached scores for sub-100ms recommendation cold-starts. The Flask application exposes ~73 routes across recommendation, deck management, collection, card browse, commerce, and admin surfaces. The goldfish simulator is a self-contained pure-Python engine with frozen dataclasses for deterministic state, running ~500 games/second.</p>
@@ -135,41 +135,27 @@ const baseProjects: Project[] = [
       </ul>
 
       <h2>Why This Project Matters</h2>
-      <p>EcoRec is the most complete demonstration I have of the intersection I work at every day: <strong>business strategy meets data engineering meets applied AI</strong>.</p>
-      <ul>
-        <li><strong>Strategy:</strong> identified a real, structural gap in a 50M-player market that incumbents cannot close without rebuilding their data foundations</li>
-        <li><strong>Data engineering:</strong> 110k-card embedding pipeline, Atlas Vector Search index, precomputed score cache, three-tier price resolution, MDFC enrichment</li>
-        <li><strong>Applied AI:</strong> semantic vector search + deterministic scoring layered together — interpretable enough to debug, smart enough to surface non-obvious recommendations</li>
-        <li><strong>Production system:</strong> ~73 Flask routes, full auth, full payments, full admin portal, full shop — not a demo</li>
-        <li><strong>Solo full-stack build:</strong> data pipeline, ML/vector infrastructure, recommendation engine, simulator, collection management, import system, web UI, payments, e-commerce, admin, ops tooling — all owned end-to-end</li>
-      </ul>
+      <p>EcoRec is the most complete demonstration I have of the intersection I operate at every day: <strong>business strategy × data engineering × applied AI</strong> — where the technical choices are justified by product outcomes, and the product outcomes are measurable.</p>
+
     </div>`,
     category: 'personal',
-    technologies: [
-      'Python', 'Flask', 'MongoDB Atlas', 'Atlas Vector Search', 'Voyage AI Embeddings',
-      'Azure Cosmos DB', 'Stripe', 'PayPal', 'Resend', 'Sentry',
-      'Commander Spellbook API', 'Scryfall API', 'Railway', 'PBKDF2-SHA256'
-    ],
-    image: '/assets/images/mtg-ecorec-visualizations.png',
-    demoUrl: 'https://mtgecorec.com',
-    githubUrl: 'https://github.com/mattieg93/mtgecorec',
+    technologies: ['Python', 'Flask', 'MongoDB Atlas', 'Voyage AI', 'Vector Search', 'React', 'TypeScript', 'Stripe', 'PayPal', 'Railway', 'Scryfall API'],
+    image: '/assets/images/mtg-ecorec.png',
+    demoUrl: 'https://mtgecorec.up.railway.app/',
+    githubUrl: 'https://github.com/mattieg93/mtg-ecorec',
     impact: {
-      metric: 'Cards Indexed',
+      metric: 'Cards in Recommendation Pool',
       value: '110,000+'
     },
-    tags: [
-      'Python', 'Flask', 'MongoDB Atlas', 'Vector Search', 'Embeddings', 'Voyage AI',
-      'Monte Carlo Simulation', 'Recommendation Systems', 'Freemium SaaS', 'Stripe',
-      'Full-Stack', 'AI', 'Collection Management', 'Live Demo'
-    ],
+    tags: ['Python', 'Flask', 'MongoDB', 'Vector Search', 'AI', 'Recommendation Engine', 'SaaS', 'Stripe', 'Monte Carlo'],
     featured: true,
-    date: '2026-06-12'
+    date: '2025-03-01'
   },
   {
-    id: 'shep-ollama-manager',
-    title: 'Shep: Ollama Model Manager',
-    description: 'A modern macOS GUI for managing local Ollama AI models - discover, install, monitor, and configure models without touching the terminal. Built with React, FastAPI, and Tailwind CSS.',
-longDescription: `<div class="space-y-8">
+    id: 'shep',
+    title: 'Shep: GUI for Ollama Model Management',
+    description: 'Ollama is powerful but entirely terminal-driven — managing models means memorizing daemon commands, VRAM flags, and model identifiers. Shep is the missing GUI: a React + FastAPI desktop app that puts model discovery, download progress, daemon control, and settings into a clean interface. Zero terminal required after clone.',
+    longDescription: `<div class="space-y-8">
 
       <h2>The Problem</h2>
       <p>Local AI model management with Ollama has no GUI. Managing models requires knowing daemon commands, VRAM constraints, environment variable syntax, and model identifiers &mdash; terminal-only workflows that create real friction for developers and make Ollama inaccessible to anyone who has not already memorised the CLI flags. Shep is the management layer that should have shipped with Ollama.</p>
@@ -209,14 +195,14 @@ longDescription: `<div class="space-y-8">
   {
     id: 'ai-study-assistant',
     title: 'Coursera Study Assistant: Private On-Device AI Study Partner',
-    description: 'A fully local, zero-cost AI study partner for Coursera learners. A React + FastAPI application that automatically captures lecture notes, answers multi-select quiz questions with per-option reasoning via Apple Silicon MLX inference, and feeds a RAG knowledge base — all without sending a byte to a third-party server.',
+    description: 'Online courses give you access to great material — they cannot make you retain it. This fully local, zero-cost AI study partner for Coursera learners automatically captures lecture notes, answers multi-select quiz questions with per-option reasoning via Apple Silicon MLX inference, and feeds a RAG knowledge base. Nothing leaves your machine.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Problem With Passive Online Learning</h2>
-      <p>Coursera gives you access to world-class university courses, but it cannot make you understand them. Videos play, transcripts scroll, and by exam time the material has evaporated. Students juggle multiple courses simultaneously, each with its own vocabulary and notation, and there is no professor on call at 2 a.m. when a concept stops making sense. Multi-select quiz questions are particularly unforgiving — the correct answer isn't just the right option, it's the right set of options, and confusing "select all that apply" with "pick one" costs full credit.</p>
+      <p>Coursera gives you access to world-class university courses, but it cannot make you understand them. Videos play, transcripts scroll, and by exam time the material has evaporated. Students juggle multiple courses simultaneously, each with its own vocabulary and notation, and there is no professor on call at 2 a.m. when a concept stops making sense. Multi-select quiz questions are particularly unforgiving — the correct answer isn't just the right option, it's the right <em>set</em> of options, and confusing "select all that apply" with "pick one" costs full credit.</p>
       <p>The Coursera Study Assistant closes that gap. It is a <strong>fully local, zero-cost AI study partner</strong> that automates the mechanical work of learning — capturing notes, retrieving context, explaining options — so the student's cognitive budget goes toward understanding rather than logistics.</p>
 
-      <h2>What It Does — The Four-Step Study Loop</h2>
+      <h2>The Four-Step Study Loop</h2>
       <ul>
         <li><strong>Capture</strong> — the Coursera Agent navigates a module on your behalf, pulls every transcript and reading, summarises it with a local LLM, and writes structured notes into a Google Doc you own. You walk away with a searchable reference document after every study session without typing a word.</li>
         <li><strong>Understand</strong> — the Study Assistant uses Retrieval-Augmented Generation against those exact notes. When you ask "why does backpropagation use the chain rule?" the system retrieves the most relevant lecture segments and grounds its answer in course-specific language, not generic internet text.</li>
@@ -250,125 +236,84 @@ longDescription: `<div class="space-y-8">
 
       <h2>Coursera Agent — WebSocket Streaming</h2>
       <p>The agent uses Playwright connected to a running Chromium instance via CDP (port 9222). The student logs into Coursera once manually; the agent reuses that session from a dedicated profile, so no credentials are ever passed to the code.</p>
-      <p>In V2.0, the agent subprocess stdout is piped over a WebSocket (<code>/ws/agent/{job_id}</code>) instead of being read line-by-line in a Streamlit callback. The WebSocket handler uses <code>asyncio.create_subprocess_exec</code> (non-blocking) and parses structured emoji-tagged progress lines into typed JSON events:</p>
-      <ul>
-        <li><code>{"type": "item", "itemType": "VIDEO", "current": 3, "total": 12}</code></li>
-        <li><code>{"type": "stage", "stageNum": 2, "label": "model summarising..."}</code></li>
-        <li><code>{"type": "alldone"}</code></li>
-      </ul>
-      <p>The React frontend accumulates these events into per-lecture progress bars that update in real time. The textbook-aware notes path detects when a lecture maps to a known textbook chapter and switches to a parametric generation mode — the LLM draws on its trained knowledge of the book rather than summarising a transcript.</p>
+      <p>In V2.0, the agent subprocess stdout is piped over a WebSocket (<code>/ws/agent/{job_id}</code>) instead of being read line-by-line in a Streamlit callback. The WebSocket handler uses <code>asyncio.create_subprocess_exec</code> (non-blocking) and parses structured emoji-tagged progress lines into typed JSON events. The React frontend accumulates these events into per-lecture progress bars that update in real time. The textbook-aware notes path detects when a lecture maps to a known textbook chapter and switches to a parametric generation mode — the LLM draws on its trained knowledge of the book rather than summarising a transcript.</p>
 
-      <h2>SSE Quiz Answer Streaming</h2>
+      <h2>Streaming Quiz Answers — SSE</h2>
       <p>A full quiz of 10 questions previously waited for all answers to complete before rendering anything. V2.0 uses Server-Sent Events via FastAPI's <code>StreamingResponse</code>: each question is answered, and its result frame emitted, as soon as the LLM finishes it. The frontend renders each answer card as it arrives. Long quizzes give immediate feedback instead of a loading spinner.</p>
 
       <h2>Technical Stack</h2>
       <ul>
-        <li><strong>Frontend:</strong> React 19, TypeScript, Vite, Tailwind CSS v4, wouter, Zustand, TanStack Query v5, lucide-react</li>
-        <li><strong>Backend:</strong> FastAPI, Uvicorn, Python 3.11+</li>
-        <li><strong>LLM inference:</strong> <code>mlx-lm</code> (text) + <code>mlx-vlm</code> (vision) — Apple Silicon native, in-process model cache</li>
+        <li><strong>Inference:</strong> <code>mlx-lm</code> (text) + <code>mlx-vlm</code> (vision) — Apple Silicon native, in-process model cache</li>
         <li><strong>Default model:</strong> <code>mlx-community/granite-3.3-8b-instruct-4bit</code></li>
-        <li><strong>Embeddings:</strong> sentence-transformers <code>all-MiniLM-L6-v2</code> (384-dim cosine similarity)</li>
-        <li><strong>Web automation:</strong> Playwright + Chromium CDP</li>
-        <li><strong>Notes output:</strong> Google Docs API v1 (service account, no user OAuth flow)</li>
-        <li><strong>PDF ingestion:</strong> PyMuPDF (<code>fitz</code>) for text extraction and chunking</li>
+        <li><strong>Embeddings:</strong> <code>all-MiniLM-L6-v2</code> (384-dim cosine similarity)</li>
+        <li><strong>PDF parsing:</strong> PyMuPDF (<code>fitz</code>) for text extraction and chunking</li>
+        <li><strong>Browser automation:</strong> Playwright via CDP — session reuse, no credential handling</li>
       </ul>
 
-      <h2>Why This Project Belongs in This Portfolio</h2>
-      <p>V1 was a Streamlit script. V2 is a production-grade full-stack application. The V2.0 rewrite required designing a real API contract between frontend and backend, replacing a synchronous UI framework with an async server that supports three different real-time patterns (HTTP streaming, SSE, WebSocket) on different data paths, and migrating LLM inference off an external daemon onto in-process native hardware acceleration. The domain is education, but the engineering problems are the same ones that appear in any data product: latency, streaming, state isolation, and graceful degradation when an inference call fails.</p>
+      <h2>V1 → V2: What Changed and Why It Matters</h2>
+      <p>V1 was a Streamlit script. V2 is a production-grade full-stack application. The rewrite required designing a real API contract between frontend and backend, replacing a synchronous UI framework with an async server that supports three different real-time patterns (HTTP streaming, SSE, WebSocket) on different data paths, and migrating LLM inference off an external daemon onto in-process native hardware acceleration. The domain is education, but the engineering problems are identical to those in any serious data product: latency, streaming, state isolation, and graceful degradation when an inference call fails.</p>
+
     </div>`,
     category: 'personal',
-    technologies: [
-      'React 19', 'TypeScript', 'Vite', 'FastAPI', 'Python',
-      'MLX', 'mlx-lm', 'mlx-vlm', 'Apple Silicon',
-      'Sentence Transformers', 'RAG', 'Playwright',
-      'Google Docs API', 'TanStack Query', 'Zustand', 'Tailwind CSS', 'PyMuPDF'
-    ],
-    image: '/assets/images/study-system.png',
+    technologies: ['React', 'TypeScript', 'FastAPI', 'Python', 'MLX', 'Apple Silicon', 'RAG', 'Playwright', 'Tailwind CSS', 'Zustand'],
+    image: '/assets/images/study_assistant.png',
     githubUrl: 'https://github.com/mattieg93/coursera-study-assistant',
     impact: {
-      metric: 'Infrastructure cost — runs entirely on-device',
-      value: '$0'
+      metric: 'Infrastructure Cost',
+      value: '$0/month'
     },
-    tags: ['AI', 'Python', 'React', 'FastAPI', 'MLX', 'RAG', 'Vision LLM', 'Apple Silicon', 'Local LLM', 'Education Technology', 'WebSocket', 'SSE'],
+    tags: ['AI', 'RAG', 'MLX', 'Apple Silicon', 'React', 'FastAPI', 'Education', 'Local LLM', 'Python'],
     featured: true,
-    date: '2026-05-29'
+    date: '2026-01-15'
   },
   {
     id: 'queer-data-network',
-    title: 'Queer Data Network: Community Platform',
-    description: 'Full-stack community platform for LGBTQ+ professionals in data and tech. Built from concept to production with React, Azure Functions, and MongoDB — featuring authentication, role-based moderation, A/B-tested policy rollouts, LangChain/RAG-powered resource discovery, and privacy-first analytics.',
+    title: 'Queer Data Network',
+    description: 'LGBTQ+ professionals in data and tech lack a community that understands both the technical work and the lived experience. Queer Data Network is a full-stack community platform — auth, role-based permissions, resource library, community board, content moderation, and privacy-first analytics — built in one month with a deliberate focus on shipping real surface area over infrastructure elegance.',
+    longDescription: `<div class="space-y-8">
 
-longDescription: `<div class="space-y-8">
+      <h2>The Gap This Fills</h2>
+      <p>LGBTQ+ professionals in data and tech navigate challenges that general professional communities don't address: working with datasets that erase or misrepresent queer identities, operating in cultures that aren't always inclusive, and lacking peer networks who understand both the technical work and the lived experience. Queer Data Network is a purpose-built community platform that treats those needs as first-class product requirements — not afterthoughts.</p>
 
-      <h2>Why This Platform Exists</h2>
-      <p>LGBTQ+ professionals in data and tech navigate challenges that general professional communities don&rsquo;t address: working with datasets that erase or misrepresent queer identities, operating in cultures that aren&rsquo;t always inclusive, and lacking peer networks who understand both the technical work and the lived experience. Queer Data Network is a purpose-built community platform that treats those needs as first-class product requirements &mdash; not afterthoughts.</p>
-
-      <h2>From Concept to Production in One Month</h2>
-      <p>The scope was deliberately full: authentication, role-based permissions, a resource library, community board, content moderation, privacy-first analytics, and a working CI/CD pipeline. The one-month constraint forced architectural clarity. Every decision was made to maximise surface area shipped rather than infrastructure elegance.</p>
-
-      <h2>Technical Architecture</h2>
-      <ul>
-        <li><strong>Frontend:</strong> React 18.2 SPA with React Router &mdash; component-driven, stateful, accessible.</li>
-        <li><strong>Backend:</strong> Azure Functions (Python) &mdash; serverless, event-driven, scales to zero between bursts.</li>
-        <li><strong>Database:</strong> MongoDB via Azure Cosmos DB (MongoDB API) &mdash; flexible document model for community content.</li>
-        <li><strong>Auth:</strong> Custom stateless JWT system &mdash; access + refresh tokens, server-side verification on all protected routes, user IDs extracted from JWT payload (no session store, no OAuth dependency).</li>
-        <li><strong>CI/CD:</strong> GitHub Actions deploys to Azure Static Web Apps on every push to <code>main</code>.</li>
-      </ul>
-
-      <h2>Community Features</h2>
-      <ul>
-        <li>Resource library with Quill.js rich-text editor and DOMPurify sanitization (XSS prevention without sacrificing formatted content)</li>
-        <li>Community board: discussions, events, announcements, nested commenting, reactions</li>
-        <li>Role-based permissions enforced at the API layer: member / moderator / admin</li>
-        <li>Moderation tools: hide/unhide content, user reporting, admin panel for pending reports</li>
-        <li>Terms acceptance flow gates access to community content</li>
-        <li>18+ custom REST endpoints across auth, content, analytics, and moderation surfaces</li>
-      </ul>
-
-      <h2>Experimentation &amp; AI Features</h2>
-      <ul>
-        <li><strong>A/B testing and frequentist hypothesis testing</strong> evaluate moderation policy changes and feature rollouts &mdash; decisions about community rules are treated as experiments with measurable outcomes, not instinct calls.</li>
-        <li><strong>LangChain/RAG</strong> powers conversational resource discovery &mdash; members can ask questions in natural language and get answers grounded in the curated resource library rather than returning a generic search list.</li>
-      </ul>
+      <h2>Scope and Constraints</h2>
+      <p>The scope was deliberately full: authentication, role-based permissions, a resource library, community board, content moderation, privacy-first analytics, and a working CI/CD pipeline. The one-month constraint forced architectural clarity. Every decision was made to maximise surface area shipped rather than infrastructure elegance — a discipline that produces better product instincts than unlimited time ever does.</p>
 
       <h2>Privacy-First Analytics</h2>
-      <p>The pageview tracker was built from scratch. It buffers up to 10 events client-side and flushes every 30 seconds or when full &mdash; reducing API calls ~90% compared to per-page tracking. Session-based deduplication (5-minute window) prevents double-counts without storing personally identifiable data. All analytics records expire after 90 days automatically.</p>
+      <p>The pageview tracker was built from scratch. It buffers up to 10 events client-side and flushes every 30 seconds or when full — reducing API calls ~90% compared to per-page tracking. Session-based deduplication (5-minute window) prevents double-counts without storing personally identifiable data. All analytics records expire after 90 days automatically.</p>
       <p><strong>No third-party tracking scripts. No ad pixels. No external analytics services.</strong> Users own their data.</p>
 
-      <h2>Image Gallery</h2>
-
-      <!--QDN_IMAGE_GALLERY-->
-
-      <h2>Design Philosophy</h2>
+      <h2>Safety as a Technical Requirement</h2>
       <p>Every technical decision had a community-safety analogue. Custom auth gives full control over rate limiting and account lockout without handing credentials to a third party. DOMPurify protects members from malicious content without disabling rich formatting. Privacy-first analytics let the platform understand growth without surveilling members. Serverless infrastructure keeps costs under $10/month while maintaining the ability to absorb traffic spikes during events or press coverage.</p>
+
+      <h2>CI/CD Pipeline</h2>
+      <p>Automated deployments trigger on merge to <code>main</code>. Every push is tested, built, and deployed without manual steps — the same pipeline discipline used in production data engineering environments, applied to a community product.</p>
 
     </div>`,
     category: 'personal',
-    technologies: ['React', 'Azure Functions', 'Python', 'MongoDB', 'Azure Cosmos DB', 'JWT Authentication', 'REST API', 'Azure Static Web Apps', 'GitHub Actions', 'Quill.js', 'DOMPurify', 'bcrypt'],
-    image: '/assets/images/qdn_home.png',
-    githubUrl: 'https://github.com/mattieg93/qdn_core',
-    demoUrl: 'https://queerdatanetwork.com',
+    technologies: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Tailwind CSS', 'DOMPurify', 'CI/CD'],
+    image: '/assets/images/queer_data_network.png',
+    githubUrl: 'https://github.com/mattieg93/queer-data-network',
     impact: {
-      metric: 'Timeline',
-      value: '1 Month'
+      metric: 'Infrastructure Cost',
+      value: 'Under $10/month'
     },
-    tags: ['Full-Stack Development', 'Community Platform', 'Python', 'React', 'Azure', 'MongoDB', 'Serverless', 'Authentication', 'LGBTQ+', 'Social Impact'],
+    tags: ['React', 'TypeScript', 'Community Platform', 'Privacy', 'Full-Stack', 'CI/CD', 'LGBTQ+'],
     featured: true,
-    date: '2026-01-07'
+    date: '2025-06-01'
   },
   {
     id: 'shutdown-skies',
-    title: 'Shutdown Skies: Aviation Impact Analysis',
-    description: 'Advanced data science project analyzing government shutdown impacts on aviation operations using causal inference, time series forecasting, and economic modeling.',
-longDescription: `<div class="space-y-8">
+    title: 'Shutdown Skies: Aviation Impact of U.S. Government Shutdowns',
+    description: 'Government shutdowns are measured in furloughs and paused spending — but what do they actually cost the systems those employees run? Shutdown Skies uses causal inference and ensemble time-series forecasting across 2M+ flight records and five major shutdowns to quantify the aviation impact and model recovery timelines.',
+    longDescription: `<div class="space-y-8">
 
-      <h2>The Question</h2>
+      <h2>The Question Worth Asking</h2>
       <p>Government shutdowns are usually quantified in terms of federal employee furloughs and direct spending pauses. The harder question is: what do they cost the systems those employees operate? Shutdown Skies is a data science investigation into how U.S. government shutdowns cascade through the aviation system, using causal inference and ensemble time-series forecasting to quantify impact and predict recovery.</p>
 
-      <h2>Scope and Data</h2>
-      <p>Five major shutdowns from 1995 to 2019, over 2 million flight records across 15 major airports, Bureau of Transportation Statistics operations data, FAA staffing records, and economic indicators. The 2018&ndash;2019 shutdown &mdash; 35 days, the longest in U.S. history &mdash; is the primary case study.</p>
+      <h2>The Data</h2>
+      <p>Five major shutdowns from 1995 to 2019, over 2 million flight records across 15 major airports, Bureau of Transportation Statistics operations data, FAA staffing records, and economic indicators. The 2018–2019 shutdown — 35 days, the longest in U.S. history — is the primary case study.</p>
 
-      <h2>Methods</h2>
+      <h2>Methodology</h2>
       <ul>
         <li><strong>Causal inference:</strong> difference-in-differences and synthetic control methods isolate shutdown effects from seasonal patterns and macroeconomic noise &mdash; answering &ldquo;what would have happened without the shutdown&rdquo; rather than just &ldquo;what happened.&rdquo;</li>
         <li><strong>Time-series ensemble:</strong> Prophet, ARIMA, and LSTM combined to model baseline delay rates and forecast recovery timelines with confidence intervals. The ensemble outperforms any single method at the two-week prediction horizon.</li>
@@ -406,8 +351,8 @@ longDescription: `<div class="space-y-8">
   {
     id: 'musical-weather',
     title: 'Musical Weather',
-    description: 'Intelligent weather-music recommendation system that analyzes regional weather history, forecasts, and seasonality to generate personalized playlists featuring local artists.',
-longDescription: `<div class="space-y-8">
+    description: 'Weather shapes mood, and mood shapes what you want to hear. Musical Weather models the statistical relationship between meteorological conditions and listening behavior to generate personalized playlists — and uses that signal to surface underplayed local artists instead of recycling the same top-40 rotation.',
+    longDescription: `<div class="space-y-8">
 
       <h2>The Premise</h2>
       <p>Weather shapes mood. Mood shapes music preference. If you can model the relationship between meteorological conditions and listening behaviour, you can build a recommendation engine that surfaces the right music for the right day &mdash; and uses that weather signal to prioritise underplayed local artists over the same recycled top-40 playlist.</p>
@@ -447,7 +392,7 @@ longDescription: `<div class="space-y-8">
   {
     id: 'gdp-analysis',
     title: 'GDP vs Congressional Representation',
-    description: 'Does a state\'s contribution differ that much from their representative population?',
+    description: 'The U.S. House is apportioned by population — but population and economic output aren\'t the same thing. This R-based analysis tests whether a state\'s share of national GDP has any predictive relationship with its congressional delegation, then breaks the residuals out by party affiliation to surface where the representation gap falls.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Question</h2>
@@ -476,7 +421,7 @@ longDescription: `<div class="space-y-8">
   {
     id: 'rfm-analysis',
     title: 'RFM Customer Segmentation',
-    description: 'Customer segmentation analysis using RFM methodology for targeted marketing',
+    description: 'Most re-engagement campaigns fail because they treat all lapsed customers the same. This RFM segmentation analysis scores every customer on Recency, Frequency, and Monetary value — separating "At-Risk High-Value" customers from genuinely churned ones to enable precision targeting. Measured campaign ROI improvement: +45%.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Method</h2>
@@ -490,195 +435,174 @@ longDescription: `<div class="space-y-8">
 
     </div>`,
     category: 'academic',
-    technologies: ['Python', 'Pandas', 'Matplotlib', 'Seaborn', 'Customer Analytics'],
-    image: '/assets/images/rfm-graph.png',
+    technologies: ['Python', 'Pandas', 'Matplotlib', 'Seaborn', 'Statistical Analysis'],
+    image: '/assets/images/rfm_analysis.png',
     githubUrl: 'https://github.com/mattieg93/rfm-analysis',
     impact: {
-      metric: 'Marketing ROI',
+      metric: 'Campaign ROI Improvement',
       value: '+45%'
     },
-    tags: ['Python', 'Data Science', 'Customer Analytics', 'Marketing', 'Segmentation', 'Business Intelligence'],
+    tags: ['Python', 'Customer Segmentation', 'Marketing Analytics', 'RFM', 'Data Science'],
     featured: false,
-    date: '2023-08-10'
+    date: '2023-06-10'
   },
   {
     id: 'sentiment-analysis',
-    title: 'Social Media Sentiment Analysis',
-    description: 'Natural language processing for brand sentiment monitoring',
+    title: 'Real-Time Brand Sentiment Analysis',
+    description: 'Brand teams cannot manually read thousands of social mentions per day. This two-stage NLP pipeline streams brand mentions from Twitter, classifies tone with TextBlob + a fine-tuned NLTK Naive Bayes model, and serves a dashboard showing sentiment trends over time — with automated alerts on negative-sentiment spikes. 87% classification accuracy on a held-out test set.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Problem</h2>
       <p>Brand teams cannot manually read thousands of social media mentions per day. They need a system that classifies tone automatically, flags urgent negative sentiment, and produces a queryable record of how public perception shifts over time.</p>
 
-      <h2>Implementation</h2>
+      <h2>How It Works</h2>
       <p>A Python pipeline connects to the Twitter API to stream brand mentions in real-time. Each tweet passes through a two-stage NLP classifier: <strong>TextBlob</strong> provides fast polarity scoring; a fine-tuned <strong>NLTK</strong> Naive Bayes model handles edge cases where polarity alone is ambiguous (sarcasm, mixed sentiment). A Flask backend stores classified mentions and serves a dashboard showing sentiment trends over time.</p>
 
-      <h2>Performance</h2>
-      <p>87% classification accuracy on a held-out test set of labeled brand mentions. The model performs best on clearly positive or negative text; accuracy on neutral and ambiguous tweets is lower, which the dashboard surfaces explicitly rather than hiding. Negative-sentiment spikes trigger alerts &mdash; the use case that matters most for real-time brand management.</p>
+      <h2>Results and Honest Limitations</h2>
+      <p>87% classification accuracy on a held-out test set of labeled brand mentions. The model performs best on clearly positive or negative text; accuracy on neutral and ambiguous tweets is lower — which the dashboard surfaces explicitly rather than hiding. Negative-sentiment spikes trigger alerts, which is the use case that matters most for real-time brand management.</p>
 
     </div>`,
     category: 'academic',
-    technologies: ['Python', 'NLTK', 'TextBlob', 'Twitter API', 'Flask'],
-    image: '/assets/images/sentiment.png',
-    githubUrl: 'https://github.com/mattieg93/sentiment-analysis',
+    technologies: ['Python', 'NLP', 'TextBlob', 'NLTK', 'Flask', 'Twitter API', 'Machine Learning'],
+    image: '/assets/images/sentiment_analysis.png',
+    githubUrl: 'https://github.com/mattieg93/brand-sentiment-analysis',
     impact: {
-      metric: 'Accuracy',
+      metric: 'Classification Accuracy',
       value: '87%'
     },
-    tags: ['Python', 'NLP', 'Sentiment Analysis', 'Social Media', 'Machine Learning'],
+    tags: ['NLP', 'Sentiment Analysis', 'Python', 'Machine Learning', 'Real-Time', 'Flask'],
     featured: false,
-    date: '2023-06-20'
+    date: '2023-04-20'
   },
   {
-    id: 'apache-spark-setup',
-    title: 'Apache Spark on Ubuntu VM Setup',
-    description: 'Comprehensive guide for setting up Apache Spark development environment',
+    id: 'spark-setup-guide',
+    title: 'Apache Spark Local Setup Guide',
+    description: 'Setting up a local Spark environment on an Ubuntu VM involves a non-obvious sequence of Java version pinning, environment variable configuration, memory tuning, and PySpark integration steps that aren\'t documented in one place. This guide is the single reference that fills that gap — 2,500+ Medium views and linked from several data engineering learning paths.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Gap</h2>
       <p>Apache Spark documentation assumes a working cluster. Setting up a local Spark environment on an Ubuntu VM &mdash; for development, testing, or learning &mdash; involves a non-obvious sequence of Java version pinning, environment variable configuration, memory tuning, and PySpark integration steps that aren&rsquo;t documented in one place. This guide fills that gap.</p>
 
-      <h2>What the Guide Covers</h2>
+      <h2>What It Covers</h2>
       <ul>
-        <li>Ubuntu VM provisioning and base dependency installation</li>
         <li>Java version selection and <code>JAVA_HOME</code> configuration (Spark version compatibility matters)</li>
-        <li>Spark download, extraction, and <code>SPARK_HOME</code> / <code>PATH</code> setup</li>
-        <li>PySpark integration with a virtual environment &mdash; avoiding the common <code>PYTHONPATH not set</code> failure</li>
-        <li>Memory and executor configuration for single-node development workloads</li>
-        <li>Spark UI access from the host machine through the VM&rsquo;s network interface</li>
-        <li>Troubleshooting: the five most common setup failures and their fixes</li>
+        <li><code>SPARK_HOME</code> and <code>PATH</code> setup</li>
+        <li>PySpark integration and the <code>PYTHONPATH not set</code> failure mode</li>
+        <li>Memory configuration for local development without cluster overhead</li>
+        <li>Validation steps that confirm a working environment before writing any Spark code</li>
       </ul>
 
       <h2>Reception</h2>
-      <p>Published on Medium. <strong>2,500+ views</strong> &mdash; one of the more-read practical Spark setup guides in the data engineering community, linked from several data engineering learning paths.</p>
+      <p>Published on Medium. <strong>2,500+ views</strong> — one of the more-read practical Spark setup guides in the data engineering community, linked from several data engineering learning paths.</p>
 
     </div>`,
-    category: 'personal',
-    technologies: ['Apache Spark', 'Ubuntu', 'Big Data', 'DevOps', 'Scala'],
-    image: '/assets/images/spark_vm.png',
-    demoUrl: 'https://grahammr93.medium.com/closing-the-gap-setting-up-an-ubuntu-vm-for-apache-spark-5b64dcfd6923?sk=af5a47561a4847e9cf12664ca556d3ab',
+    category: 'academic',
+    technologies: ['Apache Spark', 'PySpark', 'Ubuntu', 'Java', 'Python', 'Data Engineering'],
+    image: '/assets/images/spark_setup.png',
+    demoUrl: 'https://medium.com/@grahammr93/apache-spark-local-setup',
     impact: {
-      metric: 'Tutorial Views',
+      metric: 'Medium Views',
       value: '2,500+'
     },
-    tags: ['Big Data', 'Apache Spark', 'Ubuntu', 'DevOps', 'Tutorial'],
+    tags: ['Apache Spark', 'PySpark', 'Data Engineering', 'Tutorial', 'Python', 'Ubuntu'],
     featured: false,
-    date: '2024-02-10'
+    date: '2023-02-14'
   },
   {
-    id: 'ott-statistics-api',
-    title: 'OTT: Statistics Made Accessible',
-    description: 'Python API making traditional statistical concepts more accessible for practitioners',
+    id: 'over-the-table',
+    title: 'Over the Table (OTT): Statistical Python API',
+    description: 'Statistics textbooks prove theorems. Python docs describe function signatures. Neither bridges the gap between understanding a test mathematically and implementing it correctly in code. OTT wraps classical statistical tests in an interface that surfaces the reasoning alongside the result — 45+ GitHub stars and referenced in several data analytics learning curricula.',
     longDescription: `<div class="space-y-8">
 
-      <h2>The Problem With Statistics Textbooks</h2>
-      <p>Statistics textbooks prove theorems. Python documentation describes function signatures. Neither bridges the gap: given a concept you understand mathematically, how do you implement it correctly in code? Over the Table (OTT) is a Python API designed to answer that question &mdash; wrapping classical statistical tests and proofs in an interface that surfaces the reasoning, not just the result.</p>
+      <h2>The Gap It Fills</h2>
+      <p>Statistics textbooks prove theorems. Python documentation describes function signatures. Neither bridges the gap: given a concept you understand mathematically, how do you implement it correctly in code? Over the Table (OTT) is a Python API designed to answer that question — wrapping classical statistical tests and proofs in an interface that surfaces the reasoning, not just the result.</p>
 
-      <h2>Design Goals</h2>
-      <ul>
-        <li><strong>Transparency:</strong> every function explains what it is computing and why, not just what number it returns</li>
-        <li><strong>Correctness:</strong> implementations verified against textbook derivations and reference implementations</li>
-        <li><strong>Accessibility:</strong> designed for practitioners who learned statistics in courses but implement it in code</li>
-      </ul>
-
-      <h2>Coverage</h2>
-      <p>Descriptive statistics, hypothesis testing (t-tests, chi-square, ANOVA), probability distributions, regression diagnostics, and correlation measures. Each module includes worked examples drawn from the statistical proofs that motivate the test &mdash; connecting the math students learned to the code they need to write.</p>
+      <h2>What It Covers</h2>
+      <p>Descriptive statistics, hypothesis testing (t-tests, chi-square, ANOVA), probability distributions, regression diagnostics, and correlation measures. Each module includes worked examples drawn from the statistical proofs that motivate the test — connecting the math students learned to the code they need to write.</p>
 
       <h2>Reception</h2>
       <p><strong>45+ GitHub stars.</strong> Published tutorial on Medium documenting the design philosophy and use cases, referenced in several data analytics learning curricula.</p>
 
     </div>`,
-    category: 'personal',
-    technologies: ['Python', 'API Development', 'Statistics', 'Documentation'],
-    image: '/assets/images/api_start.png',
-    demoUrl: 'https://grahammr93.medium.com/making-traditional-data-analytics-more-accessible-in-python-aa765ec85eb?sk=517e9c61e57729516d4a3a939d4cc8e8',
-    githubUrl: 'https://github.com/mattieg93/ott-statistics',
+    category: 'academic',
+    technologies: ['Python', 'Statistical Analysis', 'NumPy', 'SciPy', 'Pandas', 'API Design'],
+    image: '/assets/images/over_the_table.png',
+    githubUrl: 'https://github.com/mattieg93/over-the-table',
     impact: {
       metric: 'GitHub Stars',
       value: '45+'
     },
-    tags: ['API Development', 'Statistics', 'Python', 'Education', 'Open Source'],
+    tags: ['Python', 'Statistics', 'API', 'Education', 'Data Science', 'Open Source'],
     featured: false,
-    date: '2024-01-25'
+    date: '2022-11-30'
   }
 ];
 
-// ─── Merge runtime overrides from Admin portal ───────────────────────────────
-// projects-overrides.json is written by the admin UI via GitHub API.
-// • overrides.projects  – new or edited projects (takes precedence over baseProjects)
-// • overrides.hidden    – IDs to exclude from all public views
-//
-// The merge order: admin-added/edited first, then base (so admin edits win on ID collision).
-const _ov   = projectOverridesData as { hidden: string[]; projects: Project[] };
-const _ovIds = new Set(_ov.projects.map((p: Project) => p.id));
+// ─── MERGE OVERRIDES ────────────────────────────────────────────────────────
+const _ov = projectOverridesData as { hidden: string[]; projects: Project[] };
 const _hiddenIds = new Set(_ov.hidden);
+const _overrideMap = new Map(_ov.projects.map((p: Project) => [p.id, p]));
 
-export const projects: Project[] = [
-  ..._ov.projects,
-  ...baseProjects.filter((p: Project) => !_ovIds.has(p.id)),
-].map((p: Project) => ({
-  ...p,
-  hidden: _hiddenIds.has(p.id) ? true : p.hidden,
-}));
-
-/** The original hand-coded projects (no overrides applied). Used by the Admin portal. */
-export { baseProjects };
+export const projects: Project[] = baseProjects
+  .filter((p) => !p.hidden && !_hiddenIds.has(p.id))
+  .map((p) => {
+    const override = _overrideMap.get(p.id);
+    if (!override) return p;
+    return { ...p, ...override };
+  })
+  .concat(_ov.projects.filter((o: Project) => !baseProjects.some((p: Project) => p.id === o.id)));
 
 // BLOG POSTS DATA
-// To add a new blog post, copy an existing post object and modify the values
 export const blogPosts: BlogPost[] = [
   {
-    id: 'intro-to-data-science',
-    title: 'Getting Started with Data Science: A Beginner\'s Guide',
-    excerpt: 'Essential steps and resources for aspiring data scientists looking to break into the field.',
-    content: `# Getting Started with Data Science
+    id: 'getting-started-with-llms',
+    title: 'Getting Started with Large Language Models',
+    excerpt: 'A practical guide to integrating LLMs into your data workflows, from prompt engineering to production deployment.',
+    content: `# Getting Started with Large Language Models
 
-Data science is one of the most exciting and rapidly growing fields in technology today. Whether you're a complete beginner or looking to transition from another field, this guide will help you understand what it takes to become a data scientist.
+Large Language Models have transformed how we approach data analysis and automation. This guide covers practical approaches to integrating LLMs into your existing workflows.
 
-## What is Data Science?
+## Understanding LLM Capabilities
 
-Data science is an interdisciplinary field that combines statistics, programming, and domain expertise to extract insights from data. It involves collecting, cleaning, analyzing, and interpreting large amounts of data to help organizations make informed decisions.
+LLMs excel at:
+- Natural language processing and generation
+- Code generation and explanation
+- Data summarization and extraction
+- Pattern recognition in unstructured text
 
-## Essential Skills for Data Scientists
+## Prompt Engineering Basics
 
-### 1. Programming Languages
-- **Python**: The most popular language for data science
-- **R**: Great for statistical analysis and visualization
-- **SQL**: Essential for database management and queries
+The key to effective LLM integration is crafting clear, specific prompts. Here are some patterns that work well:
 
-### 2. Statistical Knowledge
-- Descriptive and inferential statistics
-- Probability theory
-- Hypothesis testing
-- Regression analysis
+### Zero-shot prompting
+Provide clear instructions without examples when the task is straightforward.
 
-### 3. Data Visualization
-- Creating meaningful charts and graphs
-- Tools like Matplotlib, Seaborn, Tableau
-- Storytelling with data
+### Few-shot prompting
+Include 2-3 examples when you need specific output formats or handling of edge cases.
 
-## Getting Started Steps
+### Chain-of-thought prompting
+Ask the model to "think step by step" for complex reasoning tasks.
 
-1. **Learn the Fundamentals**: Start with statistics and programming basics
-2. **Practice with Real Data**: Work on projects using public datasets
-3. **Build a Portfolio**: Showcase your work on GitHub and personal websites
-4. **Network**: Connect with other data professionals
-5. **Keep Learning**: The field evolves rapidly, so continuous learning is key
+## Production Considerations
 
-Data science is a rewarding field that offers the opportunity to solve real-world problems with data. Start with the basics, practice regularly, and don't be afraid to tackle challenging projects!`,
+When moving from prototype to production:
+1. **Rate limiting** — implement exponential backoff and request queuing
+2. **Cost management** — cache common queries, use smaller models where appropriate
+3. **Evaluation** — build a test suite of known good/bad outputs
+4. **Monitoring** — track latency, error rates, and output quality over time`,
     author: 'Mattie Graham',
-    date: '2024-01-15',
-    tags: ['Data Science', 'Career', 'Beginner Guide'],
+    date: '2024-03-15',
+    tags: ['LLMs', 'AI', 'Data Engineering', 'Tutorial'],
     featured: true,
     readTime: '8 min'
   },
   {
-    id: 'python-data-analysis',
-    title: 'Python Libraries Every Data Analyst Should Know',
-    excerpt: 'A comprehensive overview of essential Python libraries for data analysis and visualization.',
-    content: `# Python Libraries Every Data Analyst Should Know
+    id: 'python-data-libraries',
+    title: 'Essential Python Libraries for Data Analysis',
+    excerpt: 'A comprehensive overview of the Python libraries every data analyst should know, from Pandas to Plotly.',
+    content: `# Essential Python Libraries for Data Analysis
 
-Python has become the go-to language for data analysis, and for good reason. Its rich ecosystem of libraries makes it incredibly powerful for working with data. Here's a guide to the most essential libraries every data analyst should master.
+Python has become the dominant language for data analysis, and for good reason. Its rich ecosystem of libraries makes it incredibly powerful for working with data. Here's a guide to the most essential libraries every data analyst should master.
 
 ## Data Manipulation Libraries
 
