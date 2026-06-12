@@ -141,7 +141,7 @@ const baseProjects: Project[] = [
     category: 'personal',
     technologies: ['Python', 'Flask', 'MongoDB Atlas', 'Voyage AI', 'Vector Search', 'React', 'TypeScript', 'Stripe', 'PayPal', 'Railway', 'Scryfall API'],
     image: '/assets/images/mtg-ecorec.png',
-    demoUrl: 'https://mtgecorec.up.railway.app/',
+    demoUrl: 'https://mtgecorec.com',
     githubUrl: 'https://github.com/mattieg93/mtg-ecorec',
     impact: {
       metric: 'Cards in Recommendation Pool',
