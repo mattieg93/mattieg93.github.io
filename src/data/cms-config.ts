@@ -50,6 +50,122 @@ export interface SocialLink {
 // For projects with complex HTML longDescriptions, edit this file directly.
 const baseProjects: Project[] = [
   {
+    id: 'mtg-ecorec',
+    title: 'MTG EcoRec: Archetype-Aware Commander Deck Engine',
+    description: 'A full-stack Commander deck builder that solves a structural problem the incumbents cannot: popularity-based recommenders are self-reinforcing, archetype-blind, and never surface genuinely better but lesser-known cards. EcoRec combines a 7-component deterministic scorer, Voyage AI semantic embeddings + MongoDB Atlas Vector Search across 110,000 cards, a Monte Carlo goldfish simulator that grades the deck it just built, and a full collection management system with decklist import — wrapped in a freemium Stripe + PayPal SaaS.',
+    longDescription: `<div class="space-y-8">
+
+      <h2>The Problem Existing Tools Cannot Solve</h2>
+      <p>Magic: The Gathering has ~30,000 unique cards in active use and ~50 million Commander players globally. Every existing deck-building tool — EDHREC, Moxfield, Archidekt — answers the same question the same way: <strong>what do other people put in decks with this commander?</strong> They aggregate decklists and surface the most-played cards. That is a pure popularity signal with a compounding structural flaw:</p>
+      <ul>
+        <li><strong>Self-reinforcing.</strong> Popular cards get recommended → more decks include them → inclusion rate climbs → they get recommended even more. Better but lesser-known cards never surface.</li>
+        <li><strong>Archetype-blind.</strong> An aristocrats deck and a token-swarm deck look identical to a popularity ranker if they share staples like Sol Ring. The tools don't understand <em>why</em> a card belongs.</li>
+        <li><strong>Cannot discover obscurity.</strong> A card printed two months ago, or a $0.50 card that does the job of a $30 staple, has no inclusion history. Popularity tools cannot recommend it regardless of how good it is.</li>
+        <li><strong>Cannot grade what it builds.</strong> Existing tools hand you a list and walk away. They cannot tell you whether the deck will actually cast its spells on curve.</li>
+      </ul>
+      <p><strong>No existing tool combines semantic understanding of card text, archetype mechanics, vector similarity for obscurity detection, <em>and</em> a full Monte Carlo goldfish simulator that grades the resulting deck. That gap is what MTG EcoRec is built to fill.</strong></p>
+
+      <h2>What EcoRec Does Differently</h2>
+
+      <h3>1. Archetype-First 7-Component Scoring Engine</h3>
+      <p>The recommendation engine is a deterministic, fully auditable scorer — not a neural network, not a popularity lookup. Each card receives a score from seven interpretable components: Synergy (30%), Archetype Fit (25%), Base Power (15%), Combo Potential (15%), Mana Curve (10%), Type Balance (5%), and a hard Color Identity filter. The synergy engine extracts 60+ MTG-specific keywords from oracle text using regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. Archetype weights encode domain knowledge about which mechanics matter for 40+ named playstyles.</p>
+
+      <h3>2. Vectorized Obscurity Detection</h3>
+      <p>The obscurity scoring layer is the product moat. Voyage AI <code>voyage-4-lite</code> generates 1024-dimensional text embeddings of all 110,000+ MTG cards. MongoDB Atlas <code>$vectorSearch</code> performs ANN cosine similarity at query time against per-commander averaged profiles built from EDHREC top decklists. Cards in the top 200 by vector similarity with &lt;20% EDHREC inclusion and cost ≤ their popular equivalent receive a 1.5–2.0× score multiplier and a "Hidden Gem" badge. <strong>This combination — archetype-aware scoring + semantic vector search + obscurity detection — cannot be replicated by adding a filter to a popularity table.</strong></p>
+
+      <h3>3. Budget-Aware Architecture</h3>
+      <p>Budget is enforced end-to-end, not as a post-hoc filter. Three-tier price resolution (live Scryfall cache → embedded prices → sentinel 999.0), per-card cap of budget/50 pre-filters the pool, and a post-assembly swap pass guarantees no over-budget cards survive. A $50 budget yields a coherent 99-card deck — not a premium deck with 10 cards swapped out.</p>
+
+      <h3>4. Monte Carlo Goldfish Simulator</h3>
+      <p>After a deck is built, the user can run it through a full solitaire simulator that plays N games (default 500, calibrated empirically) and produces a graded report across six categories: Mana Health, Tempo, Throughput, Early Game, Board Development, and Graveyard Recursion. Grading is bracket-aware — a casual bracket-2 deck is graded against more forgiving curves than an optimized bracket-4 cEDH deck. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck.</strong></p>
+
+      <h2>Wave 6: Production Hardening &amp; Simulation Calibration</h2>
+      <p>After deploying to Railway, settled RSS was 823 MB against a 512 MB target. The root cause was glibc arena fragmentation: glibc defaults to one malloc arena per CPU thread, and Railway's container reports 22+ threads. Setting <code>MALLOC_ARENA_MAX=2</code> reduced RSS to 558 MB — a 32% reduction, confirmed on Railway via <code>/admin/_memory</code>. Additional observability was added: <code>tracemalloc</code> gated behind <code>ENABLE_TRACEMALLOC=1</code>, and <code>/admin/_memory</code> extended with RSS, peak RSS, and thread tracking.</p>
+      <p>Simulation game count was calibrated empirically using a 6-deck panel run at N ∈ {50, 100, 200, 300, 500, 1000} with 5 deterministic seeds per N. Three of six decks converged by N=50–200; three were genuine boundary decks unstable at any N. <strong>Conclusion: N=500 is the optimal default</strong> — 46% faster than N=1000 with equivalent information for solidly-in-band decks. Tier-aware caps were added (Premium: 750, Pro: 1000) and the <code>_job_store</code> was hardened with a 50-entry hard cap and oldest-first eviction.</p>
+
+      <h2>Collection Management System</h2>
+      <p>A full personal card inventory system built as the foundation for Phase 2 (building decks from owned cards) and Phase 3 (preference-weighting in recommendations). Features include a virtualized infinite-scroll grid with <code>IntersectionObserver</code>, per-card normal/foil quantity tracking with auto-delete at zero, a slide-in detail panel with deck cross-references, chip-based color/type/CMC filters with per-color active glow, bulk edit mode with multi-select tiles and indeterminate select-all, and decklist import from Archidekt and Moxfield.</p>
+
+      <h2>Import System</h2>
+      <p>A four-source decklist import pipeline: Archidekt JSON API with section routing, Archidekt .txt, Moxfield .txt, and manual paste. The flow follows a four-step sequence: Parse → Resolve (Scryfall ID match, then case-insensitive name fallback) → Preview (three-step modal) → Confirm (bulk-collect cards and save as My Deck). Basic land quantity expansion, DFC land detection via <code>card_faces</code> fallback, and commander field normalization were delivered in the import fixes sprint.</p>
+
+      <h2>System Architecture</h2>
+      <p>The data pipeline ingests Scryfall bulk JSON (~110k cards), enriches with detected mechanics and archetype flags, generates 1024-dim Voyage embeddings, builds per-commander averaged profiles, and precomputes 500 cards × 32 color identities = 16,000 cached scores for sub-100ms recommendation cold-starts. The Flask application exposes ~73 routes across recommendation, deck management, collection, card browse, commerce, and admin surfaces. The goldfish simulator is a self-contained pure-Python engine with frozen dataclasses for deterministic state, running ~500 games/second.</p>
+
+      <h2>Technical Stack</h2>
+      <ul>
+        <li><strong>Backend:</strong> Flask 3.1 + Python 3.12; <code>pymongo</code> against MongoDB Atlas or Azure Cosmos DB — no vendor lock-in</li>
+        <li><strong>Embeddings:</strong> Voyage AI <code>voyage-4-lite</code> (1024-dim); resumable pipeline</li>
+        <li><strong>Vector search:</strong> MongoDB Atlas <code>$vectorSearch</code> with graceful degradation if unavailable</li>
+        <li><strong>Scoring:</strong> Deterministic 7-component rules engine — no ML, fully auditable</li>
+        <li><strong>Simulator:</strong> Pure Python Monte Carlo goldfish engine; ~500 games/sec</li>
+        <li><strong>Combos:</strong> Commander Spellbook API (3,000+ infinite combos)</li>
+        <li><strong>Auth:</strong> Flask sessions + PBKDF2-SHA256 (100k iterations, 64-char salt)</li>
+        <li><strong>Payments:</strong> Stripe + PayPal (subscription + one-time shop)</li>
+        <li><strong>Email:</strong> Resend (verification, password reset, order/shipping)</li>
+        <li><strong>Monitoring:</strong> Sentry SDK with graceful fallback</li>
+        <li><strong>Hosting:</strong> Railway.com (Gunicorn, devcontainer-mirrored env)</li>
+      </ul>
+
+      <h2>Product Architecture — Freemium SaaS</h2>
+      <ul>
+        <li><strong>Free</strong> — 3 deck generations/day, 5 saved decks, goldfish simulation upsell only</li>
+        <li><strong>Premium ($5/mo)</strong> — 100 decks/month, unlimited saved decks, 10 sims/month</li>
+        <li><strong>Pro ($20/mo)</strong> — unlimited generations, unlimited saves, 50 sims/month, collection management</li>
+      </ul>
+      <p>Stripe Checkout + Customer Portal, PayPal subscription billing, webhook handlers for every lifecycle event, and Resend email notifications. A physical-product shop (deck boxes, DragonShield sleeves) sits on the same Stripe infrastructure with full order lifecycle tracking. A complete <code>/admin/*</code> portal provides dashboards for revenue, orders, users, products, and subscription auditing across both billing providers.</p>
+
+      <h2>Defensive Engineering Patterns</h2>
+      <ul>
+        <li><strong>Graceful degradation</strong> — any missing external dependency (Voyage AI, Atlas vector index, Sentry) silently falls back</li>
+        <li><strong>Identity-keyed TTL cache</strong> — card pool queries cached by color identity; bounded to 32 buckets</li>
+        <li><strong>Frozen dataclasses</strong> — <code>SimCard</code> is <code>frozen=True, slots=True</code> to prevent state leak between games</li>
+        <li><strong>MDFC enrichment</strong> — 21,852 cards re-enriched with <code>produced_mana</code> + <code>card_faces</code> from Scryfall</li>
+        <li><strong>Two-pass deficit-weighted basics</strong> — guarantees ≥1 basic per color, remainder weighted by color deficit</li>
+        <li><strong>Sentinel pricing</strong> — unpriced Reserved List cards get 999.0 so they fail budget filters</li>
+        <li><strong>Pre-filter floors</strong> — non-basic Lands get a keyword score floor to survive pool trim</li>
+      </ul>
+
+      <h2>Operational Tooling</h2>
+      <ul>
+        <li><strong>scripts/refresh_cards.py</strong> — full 3-phase Scryfall sync: download → stream-upsert + enrichment → Voyage AI embeddings</li>
+        <li><strong>scripts/create_user.py</strong> — provisions accounts directly in MongoDB, bypassing email verification; generates memorable leet-speak passwords</li>
+        <li><strong>tools/diagnose_deck.py</strong> — comprehensive deck diagnostic CLI with land breakdown, dead-card detection, and optional goldfish run</li>
+        <li><strong>tools/calibrate_sim_games.py</strong> — empirical simulation game-count calibration</li>
+      </ul>
+
+      <h2>Why This Project Matters</h2>
+      <p>EcoRec is the most complete demonstration I have of the intersection I work at every day: <strong>business strategy meets data engineering meets applied AI</strong>.</p>
+      <ul>
+        <li><strong>Strategy:</strong> identified a real, structural gap in a 50M-player market that incumbents cannot close without rebuilding their data foundations</li>
+        <li><strong>Data engineering:</strong> 110k-card embedding pipeline, Atlas Vector Search index, precomputed score cache, three-tier price resolution, MDFC enrichment</li>
+        <li><strong>Applied AI:</strong> semantic vector search + deterministic scoring layered together — interpretable enough to debug, smart enough to surface non-obvious recommendations</li>
+        <li><strong>Production system:</strong> ~73 Flask routes, full auth, full payments, full admin portal, full shop — not a demo</li>
+        <li><strong>Solo full-stack build:</strong> data pipeline, ML/vector infrastructure, recommendation engine, simulator, collection management, import system, web UI, payments, e-commerce, admin, ops tooling — all owned end-to-end</li>
+      </ul>
+    </div>`,
+    category: 'personal',
+    technologies: [
+      'Python', 'Flask', 'MongoDB Atlas', 'Atlas Vector Search', 'Voyage AI Embeddings',
+      'Azure Cosmos DB', 'Stripe', 'PayPal', 'Resend', 'Sentry',
+      'Commander Spellbook API', 'Scryfall API', 'Railway', 'PBKDF2-SHA256'
+    ],
+    image: '/assets/images/mtg-ecorec-visualizations.png',
+    demoUrl: 'https://mtgecorec.com',
+    githubUrl: 'https://github.com/mattieg93/mtgecorec',
+    impact: {
+      metric: 'Cards Indexed',
+      value: '110,000+'
+    },
+    tags: [
+      'Python', 'Flask', 'MongoDB Atlas', 'Vector Search', 'Embeddings', 'Voyage AI',
+      'Monte Carlo Simulation', 'Recommendation Systems', 'Freemium SaaS', 'Stripe',
+      'Full-Stack', 'AI', 'Collection Management', 'Live Demo'
+    ],
+    featured: true,
+    date: '2026-06-12'
+  },
+  {
     id: 'shep-ollama-manager',
     title: 'Shep: Ollama Model Manager',
     description: 'A modern macOS GUI for managing local Ollama AI models - discover, install, monitor, and configure models without touching the terminal. Built with React, FastAPI, and Tailwind CSS.',
@@ -286,151 +402,6 @@ longDescription: `<div class="space-y-8">
     tags: ['Python', 'Causal Inference', 'Data Science', 'Government Policy', 'Aviation Analytics', 'Economic Modeling', 'Time Series', 'Machine Learning', 'Streamlit'],
     featured: false,
     date: '2024-11-14'
-  },
-  {
-    id: 'mtg-ecorec',
-    title: 'MTG EcoRec: Archetype-Aware Commander Deck Engine',
-    description: 'A full-stack Commander deck builder that solves a structural problem the incumbents cannot: popularity-based recommenders are self-reinforcing, archetype-blind, and never surface genuinely better but lesser-known cards. EcoRec combines a 7-component deterministic scorer, Voyage AI semantic embeddings + MongoDB Atlas Vector Search across 110,000 cards, and a Monte Carlo goldfish simulator that grades the deck it just built — wrapped in a freemium Stripe + PayPal SaaS.',
-    longDescription: `<div class="space-y-8">
-
-      <h2>The Problem Existing Tools Cannot Solve</h2>
-      <p>Magic: The Gathering has ~30,000 unique cards in active use and ~50 million Commander players globally. Every existing deck-building tool — EDHREC, Moxfield, Archidekt — answers the same question the same way: <strong>what do other people put in decks with this commander?</strong> They aggregate decklists and surface the most-played cards. That is a pure popularity signal, and it has a compounding structural flaw:</p>
-      <ul>
-        <li><strong>It is self-reinforcing.</strong> Popular cards get recommended → more decks include them → inclusion rate climbs → they get recommended even more. Better but lesser-known cards never surface.</li>
-        <li><strong>It is archetype-blind.</strong> An aristocrats deck and a token-swarm deck look identical to a popularity ranker if they share staples like Sol Ring. The tools don't understand <em>why</em> a card belongs.</li>
-        <li><strong>It cannot discover obscurity.</strong> A card printed two months ago, or a $0.50 card that does the job of a $30 staple, has no inclusion history. Popularity tools cannot recommend it regardless of how good it is.</li>
-        <li><strong>It cannot grade what it builds.</strong> Existing tools hand you a list and walk away. They cannot tell you whether the deck will actually cast its spells on curve.</li>
-      </ul>
-      <p><strong>No existing tool combines semantic understanding of card text, archetype mechanics, vector similarity for obscurity detection, <em>and</em> a Monte Carlo goldfish simulator that grades the resulting deck. That gap is what EcoRec is built to fill.</strong></p>
-
-      <h2>What EcoRec Does Differently</h2>
-
-      <h3>1. Archetype-First 7-Component Scoring Engine</h3>
-      <p>The recommendation engine is a deterministic, fully auditable scorer — not a neural network, not a popularity lookup. Each card receives a score from seven interpretable components:</p>
-      <ul>
-        <li><strong>Synergy (30%)</strong> — Jaccard similarity on extracted mechanics between card and commander</li>
-        <li><strong>Archetype Fit (25%)</strong> — CSV weight table mapping card mechanics to 40+ named archetypes (aggressive, control, combo, stax, tokens, aristocrats, reanimator, …)</li>
-        <li><strong>Base Power (15%)</strong> — Raw card power heuristics (tutor effect, draw rate, mana efficiency)</li>
-        <li><strong>Combo Potential (15%)</strong> — Known infinite combo relationships from Commander Spellbook (3,000+ combos)</li>
-        <li><strong>Mana Curve (10%)</strong> — CMC distribution fit relative to gaps in the current pool</li>
-        <li><strong>Type Balance (5%)</strong> — Creature/spell/land balance</li>
-        <li><strong>Color Identity</strong> — Hard filter; any card outside commander color identity scores zero</li>
-      </ul>
-      <p>The synergy engine extracts 60+ MTG-specific keywords from oracle text using regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. <strong>A card is recommended because it functionally belongs in the strategy — not because 37% of random decks happen to run it.</strong></p>
-
-      <h3>2. Vectorized Obscurity Detection — The Product Moat</h3>
-      <p>The obscurity scoring layer is what makes EcoRec defensible. It runs on:</p>
-      <ul>
-        <li><strong>Voyage AI <code>voyage-4-lite</code></strong> — 1024-dimensional text embeddings of all 110,000+ MTG cards (name, type line, oracle text, mechanics → semantic vector)</li>
-        <li><strong>MongoDB Atlas <code>$vectorSearch</code></strong> — ANN cosine similarity at scale</li>
-        <li><strong>Per-commander profiles</strong> — averaged vectors from EDHREC top decklists, so the query knows what a Kaalia or Atraxa deck "feels like" semantically</li>
-      </ul>
-      <p>Hidden-gem criteria: a card surfaces when it is in the top 200 by vector similarity (functionally relevant — not random), has &lt;20% EDHREC inclusion (genuinely underplayed), and costs ≤ its popular equivalent. It gets a 1.5–2.0× score multiplier and is shown with comparison text: <em>"Similar to Dockside Extortionist (in 72% of decks) — $28 cheaper."</em></p>
-      <p><strong>This combination — archetype-aware scoring + semantic vector search + obscurity detection — cannot be replicated by adding a filter to a popularity table.</strong></p>
-
-      <h3>3. Budget-Aware Architecture</h3>
-      <p>Budget is enforced end-to-end, not as a post-hoc filter. Three-tier price resolution (live Scryfall cache → embedded prices → sentinel <code>999.0</code>). Per-card cap of <code>budget / 50</code> pre-filters the pool. A post-assembly swap pass guarantees no over-budget cards survive. A $50 budget yields a coherent 99-card deck — not a premium deck with 10 cards swapped out.</p>
-
-      <h3>4. Monte Carlo Goldfish Simulator — The Grading Engine</h3>
-      <p>After a deck is built, the user can run it through a full solitaire simulator that plays N games (default 500) and produces a graded report. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck.</strong></p>
-      <p>The simulator is a self-contained pure-Python engine: frozen <code>SimCard</code> dataclasses for deterministic state, a turn-by-turn engine with untap/draw/land-drop/mana/cast/ramp/treasure logic, and analyzers that compute mana health, tempo, and color screw. <strong>Grading is bracket-aware</strong> — a casual bracket-2 deck is graded against more forgiving curves than an optimized bracket-4 cEDH deck.</p>
-      <p>Three scores drive the letter grade:</p>
-      <ul>
-        <li><strong>Mana health</strong> = <code>(1 − max(color_screw + mana_screw, flood_rate)) × 100</code></li>
-        <li><strong>Tempo</strong> — turn-2/3/4 hit rates vs expected</li>
-        <li><strong>Color screw rate</strong> — fraction of games where the right colors never arrived</li>
-      </ul>
-      <p>A deck that builds beautifully but goldfishes at a D-grade is honestly told so. The user can then tweak the bracket, swap cards, and re-simulate.</p>
-
-      <h3>Verified Results (500 games per run, bracket 3)</h3>
-      <ul>
-        <li><strong>Atraxa, 4-color, no budget:</strong> color screw 30% → 9.2%, mana health 63 → 81, <strong>D → C</strong></li>
-        <li><strong>Atraxa, 4-color, $150 budget:</strong> color screw 30% → 17%, mana health 63 → 75, <strong>D → C</strong></li>
-        <li><strong>Yennett, 3-color:</strong> zero mediocre lands, 13.8% color screw, <strong>grade C</strong></li>
-        <li><strong>Omnath, mono-G:</strong> mana health 91.6, 0.4% color screw, <strong>grade B</strong></li>
-      </ul>
-
-      <h2>System Architecture</h2>
-      <p>The data pipeline ingests Scryfall bulk JSON (~110k cards), enriches with detected mechanics and MDFC <code>card_faces</code> data, scrapes EDHREC top decklists, generates 1024-dim Voyage embeddings, builds per-commander averaged profiles, and precomputes 500 cards × 32 color identities = 16,000 cached scores. Atlas Vector Search indexes the embeddings for cosine ANN at query time.</p>
-      <p>The Flask application exposes ~73 routes split across recommendation, deck management, card browse, commerce, and admin surfaces. Long-running recommendation and simulation jobs use an in-process job store with a <code>job_id</code> polling pattern — clients poll <code>GET /api/jobs/&lt;job_id&gt;</code> until status flips to done.</p>
-
-      <h2>Technical Stack</h2>
-      <ul>
-        <li><strong>Backend:</strong> Flask 3.1 + Python 3.12; <code>pymongo</code> against MongoDB Atlas or Azure Cosmos DB (MongoDB API) — no vendor lock-in</li>
-        <li><strong>Embeddings:</strong> Voyage AI <code>voyage-4-lite</code> (1024-dim); resumable pipeline</li>
-        <li><strong>Vector search:</strong> MongoDB Atlas <code>$vectorSearch</code> with graceful degradation if unavailable</li>
-        <li><strong>Combos:</strong> Commander Spellbook API (3,000+ infinite combos)</li>
-        <li><strong>Auth:</strong> Flask sessions + PBKDF2-SHA256 (100k iterations, 64-char salt), CSRF-protected, rate-limited</li>
-        <li><strong>Payments:</strong> Stripe + PayPal (subscription + one-time shop purchases)</li>
-        <li><strong>Email:</strong> Resend (verification, password reset, order/shipping notifications)</li>
-        <li><strong>Monitoring:</strong> Sentry SDK with Flask integration</li>
-        <li><strong>Hosting:</strong> Railway.com (Gunicorn, devcontainer-mirrored env)</li>
-      </ul>
-
-      <h2>Product Architecture — Freemium SaaS</h2>
-      <p>A fully implemented subscription system runs on top of the engine:</p>
-      <ul>
-        <li><strong>Free</strong> — 3 deck generations/day, 5 saved decks, goldfish simulation upsell only</li>
-        <li><strong>Premium ($5/mo)</strong> — 50 generations/month, unlimited saved decks, 5 sims/month</li>
-        <li><strong>Pro ($20/mo)</strong> — unlimited generations, unlimited saves, 50 sims/month</li>
-      </ul>
-      <p>Stripe Checkout + Customer Portal, PayPal subscription billing, webhook handlers for every lifecycle event (activation, renewal, cancellation, payment failure), and Resend email notifications for each. A physical-product shop (deck boxes, DragonShield sleeves) sits on the same Stripe infrastructure with full order lifecycle tracking. A complete <code>/admin/*</code> portal provides dashboards for revenue, orders, users, products, and subscription auditing across both billing providers.</p>
-
-      <h2>Defensive Engineering Patterns</h2>
-      <ul>
-        <li><strong>Graceful degradation</strong> — any missing optional dependency (Voyage AI, Atlas vector index, Sentry) silently falls back. The system never hard-fails because an optional service is down.</li>
-        <li><strong>Identity-keyed TTL cache</strong> — card pool queries cached by <code>tuple(sorted(color_identity))</code>. Bounded to 32 buckets, bounded memory.</li>
-        <li><strong>Frozen dataclasses for simulation</strong> — <code>SimCard</code> is <code>frozen=True, slots=True</code> to prevent state leak between games. Fetchland substitution uses <code>dataclasses.replace()</code>.</li>
-        <li><strong>Pre-filter floors</strong> — non-basic Lands get a guaranteed minimum keyword score so shock lands and fetches survive the 2,000-card pool trim regardless of commander oracle text.</li>
-        <li><strong>Sentinel pricing</strong> — unpriced Reserved List cards get <code>999.0</code> so they correctly fail budget filters rather than being treated as free.</li>
-      </ul>
-
-      <h2>Recent Work: Mana-Base Hardening (Wave 1 + Wave 5)</h2>
-      <p>A multi-week iteration significantly hardened the mana-base recommender:</p>
-      <ul>
-        <li><strong>MDFC enrichment:</strong> Modal Double-Faced cards had <code>oracle_text: null</code> because their text lived in <code>card_faces</code>, which had been stripped to reduce Atlas storage. A one-time enrichment tool re-loaded <code>produced_mana</code> + <code>card_faces</code> from Scryfall for 21,852 cards.</li>
-        <li><strong>Two-pass deficit-weighted basic distribution:</strong> Pass 1 guarantees ≥1 basic per color; Pass 2 distributes the remainder weighted by color deficit (most-underserved first). Fixed a long-standing bug where the recommender shipped 0 basics of a needed color.</li>
-        <li><strong>Color-aware land scoring:</strong> +0.15 confidence bonus for lands covering high-pip colors. Command Tower / City of Brass / Exotic Orchard take a fast path.</li>
-        <li><strong>Quality penalties:</strong> depletion-counter lands (Sand Silos, Hollow Trees, Icatian Store) take −0.25 to −0.40 — the recommender stops shipping bad lands when better options exist.</li>
-        <li><strong>Eleven simulation bug fixes:</strong> extra-land-drop interaction with ramp, X-spell cost parsing, hybrid pip counting, snow basics, fetchland substitution, treasure-token scoping.</li>
-      </ul>
-
-      <h2>Operational Tooling</h2>
-      <ul>
-        <li><strong><code>scripts/create_user.py</code></strong> — provisions accounts directly in MongoDB, bypassing email verification. Auto-generates memorable leet-speak passwords (<code>frOs7-r@ven-cEdAr-slA73</code>) from a 250-word curated wordlist with 50%-probability character substitution. Sets <code>subscription_provider: 'owner'</code> to distinguish gifted accounts from billed customers.</li>
-        <li><strong><code>tools/diagnose_deck.py</code></strong> — comprehensive deck diagnostic CLI. Land production breakdown, dead-card detection (<code>DEAD_NO_PRODUCTION</code>, <code>MDFC_EMPTY_ORACLE</code>), optional 500-game goldfish run with full report. Canonical regression tool for mana-base changes.</li>
-      </ul>
-
-      <h2>Why This Project Matters for My Portfolio</h2>
-      <p>EcoRec is the most complete demonstration I have of the intersection I work at every day: <strong>business strategy meets data engineering meets applied AI</strong>.</p>
-      <ul>
-        <li><strong>Strategy:</strong> identified a real, structural gap in a 50M-player market that the incumbents cannot close without rebuilding their data foundations</li>
-        <li><strong>Data engineering:</strong> 110k-card embedding pipeline, Atlas Vector Search index, precomputed score cache, three-tier price resolution, MDFC enrichment fix</li>
-        <li><strong>Applied AI:</strong> semantic vector search + deterministic scoring layered together — interpretable enough to debug, smart enough to surface non-obvious recommendations</li>
-        <li><strong>Production system:</strong> ~73 Flask routes, full auth, full payments, full admin portal, full shop — not a demo</li>
-        <li><strong>Honest grading:</strong> the goldfish simulator tells the user when the deck isn't good. That intellectual honesty is the whole product philosophy.</li>
-      </ul>
-    </div>`,
-    category: 'personal',
-    technologies: [
-      'Python', 'Flask', 'MongoDB Atlas', 'Atlas Vector Search', 'Voyage AI Embeddings',
-      'Azure Cosmos DB', 'Stripe', 'PayPal', 'Resend', 'Sentry',
-      'Commander Spellbook API', 'Scryfall API', 'Railway', 'PBKDF2-SHA256'
-    ],
-    image: '/assets/images/mtg-ecorec-visualizations.png',
-    demoUrl: 'https://mtgecorec-b9fkfngtawggfpbw.westus3-01.azurewebsites.net/',
-    githubUrl: 'https://github.com/mattieg93/mtgecorec',
-    impact: {
-      metric: 'cards embedded · 1024-dim · Atlas Vector Search',
-      value: '110,000+'
-    },
-    tags: [
-      'Python', 'Flask', 'MongoDB Atlas', 'Vector Search', 'Embeddings', 'Voyage AI',
-      'Monte Carlo Simulation', 'Recommendation Systems', 'Freemium SaaS', 'Stripe',
-      'Full-Stack', 'AI', 'Live Demo'
-    ],
-    featured: true,
-    date: '2026-05-29'
   },
   {
     id: 'musical-weather',
