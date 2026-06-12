@@ -195,23 +195,23 @@ const baseProjects: Project[] = [
   {
     id: 'ai-study-assistant',
     title: 'Coursera Study Assistant: Private On-Device AI Study Partner',
-    description: 'Online courses give you access to great material — they cannot make you retain it. This fully local, zero-cost AI study partner for Coursera learners automatically captures lecture notes, answers multi-select quiz questions with per-option reasoning via Apple Silicon MLX inference, and feeds a RAG knowledge base. Nothing leaves your machine.',
+    description: 'Most online learners watch lectures and forget them. This fully local, zero-cost AI study partner fixes the retention loop: it captures your Coursera notes automatically, answers multi-select quiz questions with per-option reasoning via Apple Silicon MLX inference, and builds a RAG knowledge base that improves every time you correct it — without sending a single byte to a third-party server.',
     longDescription: `<div class="space-y-8">
 
       <h2>The Problem With Passive Online Learning</h2>
-      <p>Coursera gives you access to world-class university courses, but it cannot make you understand them. Videos play, transcripts scroll, and by exam time the material has evaporated. Students juggle multiple courses simultaneously, each with its own vocabulary and notation, and there is no professor on call at 2 a.m. when a concept stops making sense. Multi-select quiz questions are particularly unforgiving — the correct answer isn't just the right option, it's the right <em>set</em> of options, and confusing "select all that apply" with "pick one" costs full credit.</p>
-      <p>The Coursera Study Assistant closes that gap. It is a <strong>fully local, zero-cost AI study partner</strong> that automates the mechanical work of learning — capturing notes, retrieving context, explaining options — so the student's cognitive budget goes toward understanding rather than logistics.</p>
+      <p>Coursera gives you access to world-class university courses, but access and understanding are not the same thing. Videos play, transcripts scroll, and by exam time the material has evaporated. Students juggle multiple courses simultaneously, each with its own vocabulary and notation, and there is no professor available at 2 a.m. when a concept stops making sense. Multi-select quiz questions make this worse — the correct answer isn't just the right option, it's the right <em>set</em> of options, and confusing "select all that apply" with "pick one" costs full credit. The standard approach to all of this is to take better notes and study harder. That is the wrong lever.</p>
+      <p>The Coursera Study Assistant attacks the logistics problem, not the discipline problem. It is a <strong>fully local, zero-cost AI study partner</strong> that automates the mechanical work of learning — capturing notes, retrieving context, explaining options — so the student's cognitive budget goes toward understanding rather than administration.</p>
 
       <h2>The Four-Step Study Loop</h2>
       <ul>
         <li><strong>Capture</strong> — the Coursera Agent navigates a module on your behalf, pulls every transcript and reading, summarises it with a local LLM, and writes structured notes into a Google Doc you own. You walk away with a searchable reference document after every study session without typing a word.</li>
         <li><strong>Understand</strong> — the Study Assistant uses Retrieval-Augmented Generation against those exact notes. When you ask "why does backpropagation use the chain rule?" the system retrieves the most relevant lecture segments and grounds its answer in course-specific language, not generic internet text.</li>
-        <li><strong>Drill</strong> — paste or screenshot any quiz question. A vision LLM extracts the structured question data directly from the image. The RAG engine answers each option individually with a <code>CORRECT / INCORRECT</code> verdict and reasoning. When the AI is wrong, correct it in plain English; that feedback is stored and improves future answers.</li>
+        <li><strong>Drill</strong> — paste or screenshot any quiz question. A vision LLM extracts the structured question data directly from the image. The RAG engine answers each option individually with a <code>CORRECT / INCORRECT</code> verdict and reasoning. When the AI is wrong, correct it in plain English; that correction is stored and improves future answers on the same material.</li>
         <li><strong>Repeat</strong> — everything runs on Apple Silicon via MLX. No API keys, no per-token cost, no data sent to a third-party server. A student on a plane can still study.</li>
       </ul>
 
-      <h2>V2.0: Full Architectural Rewrite</h2>
-      <p>The original system was a Streamlit app backed by Ollama. It worked, but both choices imposed ceilings: Streamlit's component model made real-time streaming awkward, and Ollama required a separate always-running daemon. V2.0 replaces both.</p>
+      <h2>V2.0: Why a Full Rewrite Was Necessary</h2>
+      <p>V1 was a Streamlit app backed by Ollama. It worked, but both choices imposed hard ceilings: Streamlit's synchronous component model made real-time streaming awkward, and Ollama required a separate always-running daemon that added startup friction and memory overhead. The deeper problem was architectural — a script pretending to be an application cannot cleanly support three different real-time patterns on different data paths. V2.0 was designed from the ground up as a real full-stack system.</p>
       <ul>
         <li><strong>Frontend:</strong> React 19 + TypeScript SPA built with Vite. Tailwind CSS for styling, wouter for lightweight routing, Zustand for persistent global state (model selection, dark mode, active doc), TanStack Query for server state and background refetch. Three pages — Study, Agent, Knowledge Base — with a sidebar that stays coherent across navigation.</li>
         <li><strong>Backend:</strong> FastAPI + Uvicorn replaces Streamlit. Async from the ground up. HTTP endpoints for chat, extraction, and knowledge-base management; WebSocket endpoints for real-time agent streaming; SSE for per-question quiz-answer streaming.</li>
@@ -219,8 +219,8 @@ const baseProjects: Project[] = [
         <li><strong>Per-course isolation:</strong> Each Google Doc gets its own <code>study_db_{doc_id}.pkl</code> vector index. Switching courses in the sidebar reloads the correct index in-memory — there is no bleed between a machine-learning course and a data-structures course.</li>
       </ul>
 
-      <h2>Quiz Extraction Pipeline — Vision-First, Not OCR</h2>
-      <p>The original system used Apple Vision Framework for OCR, then parsed the resulting text with regex. V2.0 replaces this with a multimodal LLM pipeline that understands the screenshot semantically, not character-by-character.</p>
+      <h2>Quiz Extraction — Vision-First, Not OCR</h2>
+      <p>The original system used Apple Vision Framework for OCR and then parsed the resulting text with regex. That approach fails on anything non-standard: Coursera's checkbox glyphs, LaTeX artefacts, multi-line option text. V2.0 replaces it with a multimodal LLM pipeline that understands the screenshot semantically, not character-by-character — the model reads the question the way a person would.</p>
       <ul>
         <li>Screenshot bytes → <code>chat_vision(_VISION_PROMPT, img)</code> → raw JSON with structured question objects</li>
         <li><code>_parse_vision_raw()</code> strips markdown fences, repairs invalid backslash escapes, unwraps dict-wrapped arrays</li>
@@ -228,30 +228,32 @@ const baseProjects: Project[] = [
         <li>Retry pass: any question with fewer than 2 options extracted triggers a second vision call with the first response as context; results are merged where the retry produced more options</li>
         <li>Remaining questions below threshold get an <code>extraction_warning</code> displayed as an amber alert in the UI</li>
       </ul>
-      <p><strong>Multi-select support covers A–Z</strong> (not just A–D). The RAG prompt format was redesigned to emit per-option <code>CORRECT/INCORRECT</code> verdicts with explicit over-selection and under-selection guards, and the answer comparison uses set equality with normalisation so "A, D" and "D and A" are equivalent.</p>
+      <p><strong>Multi-select support covers A–Z</strong> (not just A–D). The RAG prompt was redesigned to emit per-option <code>CORRECT/INCORRECT</code> verdicts with explicit over-selection and under-selection guards. Answer comparison uses set equality with normalisation so "A, D" and "D and A" are treated as equivalent.</p>
 
-      <h2>RAG Study Engine</h2>
-      <p>The knowledge base is a lightweight NumPy + pickle vector store — no ChromaDB dependency, no Pydantic version conflicts. <code>all-MiniLM-L6-v2</code> sentence-transformer embeddings are loaded lazily on first query.</p>
-      <p>For each quiz question, the retriever builds one query per option (up to 8) plus one for the question stem — up to 10 combined results, deduplicated. The prompt injects the retrieved lecture text, the full option list, an <code>expected_count</code> hint if the stem states it ("select all 3"), and explicit warnings against under-selection. Each correction the student provides is stored as a special document keyed to the original question text and reingested into the index — accuracy compounds over a course.</p>
+      <h2>RAG Study Engine — Knowledge That Compounds</h2>
+      <p>The knowledge base is a lightweight NumPy + pickle vector store — no ChromaDB dependency, no Pydantic version conflicts. <code>all-MiniLM-L6-v2</code> sentence-transformer embeddings are loaded lazily on first query. For each quiz question, the retriever builds one query per option (up to 8) plus one for the question stem — up to 10 combined results, deduplicated. The prompt injects the retrieved lecture text, the full option list, an <code>expected_count</code> hint if the stem states it ("select all 3"), and explicit warnings against under-selection.</p>
+      <p>The compounding mechanic is the most underrated feature: each correction the student provides is stored as a special document keyed to the original question text and reingested into the index. The system gets more accurate on your specific course the more you use it — not through retraining, but through curated retrieval context.</p>
 
       <h2>Coursera Agent — WebSocket Streaming</h2>
-      <p>The agent uses Playwright connected to a running Chromium instance via CDP (port 9222). The student logs into Coursera once manually; the agent reuses that session from a dedicated profile, so no credentials are ever passed to the code.</p>
-      <p>In V2.0, the agent subprocess stdout is piped over a WebSocket (<code>/ws/agent/{job_id}</code>) instead of being read line-by-line in a Streamlit callback. The WebSocket handler uses <code>asyncio.create_subprocess_exec</code> (non-blocking) and parses structured emoji-tagged progress lines into typed JSON events. The React frontend accumulates these events into per-lecture progress bars that update in real time. The textbook-aware notes path detects when a lecture maps to a known textbook chapter and switches to a parametric generation mode — the LLM draws on its trained knowledge of the book rather than summarising a transcript.</p>
+      <p>The agent uses Playwright connected to a running Chromium instance via CDP (port 9222). The student logs in once manually; the agent reuses that session from a dedicated profile so no credentials are ever passed to the code. In V2.0, agent subprocess stdout is piped over a WebSocket (<code>/ws/agent/{job_id}</code>) and parses structured emoji-tagged progress lines into typed JSON events that drive per-lecture progress bars in real time. The textbook-aware notes path detects when a lecture maps to a known textbook chapter and switches to parametric generation — the LLM draws on its trained knowledge of the book rather than summarising a transcript, which produces materially better notes for courses that follow a textbook closely.</p>
 
-      <h2>Streaming Quiz Answers — SSE</h2>
-      <p>A full quiz of 10 questions previously waited for all answers to complete before rendering anything. V2.0 uses Server-Sent Events via FastAPI's <code>StreamingResponse</code>: each question is answered, and its result frame emitted, as soon as the LLM finishes it. The frontend renders each answer card as it arrives. Long quizzes give immediate feedback instead of a loading spinner.</p>
+      <h2>SSE Quiz Answer Streaming</h2>
+      <p>A full quiz of 10 questions previously waited for all answers to complete before rendering anything — a loading spinner for as long as it takes to run 10 LLM calls. V2.0 uses Server-Sent Events via FastAPI's <code>StreamingResponse</code>: each question is answered and its result frame emitted as soon as the LLM finishes it. The frontend renders each answer card as it arrives. The experience shifts from "wait, then read" to "read as it appears" — which is also better for learning.</p>
 
       <h2>Technical Stack</h2>
       <ul>
-        <li><strong>Inference:</strong> <code>mlx-lm</code> (text) + <code>mlx-vlm</code> (vision) — Apple Silicon native, in-process model cache</li>
+        <li><strong>Frontend:</strong> React 19, TypeScript, Vite, Tailwind CSS v4, wouter, Zustand, TanStack Query v5, lucide-react</li>
+        <li><strong>Backend:</strong> FastAPI, Uvicorn, Python 3.11+</li>
+        <li><strong>LLM inference:</strong> <code>mlx-lm</code> (text) + <code>mlx-vlm</code> (vision) — Apple Silicon native, in-process model cache</li>
         <li><strong>Default model:</strong> <code>mlx-community/granite-3.3-8b-instruct-4bit</code></li>
-        <li><strong>Embeddings:</strong> <code>all-MiniLM-L6-v2</code> (384-dim cosine similarity)</li>
-        <li><strong>PDF parsing:</strong> PyMuPDF (<code>fitz</code>) for text extraction and chunking</li>
-        <li><strong>Browser automation:</strong> Playwright via CDP — session reuse, no credential handling</li>
+        <li><strong>Embeddings:</strong> sentence-transformers <code>all-MiniLM-L6-v2</code> (384-dim cosine similarity)</li>
+        <li><strong>Web automation:</strong> Playwright + Chromium CDP</li>
+        <li><strong>Notes output:</strong> Google Docs API v1 (service account, no user OAuth flow)</li>
+        <li><strong>PDF ingestion:</strong> PyMuPDF (<code>fitz</code>) for text extraction and chunking</li>
       </ul>
 
-      <h2>V1 → V2: What Changed and Why It Matters</h2>
-      <p>V1 was a Streamlit script. V2 is a production-grade full-stack application. The rewrite required designing a real API contract between frontend and backend, replacing a synchronous UI framework with an async server that supports three different real-time patterns (HTTP streaming, SSE, WebSocket) on different data paths, and migrating LLM inference off an external daemon onto in-process native hardware acceleration. The domain is education, but the engineering problems are identical to those in any serious data product: latency, streaming, state isolation, and graceful degradation when an inference call fails.</p>
+      <h2>Why This Project Belongs in This Portfolio</h2>
+      <p>The domain is education, but the engineering problems are identical to those in any serious data product: latency, streaming, state isolation, and graceful degradation when an inference call fails. V1 was a Streamlit script. V2 is a production-grade full-stack application. The rewrite required a real API contract between frontend and backend, an async server supporting three different real-time patterns on different data paths, and migrating LLM inference off an external daemon onto in-process native hardware acceleration. The constraints of building for a single user on local hardware made the design sharper, not more forgiving.</p>
 
     </div>`,
     category: 'personal',
@@ -269,24 +271,46 @@ const baseProjects: Project[] = [
   {
     id: 'queer-data-network',
     title: 'Queer Data Network',
-    description: 'LGBTQ+ professionals in data and tech lack a community that understands both the technical work and the lived experience. Queer Data Network is a full-stack community platform — auth, role-based permissions, resource library, community board, content moderation, and privacy-first analytics — built in one month with a deliberate focus on shipping real surface area over infrastructure elegance.',
+    description: 'LGBTQ+ professionals in data and tech lack a community that treats their specific challenges as real product requirements. Queer Data Network is a full-stack community platform — custom JWT auth, role-based moderation, A/B-tested policy rollouts, LangChain/RAG-powered resource discovery, and privacy-first analytics — built concept to production in one month on Azure serverless infrastructure for under $10/month.',
     longDescription: `<div class="space-y-8">
 
-      <h2>The Gap This Fills</h2>
-      <p>LGBTQ+ professionals in data and tech navigate challenges that general professional communities don't address: working with datasets that erase or misrepresent queer identities, operating in cultures that aren't always inclusive, and lacking peer networks who understand both the technical work and the lived experience. Queer Data Network is a purpose-built community platform that treats those needs as first-class product requirements — not afterthoughts.</p>
+      <h2>Why This Platform Exists</h2>
+      <p>LGBTQ+ professionals in data and tech face a specific set of challenges that general professional communities aren't built to address: working with datasets that erase or misrepresent queer identities, navigating workplace cultures that aren't always inclusive, and lacking peer networks that understand both the technical work and the lived experience simultaneously. Existing platforms treat diversity as a tag, not a design constraint. Queer Data Network was built with those needs as first-class requirements from day one — not retrofitted in.</p>
 
-      <h2>Scope and Constraints</h2>
-      <p>The scope was deliberately full: authentication, role-based permissions, a resource library, community board, content moderation, privacy-first analytics, and a working CI/CD pipeline. The one-month constraint forced architectural clarity. Every decision was made to maximise surface area shipped rather than infrastructure elegance — a discipline that produces better product instincts than unlimited time ever does.</p>
+      <h2>Scope and the One-Month Constraint</h2>
+      <p>The scope was deliberately full: authentication, role-based permissions, a resource library, community board, content moderation, A/B testing infrastructure, LangChain/RAG-powered resource discovery, privacy-first analytics, and a working CI/CD pipeline. The one-month constraint forced a specific kind of architectural discipline — every decision was made to maximise real surface area shipped rather than infrastructure elegance. That constraint produces better product instincts than unlimited time ever does.</p>
+
+      <h2>Technical Architecture</h2>
+      <ul>
+        <li><strong>Frontend:</strong> React 18.2 SPA with React Router — component-driven, stateful, accessible.</li>
+        <li><strong>Backend:</strong> Azure Functions (Python) — serverless, event-driven, scales to zero between bursts.</li>
+        <li><strong>Database:</strong> MongoDB via Azure Cosmos DB (MongoDB API) — flexible document model for community content.</li>
+        <li><strong>Auth:</strong> Custom stateless JWT system — access + refresh tokens, server-side verification on all protected routes, user IDs extracted from JWT payload. No session store, no OAuth dependency, full control over rate limiting and account lockout.</li>
+        <li><strong>CI/CD:</strong> GitHub Actions deploys to Azure Static Web Apps on every push to <code>main</code>.</li>
+      </ul>
+
+      <h2>Community Features</h2>
+      <ul>
+        <li>Resource library with Quill.js rich-text editor and DOMPurify sanitization — XSS prevention without sacrificing formatted content</li>
+        <li>Community board: discussions, events, announcements, nested commenting, reactions</li>
+        <li>Role-based permissions enforced at the API layer: member / moderator / admin</li>
+        <li>Moderation tools: hide/unhide content, user reporting, admin panel for pending reports</li>
+        <li>Terms acceptance flow gates access to community content</li>
+        <li>18+ custom REST endpoints across auth, content, analytics, and moderation surfaces</li>
+      </ul>
+
+      <h2>Experimentation &amp; AI Features</h2>
+      <p>Most community platforms make policy decisions by instinct. QDN treats them as experiments. <strong>A/B testing with frequentist hypothesis testing</strong> evaluates moderation policy changes and feature rollouts — when a new rule is proposed, it's measured, not assumed. <strong>LangChain/RAG</strong> powers conversational resource discovery: members ask questions in natural language and get answers grounded in the curated resource library, rather than a generic search result list that buries the most relevant entry three scrolls down.</p>
 
       <h2>Privacy-First Analytics</h2>
-      <p>The pageview tracker was built from scratch. It buffers up to 10 events client-side and flushes every 30 seconds or when full — reducing API calls ~90% compared to per-page tracking. Session-based deduplication (5-minute window) prevents double-counts without storing personally identifiable data. All analytics records expire after 90 days automatically.</p>
-      <p><strong>No third-party tracking scripts. No ad pixels. No external analytics services.</strong> Users own their data.</p>
+      <p>The pageview tracker was built from scratch. It buffers up to 10 events client-side and flushes every 30 seconds or when full — reducing API calls ~90% compared to per-page tracking. Session-based deduplication (5-minute window) prevents double-counts without storing personally identifiable data. All analytics records expire after 90 days automatically. <strong>No third-party tracking scripts. No ad pixels. No external analytics services.</strong> In a community built around trust, how you collect data is a product decision, not an engineering afterthought.</p>
 
-      <h2>Safety as a Technical Requirement</h2>
-      <p>Every technical decision had a community-safety analogue. Custom auth gives full control over rate limiting and account lockout without handing credentials to a third party. DOMPurify protects members from malicious content without disabling rich formatting. Privacy-first analytics let the platform understand growth without surveilling members. Serverless infrastructure keeps costs under $10/month while maintaining the ability to absorb traffic spikes during events or press coverage.</p>
+      <h2>Image Gallery</h2>
 
-      <h2>CI/CD Pipeline</h2>
-      <p>Automated deployments trigger on merge to <code>main</code>. Every push is tested, built, and deployed without manual steps — the same pipeline discipline used in production data engineering environments, applied to a community product.</p>
+      <!--QDN_IMAGE_GALLERY-->
+
+      <h2>Safety as a Design Constraint</h2>
+      <p>Every technical decision had a community-safety analogue. Custom auth gives full control over rate limiting and account lockout without handing credentials to a third party. DOMPurify protects members from malicious content without disabling rich formatting. Privacy-first analytics let the platform understand growth without surveilling members. Serverless infrastructure keeps costs under $10/month while maintaining the ability to absorb traffic spikes during events or press coverage. The goal throughout: a platform that a queer professional in data can trust with their real name and their real work.</p>
 
     </div>`,
     category: 'personal',
