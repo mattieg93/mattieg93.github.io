@@ -23,7 +23,7 @@ const infoItems = [
 
 const links = [
   { label: "Email", href: "mailto:eight-amens76@icloud.com", text: "eight-amens76@icloud.com" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/mattiegraham", text: "linkedin.com/in/mattiegraham" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/mattie-graham/", text: "linkedin.com/in/mattie-graham" },
   { label: "GitHub", href: "https://github.com/mattieg93", text: "github.com/mattieg93" },
 ];
 
