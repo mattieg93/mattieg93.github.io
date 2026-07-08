@@ -271,7 +271,7 @@ const baseProjects: Project[] = [
     </div>`,
     category: 'personal',
     technologies: ['React', 'TypeScript', 'FastAPI', 'Python', 'MLX', 'Apple Silicon', 'RAG', 'Playwright', 'Tailwind CSS', 'Zustand'],
-    image: '/assets/images/study_assistant.png',
+    image: '/assets/images/coursera_assistant.png',
     githubUrl: 'https://github.com/mattieg93/coursera-study-assistant',
     impact: {
       metric: 'Infrastructure Cost',
