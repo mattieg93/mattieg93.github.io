@@ -68,7 +68,7 @@ const baseProjects: Project[] = [
       <h2>What EcoRec Does Differently</h2>
 
       <h3>1. Archetype-First 7-Component Scoring Engine</h3>
-      <p>The scorer is deterministic and fully auditable — not a neural network, not a popularity lookup. Every recommendation can be explained in plain English. Each card receives a composite score from seven interpretable components: Synergy (30%), Archetype Fit (25%), Base Power (15%), Combo Potential (15%), Mana Curve (10%), Type Balance (5%), and a hard Color Identity filter. The synergy engine extracts 60+ MTG-specific keywords from oracle text via regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. Archetype weights encode domain knowledge about which mechanics matter for 40+ named playstyles (stax, reanimator, combo, voltron, and more).</p>
+      <p>The scorer is deterministic and fully auditable — not a neural network, not a popularity lookup. Every recommendation can be explained in plain English. Each card receives a composite score from seven interpretable components: Synergy (30%), Archetype Fit (25%), Base Power (15%), Combo Potential (15%), Mana Curve (10%), Type Balance (5%), and a hard Color Identity filter. The synergy engine extracts 60+ MTG-specific keywords from oracle text via regex, then computes Jaccard similarity between the card's mechanic set and the commander's mechanic profile. Archetype weights in <code>config/archetype_config.json</code> encode domain knowledge about which mechanics matter for <strong>63 playstyles</strong> — aggro, control, combo, stax, tokens, aristocrats, reanimator, 15 creature tribes, and 40+ more.</p>
 
       <h3>2. Vectorized Obscurity Detection — The Product Moat</h3>
       <p>Popularity-beating requires knowing which cards are semantically similar to the popular ones but underexposed. <code>voyage-4-lite</code> generates 1024-dimensional text embeddings of all 110,000+ MTG cards. MongoDB Atlas <code>$vectorSearch</code> performs ANN cosine similarity at query time against per-commander averaged profiles built from EDHREC's top decklists. Cards in the top 200 by vector similarity with &lt;20% EDHREC inclusion and cost ≤ their popular equivalent receive a 1.5–2.0× score multiplier and a "Hidden Gem" badge — these are the cards that play like staples but cost $0.50 and appear in 3% of decks. <strong>This combination — archetype-aware scoring + semantic vector search + obscurity detection — cannot be replicated by adding a filter to a popularity table.</strong> It requires a fundamentally different data architecture.</p>
@@ -76,8 +76,9 @@ const baseProjects: Project[] = [
       <h3>3. Budget as a Constraint, Not a Filter</h3>
       <p>Budget is enforced end-to-end. Three-tier price resolution (live Scryfall cache → embedded prices → sentinel 999.0), a per-card cap of budget/50 pre-filters the candidate pool, and a post-assembly swap pass guarantees no over-budget cards survive final assembly. A $50 budget yields a coherent, playable 99-card deck — not a premium list with 10 cards swapped out after the fact.</p>
 
-      <h3>4. Monte Carlo Goldfish Simulator</h3>
-      <p>After a deck is assembled, the user runs it through a full solitaire simulator: N games (default 500) producing a graded report across six categories: Mana Health, Tempo, Throughput, Early Game, Board Development, and Graveyard Recursion. Grading is bracket-aware — a casual bracket-2 deck is evaluated against more forgiving curves than a cEDH bracket-4 build. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck</strong> — you don't just get a list, you get a performance report on the list.</p>
+      <h3>4. Monte Carlo Simulator with Opponent Model</h3>
+      <p>After a deck is assembled, the user runs it through a full multiplayer simulation: by default, the deck faces 3 opponent decks drawn from MongoDB at the same bracket, each with a named commander and virtual board state. The sim plays N games (default 500) and produces a graded report across six categories — Mana Health, Tempo, Throughput, Early Game, Board Development, and Graveyard Recursion — plus a <strong>win rate</strong> against the opponent pool. Grading is bracket-aware: a casual bracket-2 deck is evaluated against more forgiving curves than a cEDH bracket-4 build. <strong>This is the closest thing the EDH ecosystem has to a "compile and run" step for a deck</strong> — you don't just get a list, you get a performance report on the list.</p>
+      <p>Each game resolves combat against 3 opponents with full life totals (40 each), commander-damage tracking (21 = kill), infect/poison (10 = kill), keyword-aware virtual blockers (trample overflow, flying vs reach, menace block requirements), and opponent counterattacks that can eliminate the player. Opponent commanders are drawn from real decks in MongoDB at the same bracket, with no duplicate commanders.</p>
       <p>N=500 is the empirically optimal default — calibrated across a 6-deck panel run at N ∈ {50, 100, 200, 300, 500, 1000} with 5 deterministic seeds per N. It is 46% faster than N=1000 with equivalent information for solidly-in-band decks. Three of six test decks converged by N=50–200; three were genuine boundary cases that remained unstable at any N, confirming the need for tier-aware caps (Premium: 750, Pro: 1000).</p>
 
       <h2>Wave 6: Production Hardening &amp; Observability</h2>
@@ -99,7 +100,7 @@ const baseProjects: Project[] = [
         <li><strong>Vector search:</strong> MongoDB Atlas <code>$vectorSearch</code> with graceful degradation if unavailable</li>
         <li><strong>Scoring:</strong> Deterministic 7-component rules engine — no ML, fully auditable</li>
         <li><strong>Simulator:</strong> Pure Python Monte Carlo goldfish engine; ~500 games/sec</li>
-        <li><strong>Combos:</strong> Commander Spellbook API (3,000+ infinite combos)</li>
+        <li><strong>Combos:</strong> Commander Spellbook CDN (90,000+ combos, partial-completeness matching)</li>
         <li><strong>Auth:</strong> Flask sessions + PBKDF2-SHA256 (100k iterations, 64-char salt)</li>
         <li><strong>Payments:</strong> Stripe + PayPal (subscription + one-time shop)</li>
         <li><strong>Email:</strong> Resend (verification, password reset, order/shipping)</li>
@@ -132,6 +133,18 @@ const baseProjects: Project[] = [
         <li><strong>scripts/create_user.py</strong> — provisions accounts directly in MongoDB, bypassing email verification; generates memorable leet-speak passwords</li>
         <li><strong>tools/diagnose_deck.py</strong> — comprehensive deck diagnostic CLI with land breakdown, dead-card detection, and optional goldfish run</li>
         <li><strong>tools/calibrate_sim_games.py</strong> — empirical simulation game-count calibration</li>
+      </ul>
+
+      <h2>Scale &amp; Data Facts</h2>
+      <ul>
+        <li><strong>110,000+</strong> unique MTG printings indexed from Scryfall bulk data</li>
+        <li><strong>90,000+</strong> infinite combo relationships from Commander Spellbook CDN bulk dump</li>
+        <li><strong>63</strong> named archetypes with configuration-driven detection signals</li>
+        <li><strong>58</strong> archetype enrichment flags on 116k cards</li>
+        <li><strong>806</strong> known_commanders entries across all archetypes</li>
+        <li><strong>16,000</strong> pre-scored slots (500 cards × 32 identities) for sub-100ms cold-starts</li>
+        <li><strong>~500 games/sec</strong> simulation throughput</li>
+        <li><strong>73</strong> Flask routes across recommendation, simulation, e-commerce, admin, auth</li>
       </ul>
 
       <h2>Why This Project Matters</h2>
